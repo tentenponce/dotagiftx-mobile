@@ -1,0 +1,15 @@
+{
+  "dart.flutterSdkPath": ".fvm/versions/3.29.3",
+  "[dart]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "always",
+      "source.sortMembers": "always",
+      "source.fixAll": "always"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [
+      120
+    ],
+  }
+}

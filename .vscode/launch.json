@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Flutter Run with Env",
+        "type": "dart",
+        "request": "launch",
+        "program": "lib/main.dart",
+        "args": [
+          "--dart-define-from-file",
+          "${input:envFile}"
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "id": "envFile",
+        "type": "pickString",
+        "description": "Select env file",
+        "options": [
+          ".env/prod.json"
+        ],
+        "default": ".env/dev.json"
+      }
+    ]
+}
