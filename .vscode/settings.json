@@ -1,15 +1,26 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.29.3",
-  "[dart]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "always",
-      "source.sortMembers": "always",
-      "source.fixAll": "always"
+    "files.exclude": {
+        "build": true,
+        "**/*.g.dart": true,
+        "**/*.config.dart": true,
+        "**/generated_plugin_registrant.dart": true,
+        "**/*.mocks.dart": true,
+        "**/Gemfile": true,
+        "**/Gemfile.lock": true,
+        "**/pubspec.lock": true,
+        "**/*.freezed.dart": true,
     },
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "editor.rulers": [
-      120
-    ],
-  }
+    "dart.flutterSdkPath": ".fvm/versions/3.29.3",
+    "[dart]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always",
+            "source.sortMembers": "always",
+            "source.fixAll": "always"
+        },
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            120
+        ],
+    }
 }

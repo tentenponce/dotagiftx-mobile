@@ -35,6 +35,17 @@ migrate_working_dir/
 .pub/
 build/
 .metadata
+**/*.g.dart
+**/*.gr.dart
+**/*.config.dart
+**/*.gen.dart
+**/*.mocks.dart
+**/*.freezed.dart
+**/*.auto_mappr.dart
+**/generated/**
+full_coverage_test.dart
+metrics
+devtools_options.yaml
 
 # Symbolication related
 app.*.symbols
