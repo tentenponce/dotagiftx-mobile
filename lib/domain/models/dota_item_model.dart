@@ -8,87 +8,26 @@ part 'dota_item_model.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class DotaItemModel extends Equatable {
   final String id;
-  final String slug;
   final String name;
   final String hero;
   final String image;
-  final String origin;
   final String rarity;
-  final int viewCount;
-  final int quantity;
   final double lowestAsk;
-  final double medianAsk;
-  final DateTime? recentAsk;
-  final int highestBid;
-  final DateTime? recentBid;
-  final int bidCount;
-  final int reservedCount;
-  final int soldCount;
-  final int saleCount;
-  final double avgSale;
-  final DateTime? recentSale;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final dynamic asks;
-  final dynamic bids;
 
   const DotaItemModel({
     required this.id,
-    required this.slug,
     required this.name,
     required this.hero,
     required this.image,
-    required this.origin,
     required this.rarity,
-    required this.viewCount,
-    required this.quantity,
     required this.lowestAsk,
-    required this.medianAsk,
-    required this.highestBid,
-    required this.bidCount,
-    required this.reservedCount,
-    required this.soldCount,
-    required this.saleCount,
-    required this.avgSale,
-    required this.createdAt,
-    required this.updatedAt,
-    this.recentAsk,
-    this.recentBid,
-    this.recentSale,
-    this.asks,
-    this.bids,
   });
 
   factory DotaItemModel.fromJson(Map<String, dynamic> json) =>
       _$DotaItemModelFromJson(json);
 
   @override
-  List<Object?> get props => [
-    id,
-    slug,
-    name,
-    hero,
-    image,
-    origin,
-    rarity,
-    viewCount,
-    quantity,
-    lowestAsk,
-    medianAsk,
-    recentAsk,
-    highestBid,
-    recentBid,
-    bidCount,
-    reservedCount,
-    soldCount,
-    saleCount,
-    avgSale,
-    recentSale,
-    createdAt,
-    updatedAt,
-    asks,
-    bids,
-  ];
+  List<Object?> get props => [id, name, hero, rarity, image, lowestAsk];
 
   Map<String, dynamic> toJson() => _$DotaItemModelToJson(this);
 }
