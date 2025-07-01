@@ -1,7 +1,7 @@
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/trending_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/home_nav_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +26,9 @@ class _HomeViewState extends State<_HomeView> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const TrendingView(),
-    const TreasuresView(),
-    const HeroesView(),
+    const HomeNavView(),
+    const TreasuresNavView(),
+    const HeroesNavView(),
   ];
 
   @override
@@ -46,7 +46,7 @@ class _HomeViewState extends State<_HomeView> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.trending_up),
-            label: I18n.of(context).homeTrending,
+            label: I18n.of(context).homeHome,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.card_giftcard),

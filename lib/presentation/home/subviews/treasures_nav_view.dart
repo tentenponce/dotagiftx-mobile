@@ -4,8 +4,8 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TreasuresView extends StatelessWidget {
-  const TreasuresView({super.key});
+class TreasuresNavView extends StatelessWidget {
+  const TreasuresNavView({super.key});
 
   @override
   Widget build(BuildContext context) {

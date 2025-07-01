@@ -1,5 +1,8 @@
 {
-    "homeTrending": "Trending",
+    "homeHome": "Home",
     "homeTreasures": "Treasures",
-    "homeHeroes": "Heroes"
+    "homeHeroes": "Heroes",
+    "homeTrending": "Trending",
+    "homeNewBuyOrders": "New Buy Orders",
+    "homeNewSellListings": "New Sell Listings"
 }

@@ -14,7 +14,7 @@ class GetNewBuyOrdersUsecaseImpl implements GetNewBuyOrdersUsecase {
   GetNewBuyOrdersUsecaseImpl(this._dotagiftxApi);
 
   @override
-  Future<Iterable<DotaItemModel>> get({int limit = 10, int page = 1}) async {
+  Future<Iterable<DotaItemModel>> get({int limit = 5, int page = 1}) async {
     final response = await _dotagiftxApi.getCatalogs(
       ApiConstants.querySortRecentBid,
       limit,
