@@ -14,10 +14,7 @@ class HeroesView extends StatelessWidget {
       body: SingleChildScrollView(
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            return Column(
-              children:
-                  state.newSellListingItems.map((e) => Text(e.name)).toList(),
-            );
+            return const Text('Heroes');
           },
         ),
       ),

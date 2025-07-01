@@ -1,6 +1,6 @@
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/new_buy_orders_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/new_sell_listings_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/trending_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
