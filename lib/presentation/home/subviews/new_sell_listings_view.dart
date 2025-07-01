@@ -15,7 +15,8 @@ class HeroesView extends StatelessWidget {
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             return Column(
-              children: state.heroesItems.map((e) => Text(e.name)).toList(),
+              children:
+                  state.newSellListingItems.map((e) => Text(e.name)).toList(),
             );
           },
         ),

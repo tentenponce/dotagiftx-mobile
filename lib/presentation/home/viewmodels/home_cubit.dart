@@ -36,14 +36,14 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   Future<void> _getNewBuyOrders() async {
     await cubitHandler(
       _getNewBuyOrdersUsecase.get,
-      (response) async => emit(state.copyWith(treasuresItems: response)),
+      (response) async => emit(state.copyWith(newBuyOrderItems: response)),
     );
   }
 
   Future<void> _getNewSellListings() async {
     await cubitHandler(
       _getNewSellListingsUsecase.get,
-      (response) async => emit(state.copyWith(heroesItems: response)),
+      (response) async => emit(state.copyWith(newSellListingItems: response)),
     );
   }
 

@@ -15,7 +15,8 @@ class TreasuresView extends StatelessWidget {
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             return Column(
-              children: state.treasuresItems.map((e) => Text(e.name)).toList(),
+              children:
+                  state.newBuyOrderItems.map((e) => Text(e.name)).toList(),
             );
           },
         ),
