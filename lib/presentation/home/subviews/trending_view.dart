@@ -1,7 +1,9 @@
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -55,23 +57,10 @@ class TrendingView extends StatelessWidget {
             // Item Image
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: Image.network(
-                item.image,
+              child: DotagiftxImageView(
+                imageUrl: item.image,
                 width: 60,
                 height: 60,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 60,
-                    height: 60,
-                    color: Colors.grey[800],
-                    child: const Icon(
-                      Icons.image_not_supported,
-                      color: Colors.grey,
-                      size: 30,
-                    ),
-                  );
-                },
               ),
             ),
             const SizedBox(width: 12),
@@ -92,9 +81,15 @@ class TrendingView extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    '${item.hero} ${item.rarity}',
-                    style: TextStyle(color: Colors.grey[400], fontSize: 14),
+                  Row(
+                    children: [
+                      Text(
+                        item.hero,
+                        style: TextStyle(color: Colors.grey[400], fontSize: 14),
+                      ),
+                      const SizedBox(width: 4),
+                      RarityTextView(rarity: item.rarity, fontSize: 14),
+                    ],
                   ),
                 ],
               ),

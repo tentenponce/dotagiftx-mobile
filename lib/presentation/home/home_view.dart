@@ -49,11 +49,11 @@ class _HomeViewState extends State<_HomeView> {
             label: I18n.of(context).homeTrending,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.shopping_cart),
+            icon: const Icon(Icons.card_giftcard),
             label: I18n.of(context).homeTreasures,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.sell),
+            icon: const Icon(Icons.groups),
             label: I18n.of(context).homeHeroes,
           ),
         ],
