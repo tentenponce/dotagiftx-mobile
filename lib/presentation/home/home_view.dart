@@ -1,10 +1,10 @@
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/new_buy_orders_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/new_sell_listings_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/trending_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
-
-import 'subviews/new_buy_orders_view.dart';
-import 'subviews/new_sell_listings_view.dart';
-import 'subviews/trending_view.dart';
 
 class HomeView extends StatelessWidget with ViewCubitMixin<HomeCubit> {
   const HomeView({super.key});
@@ -27,8 +27,8 @@ class _HomeViewState extends State<_HomeView> {
 
   final List<Widget> _pages = [
     const TrendingView(),
-    const NewBuyOrdersView(),
-    const NewSellListingsView(),
+    const TreasuresView(),
+    const HeroesView(),
   ];
 
   @override
@@ -43,18 +43,18 @@ class _HomeViewState extends State<_HomeView> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.trending_up),
-            label: 'Trending',
+            icon: const Icon(Icons.trending_up),
+            label: I18n.of(context).homeTrending,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'New Buy Orders',
+            icon: const Icon(Icons.shopping_cart),
+            label: I18n.of(context).homeTreasures,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.sell),
-            label: 'New Sell Listings',
+            icon: const Icon(Icons.sell),
+            label: I18n.of(context).homeHeroes,
           ),
         ],
       ),

@@ -6,8 +6,8 @@ part 'home_state.freezed.dart';
 @freezed
 abstract class HomeState with _$HomeState {
   const factory HomeState({
-    @Default([]) List<DotaItemModel> trendingItems,
-    @Default([]) List<DotaItemModel> newBuyOrderItems,
-    @Default([]) List<DotaItemModel> newSellListingItems,
+    @Default([]) Iterable<DotaItemModel> trendingItems,
+    @Default([]) Iterable<DotaItemModel> treasuresItems,
+    @Default([]) Iterable<DotaItemModel> heroesItems,
   }) = _HomeState;
 }

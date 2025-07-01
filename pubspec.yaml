@@ -14,10 +14,15 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_localizations:
+    sdk: flutter
+  flutter_screenutil: ^5.9.3
   freezed: ^3.0.6
   freezed_annotation: ^3.0.0
   get_it: ^8.0.3
+  google_fonts: ^6.2.1
   injectable: ^2.5.0
+  intl: ^0.19.0
   json_annotation: ^4.9.0
   retrofit: ^4.5.0
 
@@ -33,3 +38,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_intl:
+  enabled: true
+  class_name: I18n
+  arb_dir: lib/presentation/shared/localization
+  output_dir: lib/presentation/shared/localization/generated

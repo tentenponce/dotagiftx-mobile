@@ -14,6 +14,16 @@ abstract interface class DotagiftxApi {
   factory DotagiftxApi(BasicDioProvider dioProvider, @baseUrl String baseUrl) =>
       _DotagiftxApi(dioProvider.create<DotagiftxApi>(), baseUrl: baseUrl);
 
-  @GET('/catalogs?sort=recent-bid&limit=5')
-  Future<CatalogResponse> getRecentBids();
+  @GET('/catalogs')
+  Future<CatalogResponse> getCatalogs(
+    @Query('sort') String sort,
+    @Query('limit') int limit,
+    @Query('page') int page,
+  );
+
+  @GET('/catalogs_trend')
+  Future<CatalogResponse> getTrendingCatalogs(
+    @Query('limit') int limit,
+    @Query('page') int page,
+  );
 }

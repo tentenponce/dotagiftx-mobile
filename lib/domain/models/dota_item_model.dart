@@ -16,8 +16,8 @@ class DotaItemModel extends Equatable {
   final String rarity;
   final int viewCount;
   final int quantity;
-  final int lowestAsk;
-  final int medianAsk;
+  final double lowestAsk;
+  final double medianAsk;
   final DateTime? recentAsk;
   final int highestBid;
   final DateTime? recentBid;
@@ -44,17 +44,17 @@ class DotaItemModel extends Equatable {
     required this.quantity,
     required this.lowestAsk,
     required this.medianAsk,
-    this.recentAsk,
     required this.highestBid,
-    this.recentBid,
     required this.bidCount,
     required this.reservedCount,
     required this.soldCount,
     required this.saleCount,
     required this.avgSale,
-    this.recentSale,
     required this.createdAt,
     required this.updatedAt,
+    this.recentAsk,
+    this.recentBid,
+    this.recentSale,
     this.asks,
     this.bids,
   });
