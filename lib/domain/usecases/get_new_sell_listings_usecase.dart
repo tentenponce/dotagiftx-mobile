@@ -19,6 +19,7 @@ class GetNewSellListingsUsecaseImpl implements GetNewSellListingsUsecase {
       ApiConstants.querySortRecent,
       limit,
       page,
+      '',
     );
 
     return response.data;

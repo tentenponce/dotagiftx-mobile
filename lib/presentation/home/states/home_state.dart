@@ -9,5 +9,6 @@ abstract class HomeState with _$HomeState {
     @Default([]) Iterable<DotaItemModel> trendingItems,
     @Default([]) Iterable<DotaItemModel> newBuyOrderItems,
     @Default([]) Iterable<DotaItemModel> newSellListingItems,
+    @Default([]) Iterable<DotaItemModel> searchResults,
   }) = _HomeState;
 }

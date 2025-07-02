@@ -4,5 +4,7 @@
     "homeHeroes": "Heroes",
     "homeTrending": "Trending",
     "homeNewBuyOrders": "New Buy Orders",
-    "homeNewSellListings": "New Sell Listings"
+    "homeNewSellListings": "New Sell Listings",
+    "homeSearchResults": "Search Results ({count})",
+    "homeSearchHint": "Search for {hint}"
 }

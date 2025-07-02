@@ -19,11 +19,9 @@ abstract interface class DotagiftxApi {
     @Query('sort') String sort,
     @Query('limit') int limit,
     @Query('page') int page,
+    @Query('q') String? search,
   );
 
   @GET('/catalogs_trend')
-  Future<CatalogResponse> getTrendingCatalogs(
-    @Query('limit') int limit,
-    @Query('page') int page,
-  );
+  Future<CatalogResponse> getTrendingCatalogs();
 }

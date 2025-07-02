@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textfield_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/trending_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -15,10 +18,21 @@ class HomeNavView extends StatefulWidget {
   State<HomeNavView> createState() => _HomeNavViewState();
 }
 
+abstract class HomeSectionEntry {}
+
+class ItemEntry extends HomeSectionEntry {
+  final DotaItemModel item;
+  ItemEntry(this.item);
+}
+
+class SectionHeaderEntry extends HomeSectionEntry {
+  final String title;
+  SectionHeaderEntry(this.title);
+}
+
 class _HomeNavViewState extends State<HomeNavView> {
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey _buyOrdersKey = GlobalKey();
-  final GlobalKey _sellListingsKey = GlobalKey();
+  final _scrollController = ScrollController();
+  final Map<String, int> sectionIndexMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -31,119 +45,124 @@ class _HomeNavViewState extends State<HomeNavView> {
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          return Column(
-            children: [
-              // Search Field
-              Container(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search for item name, hero, treasure',
-                    hintStyle: const TextStyle(color: AppColors.grey),
-                    prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-                    filled: true,
-                    fillColor: AppColors.darkGrey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
+      body: Column(
+        children: [
+          // Search Field
+          const SearchCatalogTextfieldView(),
 
-              // Navigation Buttons
-              Container(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: Row(
+          // Main content
+          Expanded(
+            child: BlocBuilder<HomeCubit, HomeState>(
+              builder: (context, state) {
+                if (state.searchResults.isNotEmpty) {
+                  return SearchResultsListView(
+                    searchResults: state.searchResults.toList(),
+                    onRefresh: () async => context.read<HomeCubit>().init(),
+                  );
+                }
+
+                // Combine all sections into a flat list
+                final sectionEntries = <HomeSectionEntry>[];
+                var currentIndex = 0;
+
+                void addSection(String title, Iterable<DotaItemModel> items) {
+                  sectionIndexMap[title] = currentIndex;
+                  sectionEntries.add(SectionHeaderEntry(title));
+                  currentIndex++;
+
+                  for (final item in items) {
+                    sectionEntries.add(ItemEntry(item));
+                    currentIndex++;
+                  }
+                }
+
+                addSection(I18n.of(context).homeTrending, state.trendingItems);
+                addSection(
+                  I18n.of(context).homeNewBuyOrders,
+                  state.newBuyOrderItems,
+                );
+                addSection(
+                  I18n.of(context).homeNewSellListings,
+                  state.newSellListingItems,
+                );
+
+                return Column(
                   children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => _scrollToSection(_buyOrdersKey),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.darkGrey,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                    // Navigation Buttons
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed:
+                                  () => _scrollToSection(
+                                    I18n.of(context).homeNewBuyOrders,
+                                  ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.darkGrey,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(I18n.of(context).homeNewBuyOrders),
+                            ),
                           ),
-                        ),
-                        child: Text(I18n.of(context).homeNewBuyOrders),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed:
+                                  () => _scrollToSection(
+                                    I18n.of(context).homeNewSellListings,
+                                  ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.darkGrey,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(I18n.of(context).homeNewSellListings),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 12),
+
+                    // Lazy-loaded main content
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => _scrollToSection(_sellListingsKey),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.darkGrey,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                      child: RefreshIndicator(
+                        onRefresh: () async => context.read<HomeCubit>().init(),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: sectionEntries.length,
+                          itemBuilder: (context, index) {
+                            final entry = sectionEntries[index];
+                            if (entry is SectionHeaderEntry) {
+                              return _buildSectionHeader(entry.title);
+                            } else if (entry is ItemEntry) {
+                              return TrendingItemCardView(item: entry.item);
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
                         ),
-                        child: Text(I18n.of(context).homeNewSellListings),
                       ),
                     ),
                   ],
-                ),
-              ),
-
-              // Scrollable Content
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Trending Section
-                      _buildSectionHeader(I18n.of(context).homeTrending),
-                      ...state.trendingItems.map(
-                        (item) => TrendingItemCardView(item: item),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // New Buy Orders Section
-                      Container(
-                        key: _buyOrdersKey,
-                        child: _buildSectionHeader(
-                          I18n.of(context).homeNewBuyOrders,
-                        ),
-                      ),
-                      ...state.newBuyOrderItems.map(
-                        (item) => TrendingItemCardView(item: item),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // New Sell Listings Section
-                      Container(
-                        key: _sellListingsKey,
-                        child: _buildSectionHeader(
-                          I18n.of(context).homeNewSellListings,
-                        ),
-                      ),
-                      ...state.newSellListingItems.map(
-                        (item) => TrendingItemCardView(item: item),
-                      ),
-
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -156,28 +175,34 @@ class _HomeNavViewState extends State<HomeNavView> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         title,
         style: const TextStyle(
+          fontSize: 18,
           color: Colors.white,
-          fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  void _scrollToSection(GlobalKey key) {
-    final context = key.currentContext;
-    if (context != null) {
-      unawaited(
-        Scrollable.ensureVisible(
-          context,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        ),
-      );
+  void _scrollToSection(String sectionTitle) {
+    final index = sectionIndexMap[sectionTitle];
+    if (index == null) {
+      return;
     }
+
+    /// trending item card view approx height
+    /// for simplicity instead of calculating the actual height
+    /// which may cause performance issues
+    const itemHeight = 90.0;
+    unawaited(
+      _scrollController.animateTo(
+        index * itemHeight,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 }

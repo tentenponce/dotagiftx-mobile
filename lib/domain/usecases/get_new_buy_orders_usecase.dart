@@ -19,6 +19,7 @@ class GetNewBuyOrdersUsecaseImpl implements GetNewBuyOrdersUsecase {
       ApiConstants.querySortRecentBid,
       limit,
       page,
+      '',
     );
 
     return response.data;
