@@ -17,6 +17,7 @@ class SearchResultsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: onRefresh,
+      // TODO: add pagination
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: searchResults.length + 1,

@@ -4,7 +4,7 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textfield_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/trending_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
