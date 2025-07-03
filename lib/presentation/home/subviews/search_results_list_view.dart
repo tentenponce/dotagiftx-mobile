@@ -127,6 +127,7 @@ class _SearchResultsListViewState extends State<SearchResultsListView> {
   }
 
   void _onScroll() {
+    FocusScope.of(context).unfocus();
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       // User is near the bottom, load more results

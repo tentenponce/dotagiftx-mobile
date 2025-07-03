@@ -201,6 +201,14 @@ class _HomeNavViewState extends State<HomeNavView> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      FocusScope.of(context).unfocus();
+    });
+  }
+
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
