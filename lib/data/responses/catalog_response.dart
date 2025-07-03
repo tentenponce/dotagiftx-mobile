@@ -9,8 +9,9 @@ part 'catalog_response.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class CatalogResponse extends Equatable {
   final List<DotaItemModel> data;
+  final int totalCount;
 
-  const CatalogResponse({required this.data});
+  const CatalogResponse({required this.data, required this.totalCount});
 
   factory CatalogResponse.fromJson(Map<String, dynamic> json) =>
       _$CatalogResponseFromJson(json);

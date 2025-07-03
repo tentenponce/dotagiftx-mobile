@@ -74,8 +74,4 @@ class DotagiftxImageView extends StatelessWidget {
 
     return image;
   }
-
-  Color? _getRarityBorderColor() {
-    return RarityUtils.getRarityColor(rarity);
-  }
 }

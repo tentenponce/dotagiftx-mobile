@@ -63,6 +63,8 @@ class _HomeNavViewState extends State<HomeNavView> {
                     searchResults: state.searchResults.toList(),
                     onRefresh: () async => context.read<HomeCubit>().init(),
                     isLoading: state.loadingSearchResults,
+                    totalSearchResultsCount: state.totalSearchResultsCount,
+                    loadingMoreResults: state.loadingMoreSearchResults,
                   );
                 }
 

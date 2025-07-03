@@ -40,18 +40,87 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     unawaited(_getNewSellListings());
   }
 
+  Future<void> loadMoreSearchResults() async {
+    if (state.loadingMoreSearchResults || state.currentSearchQuery.isEmpty) {
+      return;
+    }
+
+    // Check if there are more results based on total count
+    final hasMore = state.searchResults.length < state.totalSearchResultsCount;
+    if (!hasMore) {
+      return;
+    }
+
+    emit(state.copyWith(loadingMoreSearchResults: true));
+
+    final nextPage = state.currentSearchPage + 1;
+
+    await cubitHandler(
+      () => _searchCatalogUsecase.search(
+        query: state.currentSearchQuery,
+        page: nextPage,
+      ),
+      (response) async {
+        final (newResults, totalCount) = response;
+
+        final combinedResults = [...state.searchResults, ...newResults];
+
+        emit(
+          state.copyWith(
+            searchResults: combinedResults,
+            currentSearchPage: nextPage,
+            totalSearchResultsCount: totalCount,
+            loadingMoreSearchResults: false,
+          ),
+        );
+      },
+    );
+
+    emit(state.copyWith(loadingMoreSearchResults: false));
+  }
+
   Future<void> searchCatalog({required String query, int page = 1}) async {
     if (query.isEmpty) {
       _debouncerUtils.cancel();
-      emit(state.copyWith(searchResults: [], loadingSearchResults: false));
+      emit(
+        state.copyWith(
+          searchResults: [],
+          loadingSearchResults: false,
+          currentSearchPage: 1,
+          currentSearchQuery: '',
+          totalSearchResultsCount: 0,
+        ),
+      );
       return;
+    }
+
+    // Reset pagination state for new searches
+    if (query != state.currentSearchQuery) {
+      emit(
+        state.copyWith(
+          searchResults: [],
+          currentSearchPage: 1,
+          currentSearchQuery: query,
+          totalSearchResultsCount: 0,
+        ),
+      );
     }
 
     emit(state.copyWith(loadingSearchResults: true));
     _debouncerUtils.run(() async {
       await cubitHandler(
         () => _searchCatalogUsecase.search(query: query, page: page),
-        (response) async => emit(state.copyWith(searchResults: response)),
+        (response) async {
+          final (results, totalCount) = response;
+
+          emit(
+            state.copyWith(
+              searchResults: results,
+              currentSearchPage: page,
+              totalSearchResultsCount: totalCount,
+            ),
+          );
+        },
       );
       emit(state.copyWith(loadingSearchResults: false));
     });

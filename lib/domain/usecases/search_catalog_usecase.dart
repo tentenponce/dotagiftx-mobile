@@ -4,7 +4,7 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:injectable/injectable.dart';
 
 abstract interface class SearchCatalogUsecase {
-  Future<Iterable<DotaItemModel>> search({
+  Future<(Iterable<DotaItemModel>, int)> search({
     required String query,
     int limit,
     int page,
@@ -18,7 +18,7 @@ class SearchCatalogUsecaseImpl implements SearchCatalogUsecase {
   SearchCatalogUsecaseImpl(this._dotagiftxApi);
 
   @override
-  Future<Iterable<DotaItemModel>> search({
+  Future<(Iterable<DotaItemModel>, int)> search({
     required String query,
     int limit = 10,
     int page = 1,
@@ -30,6 +30,6 @@ class SearchCatalogUsecaseImpl implements SearchCatalogUsecase {
       query,
     );
 
-    return response.data;
+    return (response.data, response.totalCount);
   }
 }
