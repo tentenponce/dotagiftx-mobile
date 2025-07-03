@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchCatalogTextfieldView extends StatefulWidget {
-  const SearchCatalogTextfieldView({super.key});
+  final TextEditingController controller;
+
+  const SearchCatalogTextfieldView({required this.controller, super.key});
 
   @override
   State<SearchCatalogTextfieldView> createState() =>
@@ -16,7 +18,6 @@ class SearchCatalogTextfieldView extends StatefulWidget {
 
 class _SearchCatalogTextfieldViewState
     extends State<SearchCatalogTextfieldView> {
-  final _searchController = TextEditingController();
   bool _showClearButton = false;
 
   // Animation variables for hint text
@@ -37,7 +38,7 @@ class _SearchCatalogTextfieldViewState
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: TextField(
-        controller: _searchController,
+        controller: widget.controller,
         onChanged: (value) {
           setState(() {
             _showClearButton = value.isNotEmpty;
@@ -74,18 +75,18 @@ class _SearchCatalogTextfieldViewState
   @override
   void dispose() {
     _typingTimer?.cancel();
-    _searchController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    _showClearButton = widget.controller.text.isNotEmpty;
     _startHintAnimation();
   }
 
   void _clearSearch() {
-    _searchController.clear();
+    widget.controller.clear();
     setState(() {
       _showClearButton = false;
     });

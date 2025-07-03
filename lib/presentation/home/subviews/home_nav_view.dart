@@ -35,6 +35,7 @@ class ShimmerEntry extends HomeSectionEntry {}
 
 class _HomeNavViewState extends State<HomeNavView> {
   final _scrollController = ScrollController();
+  final _searchController = TextEditingController();
   final Map<String, int> sectionIndexMap = {};
 
   @override
@@ -51,7 +52,7 @@ class _HomeNavViewState extends State<HomeNavView> {
       body: Column(
         children: [
           // Search Field
-          const SearchCatalogTextfieldView(),
+          SearchCatalogTextfieldView(controller: _searchController),
 
           // Main content
           Expanded(
@@ -61,7 +62,10 @@ class _HomeNavViewState extends State<HomeNavView> {
                     state.loadingSearchResults) {
                   return SearchResultsListView(
                     searchResults: state.searchResults.toList(),
-                    onRefresh: () async => context.read<HomeCubit>().init(),
+                    onRefresh:
+                        () async => context.read<HomeCubit>().searchCatalog(
+                          query: _searchController.text,
+                        ),
                     isLoading: state.loadingSearchResults,
                     totalSearchResultsCount: state.totalSearchResultsCount,
                     loadingMoreResults: state.loadingMoreSearchResults,
@@ -198,6 +202,7 @@ class _HomeNavViewState extends State<HomeNavView> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
