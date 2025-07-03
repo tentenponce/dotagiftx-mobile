@@ -15,8 +15,6 @@ abstract class HomeState with _$HomeState {
     @Default([]) Iterable<DotaItemModel> newBuyOrderItems,
     @Default([]) Iterable<DotaItemModel> newSellListingItems,
     @Default([]) Iterable<DotaItemModel> searchResults,
-    @Default(1) int currentSearchPage,
-    @Default('') String currentSearchQuery,
     @Default(0) int totalSearchResultsCount,
   }) = _HomeState;
 }
