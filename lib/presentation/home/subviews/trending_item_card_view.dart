@@ -27,6 +27,7 @@ class TrendingItemCardView extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               child: DotagiftxImageView(
                 imageUrl: item.image,
+                rarity: item.rarity,
                 width: 60,
                 height: 60,
               ),

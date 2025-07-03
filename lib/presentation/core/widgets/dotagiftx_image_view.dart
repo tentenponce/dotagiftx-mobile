@@ -1,8 +1,10 @@
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:flutter/material.dart';
 
 class DotagiftxImageView extends StatelessWidget {
   final String imageUrl;
+  final String? rarity;
   final double? width;
   final double? height;
   final BoxFit fit;
@@ -12,6 +14,7 @@ class DotagiftxImageView extends StatelessWidget {
 
   const DotagiftxImageView({
     required this.imageUrl,
+    this.rarity,
     this.width,
     this.height,
     this.fit = BoxFit.cover,
@@ -36,7 +39,7 @@ class DotagiftxImageView extends StatelessWidget {
       resolvedUrl = '${RemoteConfigConstants.imageBaseUrl}$imageUrl';
     }
 
-    return Image.network(
+    final image = Image.network(
       resolvedUrl,
       width: width,
       height: height,
@@ -53,5 +56,26 @@ class DotagiftxImageView extends StatelessWidget {
             const Center(child: CircularProgressIndicator());
       },
     );
+
+    // Apply rarity border if rarity is provided
+    final borderColor = RarityUtils.getRarityColor(rarity);
+    if (borderColor != null) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          border: Border.all(color: borderColor, width: 2.0),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        // Slightly smaller to account for border
+        child: ClipRRect(borderRadius: BorderRadius.circular(4), child: image),
+      );
+    }
+
+    return image;
+  }
+
+  Color? _getRarityBorderColor() {
+    return RarityUtils.getRarityColor(rarity);
   }
 }

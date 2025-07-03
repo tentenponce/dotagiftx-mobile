@@ -1,5 +1,5 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:flutter/material.dart';
 
 class RarityTextView extends StatelessWidget {
@@ -23,19 +23,7 @@ class RarityTextView extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    Color textColor;
-
-    switch (rarityLower) {
-      case 'rare':
-        textColor = AppColors.rare;
-      case 'ultra rare':
-        textColor = AppColors.ultraRare;
-      case 'very rare':
-        textColor = AppColors.veryRare;
-      default:
-        // For any other rarity, use a default gray color
-        textColor = Colors.white;
-    }
+    final textColor = RarityUtils.getRarityColor(rarity) ?? Colors.white;
 
     return Text(
       StringUtils.capitalizeEachWord(rarity),
