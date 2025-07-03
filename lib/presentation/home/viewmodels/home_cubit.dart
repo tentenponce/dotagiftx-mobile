@@ -43,37 +43,49 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   Future<void> searchCatalog({required String query, int page = 1}) async {
     if (query.isEmpty) {
       _debouncerUtils.cancel();
-      emit(state.copyWith(searchResults: []));
+      emit(state.copyWith(searchResults: [], loadingSearchResults: false));
       return;
     }
 
-    // TODO: add shimmering effect
+    emit(state.copyWith(loadingSearchResults: true));
     _debouncerUtils.run(() async {
       await cubitHandler(
         () => _searchCatalogUsecase.search(query: query, page: page),
         (response) async => emit(state.copyWith(searchResults: response)),
       );
+      emit(state.copyWith(loadingSearchResults: false));
     });
   }
 
   Future<void> _getNewBuyOrders() async {
+    emit(state.copyWith(loadingNewBuyOrderItems: true));
     await cubitHandler(
       _getNewBuyOrdersUsecase.get,
-      (response) async => emit(state.copyWith(newBuyOrderItems: response)),
+      (response) async => emit(
+        state.copyWith(
+          newBuyOrderItems: response,
+          loadingNewBuyOrderItems: false,
+        ),
+      ),
     );
+    emit(state.copyWith(loadingNewBuyOrderItems: false));
   }
 
   Future<void> _getNewSellListings() async {
+    emit(state.copyWith(loadingNewSellListingItems: true));
     await cubitHandler(
       _getNewSellListingsUsecase.get,
       (response) async => emit(state.copyWith(newSellListingItems: response)),
     );
+    emit(state.copyWith(loadingNewSellListingItems: false));
   }
 
   Future<void> _getTrendingItems() async {
+    emit(state.copyWith(loadingTrendingItems: true));
     await cubitHandler(
       _getTrendingUsecase.get,
       (response) async => emit(state.copyWith(trendingItems: response)),
     );
+    emit(state.copyWith(loadingTrendingItems: false));
   }
 }
