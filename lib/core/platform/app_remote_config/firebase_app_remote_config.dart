@@ -54,8 +54,6 @@ class FirebaseAppRemoteConfig implements AppRemoteConfig {
         e,
         st,
       );
-      // ignore any error now in remote config after certain retries
-      // as this is just being use for A/B testing
     }
   }
 
