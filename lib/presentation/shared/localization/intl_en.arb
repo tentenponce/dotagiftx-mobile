@@ -1,6 +1,7 @@
 {
     "homeHome": "Home",
     "homeTreasures": "Treasures",
+    "homeNavTreasures": "Giftable Treasures ({count})",
     "homeHeroes": "Heroes",
     "homeTrending": "Trending",
     "homeNewBuyOrders": "New Buy Orders",

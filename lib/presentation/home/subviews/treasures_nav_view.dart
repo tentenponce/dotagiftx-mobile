@@ -206,7 +206,7 @@ class _TreasuresNavViewState extends State<TreasuresNavView> {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
-        title: Text(I18n.of(context).homeTreasures),
+        title: Text(I18n.of(context).homeNavTreasures(_treasures.length)),
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
         elevation: 0,
