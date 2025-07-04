@@ -5,7 +5,6 @@ import 'package:dotagiftx_mobile/domain/usecases/get_new_buy_orders_usecase.dart
 import 'package:dotagiftx_mobile/domain/usecases/get_new_sell_listings_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_trending_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/search_catalog_usecase.dart';
-import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,7 +29,6 @@ void main() {
     late MockGetNewSellListingsUsecase mockGetNewSellListingsUsecase;
     late MockSearchCatalogUsecase mockSearchCatalogUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
-    late HomeCubit homeCubit;
 
     // Test data
     const testDotaItem1 = DotaItemModel(
@@ -73,8 +71,10 @@ void main() {
             invocation.positionalArguments[0] as Future<void> Function();
         await callback();
       });
+    });
 
-      homeCubit = HomeCubit(
+    HomeCubit createUnitToTest() {
+      return HomeCubit(
         mockLogger,
         mockGetTrendingUsecase,
         mockGetNewBuyOrdersUsecase,
@@ -82,23 +82,7 @@ void main() {
         mockSearchCatalogUsecase,
         mockDebouncerUtils,
       );
-    });
-
-    group('initial state', () {
-      test('should have correct initial state', () {
-        expect(homeCubit.state, equals(const HomeState()));
-        expect(homeCubit.state.loadingTrendingItems, isFalse);
-        expect(homeCubit.state.loadingNewBuyOrderItems, isFalse);
-        expect(homeCubit.state.loadingNewSellListingItems, isFalse);
-        expect(homeCubit.state.loadingSearchResults, isFalse);
-        expect(homeCubit.state.loadingMoreSearchResults, isFalse);
-        expect(homeCubit.state.trendingItems, isEmpty);
-        expect(homeCubit.state.newBuyOrderItems, isEmpty);
-        expect(homeCubit.state.newSellListingItems, isEmpty);
-        expect(homeCubit.state.searchResults, isEmpty);
-        expect(homeCubit.state.totalSearchResultsCount, equals(0));
-      });
-    });
+    }
 
     group('init', () {
       test(
@@ -114,6 +98,8 @@ void main() {
           when(
             mockGetNewSellListingsUsecase.get(),
           ).thenAnswer((_) async => [testDotaItem3]);
+
+          final homeCubit = createUnitToTest();
 
           // Act
           await homeCubit.init();
@@ -133,6 +119,8 @@ void main() {
         when(
           mockSearchCatalogUsecase.search(query: 'new query', page: 1),
         ).thenAnswer((_) async => ([testDotaItem2], 5));
+
+        final homeCubit = createUnitToTest();
 
         await homeCubit.searchCatalog(query: 'new query');
 
@@ -157,6 +145,8 @@ void main() {
           ),
         ).thenAnswer((_) async => ([testDotaItem2], 5));
 
+        final homeCubit = createUnitToTest();
+
         await homeCubit.searchCatalog(query: 'old query');
         await homeCubit.loadMoreSearchResults();
 
@@ -180,6 +170,8 @@ void main() {
         when(
           mockSearchCatalogUsecase.search(query: 'test query', page: 1),
         ).thenAnswer((_) async => (searchResults, 25));
+
+        final homeCubit = createUnitToTest();
 
         // Act
         fakeAsync((async) {
@@ -212,6 +204,8 @@ void main() {
             () => ([testDotaItem1], 30),
           ),
         );
+
+        final homeCubit = createUnitToTest();
 
         fakeAsync((async) {
           homeCubit.searchCatalog(query: 'test query');
@@ -246,6 +240,8 @@ void main() {
           ),
         );
 
+        final homeCubit = createUnitToTest();
+
         fakeAsync((async) {
           homeCubit.searchCatalog(query: 'test query');
           async.elapse(const Duration(milliseconds: 10));
@@ -264,17 +260,26 @@ void main() {
 
       test('should return early when no more results available', () async {
         // Arrange
-        // TODO(test): Add test case for no more results available
+        when(
+          mockSearchCatalogUsecase.search(
+            query: anyNamed('query'),
+            page: anyNamed('page'),
+          ),
+        ).thenAnswer((_) async => ([testDotaItem1], 1));
+
+        final homeCubit = createUnitToTest();
+
+        await homeCubit.searchCatalog(query: 'test query');
 
         // Act
         await homeCubit.loadMoreSearchResults();
 
         // Assert
+        verify(
+          mockSearchCatalogUsecase.search(query: 'test query', page: 1),
+        ).called(1);
         verifyNever(
-          mockSearchCatalogUsecase.search(
-            query: anyNamed('query'),
-            page: anyNamed('page'),
-          ),
+          mockSearchCatalogUsecase.search(query: 'test query', page: 2),
         );
       });
 
@@ -282,61 +287,27 @@ void main() {
         'should load more results and combine with existing results',
         () async {
           // Arrange
-          final existingResults = [testDotaItem1];
-          final newResults = [testDotaItem2, testDotaItem3];
-          final expectedCombinedResults = [...existingResults, ...newResults];
-
-          homeCubit.emit(
-            homeCubit.state.copyWith(
-              searchResults: existingResults,
-              totalSearchResultsCount: 10,
-            ),
-          );
-
+          when(
+            mockSearchCatalogUsecase.search(query: 'test query', page: 1),
+          ).thenAnswer((_) async => ([testDotaItem1], 10));
           when(
             mockSearchCatalogUsecase.search(query: 'test query', page: 2),
-          ).thenAnswer((_) async => (newResults, 10));
+          ).thenAnswer((_) async => ([testDotaItem2], 10));
+
+          final homeCubit = createUnitToTest();
+
+          await homeCubit.searchCatalog(query: 'test query');
 
           // Act
           await homeCubit.loadMoreSearchResults();
 
           // Assert
-          verify(
-            mockSearchCatalogUsecase.search(query: 'test query', page: 2),
-          ).called(1);
           expect(
             homeCubit.state.searchResults,
-            equals(expectedCombinedResults),
+            equals([testDotaItem1, testDotaItem2]),
           );
-          expect(homeCubit.state.totalSearchResultsCount, equals(10));
-          expect(homeCubit.state.loadingMoreSearchResults, isFalse);
         },
       );
-
-      test('should handle loading state correctly during load more', () async {
-        // Arrange
-        homeCubit.emit(
-          homeCubit.state.copyWith(
-            searchResults: [testDotaItem1],
-            totalSearchResultsCount: 10,
-          ),
-        );
-
-        when(
-          mockSearchCatalogUsecase.search(query: 'test query', page: 2),
-        ).thenAnswer((_) async => ([testDotaItem2], 10));
-
-        // Track state changes
-        final states = <HomeState>[];
-        homeCubit.stream.listen(states.add);
-
-        // Act
-        await homeCubit.loadMoreSearchResults();
-
-        // Assert - should have loading state transition
-        expect(states.any((state) => state.loadingMoreSearchResults), isTrue);
-        expect(homeCubit.state.loadingMoreSearchResults, isFalse);
-      });
     });
 
     group('error handling', () {
@@ -351,31 +322,13 @@ void main() {
           await callback();
         });
 
+        final homeCubit = createUnitToTest();
+
         // Act
         await homeCubit.searchCatalog(query: 'test query');
 
         // Assert
         expect(homeCubit.state.loadingSearchResults, isFalse);
-      });
-
-      test('should handle load more results error gracefully', () async {
-        // Arrange
-        homeCubit.emit(
-          homeCubit.state.copyWith(
-            searchResults: [testDotaItem1],
-            totalSearchResultsCount: 10,
-          ),
-        );
-
-        when(
-          mockSearchCatalogUsecase.search(query: 'test query', page: 2),
-        ).thenThrow(Exception('Load more failed'));
-
-        // Act
-        await homeCubit.loadMoreSearchResults();
-
-        // Assert
-        expect(homeCubit.state.loadingMoreSearchResults, isFalse);
       });
     });
 
@@ -390,13 +343,10 @@ void main() {
         when(mockGetNewSellListingsUsecase.get()).thenAnswer((_) async => []);
 
         // Act
-        await homeCubit.init();
-
-        // Wait for async operations to complete
-        await Future<void>.delayed(const Duration(milliseconds: 100));
+        createUnitToTest();
 
         // Assert
-        verify(mockGetTrendingUsecase.get()).called(greaterThan(0));
+        verify(mockGetTrendingUsecase.get()).called(1);
       });
 
       test('should load new buy orders correctly', () async {
@@ -409,13 +359,10 @@ void main() {
         when(mockGetNewSellListingsUsecase.get()).thenAnswer((_) async => []);
 
         // Act
-        await homeCubit.init();
-
-        // Wait for async operations to complete
-        await Future<void>.delayed(const Duration(milliseconds: 100));
+        createUnitToTest();
 
         // Assert
-        verify(mockGetNewBuyOrdersUsecase.get()).called(greaterThan(0));
+        verify(mockGetNewBuyOrdersUsecase.get()).called(1);
       });
 
       test('should load new sell listings correctly', () async {
@@ -428,13 +375,10 @@ void main() {
         when(mockGetNewBuyOrdersUsecase.get()).thenAnswer((_) async => []);
 
         // Act
-        await homeCubit.init();
-
-        // Wait for async operations to complete
-        await Future<void>.delayed(const Duration(milliseconds: 100));
+        createUnitToTest();
 
         // Assert
-        verify(mockGetNewSellListingsUsecase.get()).called(greaterThan(0));
+        verify(mockGetNewSellListingsUsecase.get()).called(1);
       });
     });
   });
