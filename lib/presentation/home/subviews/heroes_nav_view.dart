@@ -4,8 +4,8 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HeroesView extends StatelessWidget {
-  const HeroesView({super.key});
+class HeroesNavView extends StatelessWidget {
+  const HeroesNavView({super.key});
 
   @override
   Widget build(BuildContext context) {

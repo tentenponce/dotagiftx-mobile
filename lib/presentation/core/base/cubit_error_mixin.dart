@@ -28,7 +28,7 @@ mixin CubitErrorMixin<State> on BaseCubit<State> {
   }
 
   Future<T?> defaultErrorHandler<T extends Object?>(Object? exception) {
-    // TODO: Implement default error handler
+    // TODO(tenten): Implement default error handler
     return Future.value(null);
   }
 }

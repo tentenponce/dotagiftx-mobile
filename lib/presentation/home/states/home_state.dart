@@ -6,8 +6,15 @@ part 'home_state.freezed.dart';
 @freezed
 abstract class HomeState with _$HomeState {
   const factory HomeState({
+    @Default(false) bool loadingTrendingItems,
+    @Default(false) bool loadingNewBuyOrderItems,
+    @Default(false) bool loadingNewSellListingItems,
+    @Default(false) bool loadingSearchResults,
+    @Default(false) bool loadingMoreSearchResults,
     @Default([]) Iterable<DotaItemModel> trendingItems,
     @Default([]) Iterable<DotaItemModel> newBuyOrderItems,
     @Default([]) Iterable<DotaItemModel> newSellListingItems,
+    @Default([]) Iterable<DotaItemModel> searchResults,
+    @Default(0) int totalSearchResultsCount,
   }) = _HomeState;
 }
