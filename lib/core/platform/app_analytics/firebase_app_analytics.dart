@@ -22,7 +22,7 @@ class FirebaseAppAnalytics implements AppAnalytics {
   }) async {
     _logger.log(
       LogLevel.debug,
-      'FirebaseAppAnalytics > logEvent > name: $name, parameters: $parameters',
+      'logEvent > name: $name, parameters: $parameters',
     );
     return _firebaseAnalytics.logEvent(name: name, parameters: parameters);
   }

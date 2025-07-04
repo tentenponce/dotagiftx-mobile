@@ -26,31 +26,6 @@ class AndroidIosAppCrashlyticsImpl extends BaseAppCrashlyticsImpl {
       return;
     }
 
-    if (stack != null) {
-      // Get the first non-AndroidIosAppCrashlyticsImpl frame from the stack trace
-      final frames = stack.toString().split('\n');
-      String? sourceFrame;
-      for (final frame in frames) {
-        if (!frame.contains('AndroidIosAppCrashlyticsImpl')) {
-          sourceFrame = frame;
-          break;
-        }
-      }
-
-      if (sourceFrame != null) {
-        // Extract class and method name from the stack frame
-        final match = RegExp(r'#\d+\s+([^(]+)').firstMatch(sourceFrame);
-        if (match != null) {
-          final sourceInfo = match.group(1)?.trim();
-          if (sourceInfo != null) {
-            await _firebaseCrashlytics.setCustomKey('error_source', sourceInfo);
-          }
-        }
-      }
-    } else {
-      await _firebaseCrashlytics.setCustomKey('error_source', error.toString());
-    }
-
     await _firebaseCrashlytics.recordError(error, stack);
   }
 
