@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/trending_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
@@ -32,45 +33,74 @@ class SearchResultsListView extends StatefulWidget {
 
 class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
   late ScrollController _scrollController;
+  bool _isScrolled = false;
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: widget.onRefresh,
-      child: ListView.builder(
-        controller: _scrollController,
-        padding: const EdgeInsets.all(16),
-        itemCount: _getItemCount(),
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return _buildSectionHeader(context);
-          }
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: widget.onRefresh,
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(16),
+            itemCount: _getItemCount(),
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _buildSectionHeader(context);
+              }
 
-          // Show shimmer items when initially loading
-          if (widget.isLoading) {
-            return const ShimmerItemCardView();
-          }
+              // Show shimmer items when initially loading
+              if (widget.isLoading) {
+                return const ShimmerItemCardView();
+              }
 
-          // Check if this is a loading more shimmer item
-          if (widget.loadingMoreResults &&
-              index > widget.searchResults.length) {
-            final remainingResults =
-                widget.totalSearchResultsCount - widget.searchResults.length;
-            final maxShimmerItems = min(remainingResults, 10);
-            final shimmerIndex = index - widget.searchResults.length;
-            if (shimmerIndex <= maxShimmerItems) {
-              return const ShimmerItemCardView();
-            }
-          }
+              // Check if this is a loading more shimmer item
+              if (widget.loadingMoreResults &&
+                  index > widget.searchResults.length) {
+                final remainingResults =
+                    widget.totalSearchResultsCount -
+                    widget.searchResults.length;
+                final maxShimmerItems = min(remainingResults, 10);
+                final shimmerIndex = index - widget.searchResults.length;
+                if (shimmerIndex <= maxShimmerItems) {
+                  return const ShimmerItemCardView();
+                }
+              }
 
-          // Regular search result items
-          if (index <= widget.searchResults.length) {
-            return TrendingItemCardView(item: widget.searchResults[index - 1]);
-          }
+              // Regular search result items
+              if (index <= widget.searchResults.length) {
+                return TrendingItemCardView(
+                  item: widget.searchResults[index - 1],
+                );
+              }
 
-          return const SizedBox.shrink();
-        },
-      ),
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+        // Top scroll shadow
+        if (_isScrolled)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 20,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.black.withValues(alpha: 0.8),
+                    AppColors.black.withValues(alpha: 0.4),
+                    AppColors.black.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -129,6 +159,17 @@ class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
 
   void _onScroll() {
     FocusScope.of(context).unfocus();
+
+    // Track scroll state for shadow
+    final isScrolled =
+        _scrollController.hasClients && _scrollController.offset > 0;
+    if (isScrolled != _isScrolled) {
+      setState(() {
+        _isScrolled = isScrolled;
+      });
+    }
+
+    // Existing pagination logic
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       // User is near the bottom, load more results
