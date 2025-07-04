@@ -38,6 +38,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
   final Map<String, int> sectionIndexMap = {};
+  bool _isScrolled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -167,27 +168,55 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                       ),
                     ),
 
-                    // Lazy-loaded main content
+                    // Lazy-loaded main content with scroll shadow
                     Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async => context.read<HomeCubit>().init(),
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: sectionEntries.length,
-                          itemBuilder: (context, index) {
-                            final entry = sectionEntries[index];
-                            if (entry is SectionHeaderEntry) {
-                              return _buildSectionHeader(entry.title);
-                            } else if (entry is ItemEntry) {
-                              return TrendingItemCardView(item: entry.item);
-                            } else if (entry is ShimmerEntry) {
-                              return const ShimmerItemCardView();
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          },
-                        ),
+                      child: Stack(
+                        children: [
+                          RefreshIndicator(
+                            onRefresh:
+                                () async => context.read<HomeCubit>().init(),
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              itemCount: sectionEntries.length,
+                              itemBuilder: (context, index) {
+                                final entry = sectionEntries[index];
+                                if (entry is SectionHeaderEntry) {
+                                  return _buildSectionHeader(entry.title);
+                                } else if (entry is ItemEntry) {
+                                  return TrendingItemCardView(item: entry.item);
+                                } else if (entry is ShimmerEntry) {
+                                  return const ShimmerItemCardView();
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              },
+                            ),
+                          ),
+                          // Top scroll shadow
+                          if (_isScrolled)
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      AppColors.black.withValues(alpha: 0.8),
+                                      AppColors.black.withValues(alpha: 0.4),
+                                      AppColors.black.withValues(alpha: 0.0),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ],
@@ -210,9 +239,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      FocusScope.of(context).unfocus();
-    });
+    _scrollController.addListener(_onScroll);
   }
 
   Widget _buildSectionHeader(String title) {
@@ -227,6 +254,18 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
         ),
       ),
     );
+  }
+
+  void _onScroll() {
+    FocusScope.of(context).unfocus();
+
+    final isScrolled =
+        _scrollController.hasClients && _scrollController.offset > 0;
+    if (isScrolled != _isScrolled) {
+      setState(() {
+        _isScrolled = isScrolled;
+      });
+    }
   }
 
   void _scrollToSection(String sectionTitle) {
