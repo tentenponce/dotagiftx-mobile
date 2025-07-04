@@ -65,3 +65,18 @@ app.*.map.json
 coverage
 coverage.xml
 lcov.info
+
+# Signing Keys and Profiles
+*.jks
+*.jks.properties
+*.keystore
+*.keystore.properties
+*.mobileprovision
+*.p12
+*.p8
+*.pfx
+google-services.json
+agconnect-services.json
+GoogleService-Info.plist
+agconnect-services.plist
+play-store-credentials.json
