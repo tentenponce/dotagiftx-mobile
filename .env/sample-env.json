@@ -1,4 +1,8 @@
 {
     "baseUrl": "https://dotagiftx-base-url-here.com/",
-    "appName": "dotagiftx"
+    "appName": "dotagiftx",
+    "firebaseApiKey": "firebaseApiKey",
+    "firebaseAppId": "firebaseAppId",
+    "firebaseProjectId": "firebaseProjectId",
+    "firebaseStorageBucket": "firebaseStorageBucket"
 }

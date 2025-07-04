@@ -10,6 +10,10 @@ abstract final class RarityUtils {
         return AppColors.ultraRare;
       case 'very rare':
         return AppColors.veryRare;
+      case 'mythical':
+        return AppColors.mythical;
+      case 'immortal':
+        return AppColors.immortal;
       default:
         return null;
     }
