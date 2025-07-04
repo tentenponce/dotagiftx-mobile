@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textfield_view.dart';
@@ -33,7 +34,7 @@ class SectionHeaderEntry extends HomeSectionEntry {
 
 class ShimmerEntry extends HomeSectionEntry {}
 
-class _HomeNavViewState extends State<HomeNavView> {
+class _HomeNavViewState extends StateBase<HomeNavView> {
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
   final Map<String, int> sectionIndexMap = {};

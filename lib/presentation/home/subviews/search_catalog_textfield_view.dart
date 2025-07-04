@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -17,7 +18,7 @@ class SearchCatalogTextfieldView extends StatefulWidget {
 }
 
 class _SearchCatalogTextfieldViewState
-    extends State<SearchCatalogTextfieldView> {
+    extends StateBase<SearchCatalogTextfieldView> {
   bool _showClearButton = false;
 
   // Animation variables for hint text

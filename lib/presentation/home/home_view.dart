@@ -1,4 +1,6 @@
+import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.dart';
@@ -22,7 +24,7 @@ class _HomeView extends StatefulWidget {
   State<_HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<_HomeView> {
+class _HomeViewState extends StateBase<_HomeView> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
@@ -35,28 +37,48 @@ class _HomeViewState extends State<_HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.trending_up),
-            label: I18n.of(context).homeHome,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.card_giftcard),
-            label: I18n.of(context).homeTreasures,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.groups),
-            label: I18n.of(context).homeHeroes,
-          ),
-        ],
+      bottomNavigationBar: DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.8),
+              blurRadius: 20,
+              offset: const Offset(0, -8),
+            ),
+            BoxShadow(
+              color: AppColors.darkGrey.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: AppColors.darkGrey,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: AppColors.grey,
+          elevation: 0,
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.home),
+              label: I18n.of(context).homeHome,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.diamond_rounded),
+              label: I18n.of(context).homeTreasures,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.groups),
+              label: I18n.of(context).homeHeroes,
+            ),
+          ],
+        ),
       ),
     );
   }

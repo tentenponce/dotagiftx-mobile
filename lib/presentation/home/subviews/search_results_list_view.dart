@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/trending_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
@@ -29,7 +30,7 @@ class SearchResultsListView extends StatefulWidget {
   State<SearchResultsListView> createState() => _SearchResultsListViewState();
 }
 
-class _SearchResultsListViewState extends State<SearchResultsListView> {
+class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
   late ScrollController _scrollController;
 
   @override
