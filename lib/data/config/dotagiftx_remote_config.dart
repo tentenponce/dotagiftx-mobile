@@ -37,7 +37,7 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
 
   @override
   Future<Iterable<HeroModel>> getHeroes() async {
-    // TODO(de): get from remote config
+    // TODO(dev): get from remote config
     final heroesString = await rootBundle.loadString(Assets.json.heroes);
     final heroesJson = jsonDecode(heroesString) as List<dynamic>;
     return heroesJson.map((e) => HeroModel.fromJson(e as Map<String, dynamic>));
