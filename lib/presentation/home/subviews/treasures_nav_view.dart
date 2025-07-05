@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/treasures_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_treasure_card_view.dart';
@@ -16,23 +16,22 @@ class TreasuresNavView extends StatefulWidget {
   State<TreasuresNavView> createState() => _TreasuresNavViewState();
 }
 
-class _TreasuresNavViewState extends State<TreasuresNavView>
-    with ViewCubitMixin<TreasuresCubit> {
+class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
   late final ScrollController _scrollController;
   late final TextEditingController _searchController;
   bool _isScrolled = false;
 
   @override
-  Widget buildView(BuildContext context) {
+  Widget build(BuildContext context) {
+    final treasuresCubit = context.read<HomeCubit>().treasuresCubit;
     // set search query to the controller as the state is persisting as well
-    _searchController.text =
-        context.read<HomeCubit>().treasuresCubit.searchQuery;
+    _searchController.text = treasuresCubit.searchQuery;
 
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
         title: BlocBuilder<TreasuresCubit, TreasuresState>(
-          bloc: context.read<HomeCubit>().treasuresCubit,
+          bloc: treasuresCubit,
           buildWhen:
               (previous, current) =>
                   previous.treasures.length != current.treasures.length,
@@ -82,15 +81,13 @@ class _TreasuresNavViewState extends State<TreasuresNavView>
                   vertical: 12,
                 ),
               ),
-              onChanged: (value) {
-                context.read<HomeCubit>().treasuresCubit.searchTreasure(value);
-              },
+              onChanged: treasuresCubit.searchTreasure,
             ),
           ),
           // Main content
           Expanded(
             child: BlocBuilder<TreasuresCubit, TreasuresState>(
-              bloc: context.read<HomeCubit>().treasuresCubit,
+              bloc: treasuresCubit,
               buildWhen:
                   (previous, current) =>
                       previous.treasures != current.treasures ||
@@ -103,9 +100,7 @@ class _TreasuresNavViewState extends State<TreasuresNavView>
                 return Stack(
                   children: [
                     RefreshIndicator(
-                      onRefresh:
-                          () async =>
-                              context.read<HomeCubit>().treasuresCubit.init(),
+                      onRefresh: () async => treasuresCubit.onSwipeToRefresh(),
                       child: GridView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.all(16),

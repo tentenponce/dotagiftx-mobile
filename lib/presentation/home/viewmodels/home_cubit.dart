@@ -118,7 +118,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
           _currentSearchPage = 1;
           emit(
             state.copyWith(
-              searchResults: results,
+              searchResults: results.toList(),
               totalSearchResultsCount: totalCount,
             ),
           );
@@ -134,7 +134,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
       _getNewBuyOrdersUsecase.get,
       (response) async => emit(
         state.copyWith(
-          newBuyOrderItems: response,
+          newBuyOrderItems: response.toList(),
           loadingNewBuyOrderItems: false,
         ),
       ),
@@ -146,7 +146,8 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     emit(state.copyWith(loadingNewSellListingItems: true));
     await cubitHandler(
       _getNewSellListingsUsecase.get,
-      (response) async => emit(state.copyWith(newSellListingItems: response)),
+      (response) async =>
+          emit(state.copyWith(newSellListingItems: response.toList())),
     );
     emit(state.copyWith(loadingNewSellListingItems: false));
   }
@@ -155,7 +156,8 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     emit(state.copyWith(loadingTrendingItems: true));
     await cubitHandler(
       _getTrendingUsecase.get,
-      (response) async => emit(state.copyWith(trendingItems: response)),
+      (response) async =>
+          emit(state.copyWith(trendingItems: response.toList())),
     );
     emit(state.copyWith(loadingTrendingItems: false));
   }

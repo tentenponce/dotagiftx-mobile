@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/config/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -15,7 +16,7 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
   final DotagiftxRemoteConfig _dotagiftxRemoteConfig;
 
   String searchQuery = '';
-  Iterable<TreasureModel> _treasures = [];
+  List<TreasureModel> _treasures = [];
 
   TreasuresCubit(this._logger, this._dotagiftxRemoteConfig)
     : super(const TreasuresState());
@@ -39,20 +40,18 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
   }
 
   void _emitFilteredTreasures() {
-    emit(
-      state.copyWith(
-        treasures:
-            searchQuery.isNotEmpty
-                ? _treasures.where(
-                  (treasure) =>
-                      treasure.name?.toLowerCase().contains(
-                        searchQuery.toLowerCase(),
-                      ) ??
-                      false,
-                )
-                : _treasures,
-      ),
-    );
+    final filteredTreasures =
+        !StringUtils.isNullOrEmpty(searchQuery)
+            ? _treasures.where(
+              (treasure) =>
+                  treasure.name?.toLowerCase().contains(
+                    searchQuery.toLowerCase(),
+                  ) ??
+                  false,
+            )
+            : _treasures;
+
+    emit(state.copyWith(treasures: filteredTreasures.toList()));
   }
 
   Future<void> _getTreasures() async {
@@ -61,7 +60,7 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
     await cubitHandler<Iterable<TreasureModel>>(
       _dotagiftxRemoteConfig.getTreasures,
       (treasures) async {
-        _treasures = treasures;
+        _treasures = treasures.toList();
         _emitFilteredTreasures();
       },
     );

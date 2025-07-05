@@ -7,6 +7,6 @@ part 'treasures_state.freezed.dart';
 abstract class TreasuresState with _$TreasuresState {
   const factory TreasuresState({
     @Default(false) bool loadingTreasures,
-    @Default([]) Iterable<TreasureModel> treasures,
+    @Default([]) List<TreasureModel> treasures,
   }) = _TreasuresState;
 }
