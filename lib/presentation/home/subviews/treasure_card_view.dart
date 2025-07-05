@@ -52,7 +52,6 @@ class TreasureCard extends StatelessWidget {
                     !StringUtils.isNullOrEmpty(treasure.imageUrl)
                         ? Image.network(treasure.imageUrl!, fit: BoxFit.cover)
                         : Assets.images.treasures.values
-                            .toList()
                             .firstWhereOrNull(
                               (element) => element.keyName.contains(
                                 treasure.image ?? '',

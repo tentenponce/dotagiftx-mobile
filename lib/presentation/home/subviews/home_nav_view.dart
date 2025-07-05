@@ -63,7 +63,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                 if (state.searchResults.isNotEmpty ||
                     state.loadingSearchResults) {
                   return SearchResultsListView(
-                    searchResults: state.searchResults.toList(),
+                    searchResults: state.searchResults,
                     onRefresh:
                         () async => context.read<HomeCubit>().searchCatalog(
                           query: _searchController.text,

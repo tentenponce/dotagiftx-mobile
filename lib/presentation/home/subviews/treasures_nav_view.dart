@@ -93,7 +93,7 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
                       previous.treasures != current.treasures ||
                       previous.loadingTreasures != current.loadingTreasures,
               builder: (context, state) {
-                final treasures = state.treasures.toList();
+                final treasures = state.treasures;
                 final itemCount =
                     state.loadingTreasures ? 10 : treasures.length;
 
