@@ -28,6 +28,6 @@ abstract final class StringUtils {
 
   /// check if text is null or empty
   static bool isNullOrEmpty(String? s) {
-    return s == null || s.isEmpty;
+    return s == null || s.trim().isEmpty;
   }
 }

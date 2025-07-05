@@ -35,20 +35,22 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
   void searchTreasure(String searchQuery) {
     this.searchQuery = searchQuery;
 
-    if (searchQuery.isEmpty) {
-      emit(state.copyWith(treasures: _treasures));
-      return;
-    }
+    _emitFilteredTreasures();
+  }
 
+  void _emitFilteredTreasures() {
     emit(
       state.copyWith(
-        treasures: _treasures.where(
-          (treasure) =>
-              treasure.name?.toLowerCase().contains(
-                searchQuery.toLowerCase(),
-              ) ??
-              false,
-        ),
+        treasures:
+            searchQuery.isNotEmpty
+                ? _treasures.where(
+                  (treasure) =>
+                      treasure.name?.toLowerCase().contains(
+                        searchQuery.toLowerCase(),
+                      ) ??
+                      false,
+                )
+                : _treasures,
       ),
     );
   }
@@ -60,7 +62,7 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
       _dotagiftxRemoteConfig.getTreasures,
       (treasures) async {
         _treasures = treasures;
-        emit(state.copyWith(treasures: treasures));
+        _emitFilteredTreasures();
       },
     );
 
