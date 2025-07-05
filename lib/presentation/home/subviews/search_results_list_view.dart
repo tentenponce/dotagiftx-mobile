@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/trending_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -70,9 +70,8 @@ class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
 
               // Regular search result items
               if (index <= widget.searchResults.length) {
-                return TrendingItemCardView(
-                  item: widget.searchResults[index - 1],
-                );
+                final item = widget.searchResults[index - 1];
+                return DotaItemCardView(item: item);
               }
 
               return const SizedBox.shrink();

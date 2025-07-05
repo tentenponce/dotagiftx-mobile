@@ -6,11 +6,11 @@ import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-class TreasureCard extends StatelessWidget {
+class TreasureCardView extends StatelessWidget {
   final TreasureModel treasure;
   final VoidCallback? onTap;
 
-  const TreasureCard({required this.treasure, this.onTap, super.key});
+  const TreasureCardView({required this.treasure, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
