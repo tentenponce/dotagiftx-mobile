@@ -42,17 +42,6 @@ class DotaItemMarketDetailSubview extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Item Name
-              Text(
-                item.name ?? '',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-
               // Collection/Source Info
               Text(
                 _getItemSource(),
