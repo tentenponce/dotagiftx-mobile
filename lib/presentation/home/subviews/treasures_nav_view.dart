@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TreasuresNavView extends StatefulWidget {
-  const TreasuresNavView({super.key});
+  final void Function(String)? onTreasureTap;
+
+  const TreasuresNavView({this.onTreasureTap, super.key});
 
   @override
   State<TreasuresNavView> createState() => _TreasuresNavViewState();
@@ -43,7 +45,7 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
         scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.black,
       ),
       body: Column(
         children: [
@@ -123,7 +125,13 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
                           }
 
                           final treasure = treasures[index];
-                          return TreasureCard(treasure: treasure);
+                          return TreasureCard(
+                            treasure: treasure,
+                            onTap:
+                                () => widget.onTreasureTap?.call(
+                                  treasure.name ?? '',
+                                ),
+                          );
                         },
                       ),
                     ),

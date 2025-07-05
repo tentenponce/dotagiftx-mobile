@@ -25,7 +25,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   final SearchCatalogUsecase _searchCatalogUsecase;
   final DebouncerUtils _debouncerUtils;
 
-  String _currentSearchQuery = '';
+  String currentSearchQuery = '';
   int _currentSearchPage = 1;
 
   HomeCubit(
@@ -51,7 +51,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   }
 
   Future<void> loadMoreSearchResults() async {
-    if (state.loadingMoreSearchResults || _currentSearchQuery.isEmpty) {
+    if (state.loadingMoreSearchResults || currentSearchQuery.isEmpty) {
       return;
     }
 
@@ -67,7 +67,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
 
     await cubitHandler(
       () => _searchCatalogUsecase.search(
-        query: _currentSearchQuery,
+        query: currentSearchQuery,
         page: nextPage,
       ),
       (response) async {
@@ -91,7 +91,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
 
   Future<void> searchCatalog({required String query}) async {
     if (query.isEmpty) {
-      _currentSearchQuery = query;
+      currentSearchQuery = query;
       _debouncerUtils.cancel();
       _currentSearchPage = 1;
       emit(
@@ -105,12 +105,12 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     }
 
     // Reset pagination state for new searches
-    if (query != _currentSearchQuery) {
+    if (query != currentSearchQuery) {
       _currentSearchPage = 1;
       emit(state.copyWith(searchResults: [], totalSearchResultsCount: 0));
     }
 
-    _currentSearchQuery = query;
+    currentSearchQuery = query;
     emit(state.copyWith(loadingSearchResults: true));
     _debouncerUtils.run(() async {
       await cubitHandler(

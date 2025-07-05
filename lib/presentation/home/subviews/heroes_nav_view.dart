@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HeroesNavView extends StatefulWidget {
-  const HeroesNavView({super.key});
+  final void Function(String)? onHeroTap;
+
+  const HeroesNavView({this.onHeroTap, super.key});
 
   @override
   State<HeroesNavView> createState() => _HeroesNavViewState();
@@ -36,7 +38,7 @@ class _HeroesNavViewState extends State<HeroesNavView> {
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
         scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.black,
       ),
       body: Column(
         children: [
@@ -111,7 +113,11 @@ class _HeroesNavViewState extends State<HeroesNavView> {
                           }
 
                           final hero = heroes[index];
-                          return HeroCardView(hero: hero);
+                          return HeroCardView(
+                            hero: hero,
+                            onTap:
+                                () => widget.onHeroTap?.call(hero.name ?? ''),
+                          );
                         },
                       ),
                     ),

@@ -49,7 +49,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
         scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.black,
       ),
       body: Column(
         children: [
@@ -240,6 +240,8 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    _searchController.text = context.read<HomeCubit>().currentSearchQuery;
   }
 
   Widget _buildSectionHeader(String title) {
