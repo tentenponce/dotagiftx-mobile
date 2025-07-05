@@ -42,12 +42,7 @@ class _HomeViewState extends StateBase<_HomeView> {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.8),
-              blurRadius: 20,
-              offset: const Offset(0, -8),
-            ),
-            BoxShadow(
-              color: AppColors.darkGrey.withValues(alpha: 0.3),
-              blurRadius: 10,
+              blurRadius: 5,
               offset: const Offset(0, -2),
             ),
           ],

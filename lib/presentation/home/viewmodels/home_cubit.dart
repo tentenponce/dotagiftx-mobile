@@ -9,10 +9,13 @@ import 'package:dotagiftx_mobile/domain/usecases/search_catalog_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/treasures_cubit.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
+  final TreasuresCubit treasuresCubit;
+
   final Logger _logger;
   final GetTrendingUsecase _getTrendingUsecase;
   final GetNewBuyOrdersUsecase _getNewBuyOrdersUsecase;
@@ -24,6 +27,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   int _currentSearchPage = 1;
 
   HomeCubit(
+    this.treasuresCubit,
     this._logger,
     this._getTrendingUsecase,
     this._getNewBuyOrdersUsecase,
@@ -114,7 +118,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
           _currentSearchPage = 1;
           emit(
             state.copyWith(
-              searchResults: results,
+              searchResults: results.toList(),
               totalSearchResultsCount: totalCount,
             ),
           );
@@ -130,7 +134,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
       _getNewBuyOrdersUsecase.get,
       (response) async => emit(
         state.copyWith(
-          newBuyOrderItems: response,
+          newBuyOrderItems: response.toList(),
           loadingNewBuyOrderItems: false,
         ),
       ),
@@ -142,7 +146,8 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     emit(state.copyWith(loadingNewSellListingItems: true));
     await cubitHandler(
       _getNewSellListingsUsecase.get,
-      (response) async => emit(state.copyWith(newSellListingItems: response)),
+      (response) async =>
+          emit(state.copyWith(newSellListingItems: response.toList())),
     );
     emit(state.copyWith(loadingNewSellListingItems: false));
   }
@@ -151,7 +156,8 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     emit(state.copyWith(loadingTrendingItems: true));
     await cubitHandler(
       _getTrendingUsecase.get,
-      (response) async => emit(state.copyWith(trendingItems: response)),
+      (response) async =>
+          emit(state.copyWith(trendingItems: response.toList())),
     );
     emit(state.copyWith(loadingTrendingItems: false));
   }

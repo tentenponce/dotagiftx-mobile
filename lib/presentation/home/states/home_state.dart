@@ -11,10 +11,10 @@ abstract class HomeState with _$HomeState {
     @Default(false) bool loadingNewSellListingItems,
     @Default(false) bool loadingSearchResults,
     @Default(false) bool loadingMoreSearchResults,
-    @Default([]) Iterable<DotaItemModel> trendingItems,
-    @Default([]) Iterable<DotaItemModel> newBuyOrderItems,
-    @Default([]) Iterable<DotaItemModel> newSellListingItems,
-    @Default([]) Iterable<DotaItemModel> searchResults,
+    @Default([]) List<DotaItemModel> trendingItems,
+    @Default([]) List<DotaItemModel> newBuyOrderItems,
+    @Default([]) List<DotaItemModel> newSellListingItems,
+    @Default([]) List<DotaItemModel> searchResults,
     @Default(0) int totalSearchResultsCount,
   }) = _HomeState;
 }
