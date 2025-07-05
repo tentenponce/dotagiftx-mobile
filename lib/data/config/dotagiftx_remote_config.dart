@@ -4,11 +4,16 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/platform/app_remote_config/app_remote_config.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
+import 'package:dotagiftx_mobile/domain/models/hero_model.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
+import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
+import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
 abstract interface class DotagiftxRemoteConfig {
   Future<String> getDotagiftxImageBaseUrl();
+
+  Future<Iterable<HeroModel>> getHeroes();
 
   Future<Iterable<TreasureModel>> getTreasures();
 }
@@ -28,6 +33,14 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
 
     return dotagiftxImageBaseUrl ??
         RemoteConfigConstants.defaultDotagiftxImageBaseUrl;
+  }
+
+  @override
+  Future<Iterable<HeroModel>> getHeroes() async {
+    // TODO(de): get from remote config
+    final heroesString = await rootBundle.loadString(Assets.json.heroes);
+    final heroesJson = jsonDecode(heroesString) as List<dynamic>;
+    return heroesJson.map((e) => HeroModel.fromJson(e as Map<String, dynamic>));
   }
 
   @override
