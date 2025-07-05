@@ -68,6 +68,7 @@ class HeroCardView extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
+              alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,6 +77,7 @@ class HeroCardView extends StatelessWidget {
                   Expanded(
                     child: Text(
                       hero.name ?? '',
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
