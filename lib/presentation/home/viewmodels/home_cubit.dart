@@ -9,10 +9,13 @@ import 'package:dotagiftx_mobile/domain/usecases/search_catalog_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/treasures_cubit.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
+  final TreasuresCubit treasuresCubit;
+
   final Logger _logger;
   final GetTrendingUsecase _getTrendingUsecase;
   final GetNewBuyOrdersUsecase _getNewBuyOrdersUsecase;
@@ -24,6 +27,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   int _currentSearchPage = 1;
 
   HomeCubit(
+    this.treasuresCubit,
     this._logger,
     this._getTrendingUsecase,
     this._getNewBuyOrdersUsecase,

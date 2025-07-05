@@ -1,8 +1,12 @@
-import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/viewmodels/dotagiftx_image_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DotagiftxImageView extends StatelessWidget {
+class DotagiftxImageView extends StatelessWidget
+    with ViewCubitMixin<DotagiftxImageCubit> {
   final String imageUrl;
   final String? rarity;
   final double? width;
@@ -25,53 +29,52 @@ class DotagiftxImageView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildView(BuildContext context) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     final resolvedScale = scale ?? devicePixelRatio;
 
-    String resolvedUrl;
-    if (width != null && height != null) {
-      final scaledWidth = (resolvedScale * width!).round();
-      final scaledHeight = (resolvedScale * height!).round();
-      resolvedUrl =
-          '${RemoteConfigConstants.imageBaseUrl}${scaledWidth}x$scaledHeight/$imageUrl';
-    } else {
-      resolvedUrl = '${RemoteConfigConstants.imageBaseUrl}$imageUrl';
-    }
-
-    final image = Image.network(
-      resolvedUrl,
-      width: width,
-      height: height,
-      fit: fit,
-      scale: resolvedScale,
-      errorBuilder:
-          (context, error, stackTrace) =>
-              errorWidget ?? const Icon(Icons.broken_image),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
+    final image = BlocBuilder<DotagiftxImageCubit, String>(
+      builder: (context, state) {
+        String resolvedUrl;
+        if (width != null && height != null) {
+          final scaledWidth = (resolvedScale * width!).round();
+          final scaledHeight = (resolvedScale * height!).round();
+          resolvedUrl = '$state${scaledWidth}x$scaledHeight/$imageUrl';
+        } else {
+          resolvedUrl = '$state$imageUrl';
         }
-        return loadingWidget ??
-            const Center(child: CircularProgressIndicator());
+
+        return Image.network(
+          resolvedUrl,
+          width: width,
+          height: height,
+          fit: fit,
+          scale: resolvedScale,
+          errorBuilder:
+              (context, error, stackTrace) =>
+                  errorWidget ?? const Icon(Icons.broken_image),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            }
+            return loadingWidget ??
+                const Center(child: CircularProgressIndicator());
+          },
+        );
       },
     );
 
     // Apply rarity border if rarity is provided
     final borderColor = RarityUtils.getRarityColor(rarity);
-    if (borderColor != null) {
-      return Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          border: Border.all(color: borderColor, width: 2.0),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        // Slightly smaller to account for border
-        child: ClipRRect(borderRadius: BorderRadius.circular(4), child: image),
-      );
-    }
-
-    return image;
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor ?? AppColors.black, width: 2.0),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      // Slightly smaller to account for border
+      child: ClipRRect(borderRadius: BorderRadius.circular(4), child: image),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
@@ -6,7 +7,7 @@ import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 class TreasureCard extends StatelessWidget {
-  final TreasureItem treasure;
+  final TreasureModel treasure;
 
   const TreasureCard({required this.treasure, super.key});
 
@@ -47,24 +48,29 @@ class TreasureCard extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
-                child: Assets.images.treasures.values
-                    .toList()
-                    .firstWhereOrNull(
-                      (element) => element.keyName.contains(treasure.image),
-                    )
-                    ?.image(
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return ColoredBox(
-                          color: AppColors.grey.withValues(alpha: 0.3),
-                          child: const Icon(
-                            Icons.inventory,
-                            color: AppColors.grey,
-                            size: 40,
-                          ),
-                        );
-                      },
-                    ),
+                child:
+                    !StringUtils.isNullOrEmpty(treasure.imageUrl)
+                        ? Image.network(treasure.imageUrl!, fit: BoxFit.cover)
+                        : Assets.images.treasures.values
+                            .toList()
+                            .firstWhereOrNull(
+                              (element) => element.keyName.contains(
+                                treasure.image ?? '',
+                              ),
+                            )
+                            ?.image(
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return ColoredBox(
+                                  color: AppColors.grey.withValues(alpha: 0.3),
+                                  child: const Icon(
+                                    Icons.inventory,
+                                    color: AppColors.grey,
+                                    size: 40,
+                                  ),
+                                );
+                              },
+                            ),
               ),
             ),
           ),
@@ -79,7 +85,7 @@ class TreasureCard extends StatelessWidget {
                 children: [
                   // Name
                   Text(
-                    treasure.name,
+                    treasure.name ?? '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,

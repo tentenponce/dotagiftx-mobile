@@ -6,22 +6,19 @@ part 'treasure_model.g.dart';
 
 @CopyWith()
 @JsonSerializable(fieldRename: FieldRename.snake)
-class TreasureItem extends Equatable {
-  final String name;
-  final String image;
-  final String rarity;
+class TreasureModel extends Equatable {
+  final String? name;
+  final String? image;
+  final String? rarity;
+  final String? imageUrl;
 
-  const TreasureItem({
-    required this.name,
-    required this.image,
-    required this.rarity,
-  });
+  const TreasureModel({this.name, this.image, this.rarity, this.imageUrl});
 
-  factory TreasureItem.fromJson(Map<String, dynamic> json) =>
-      _$TreasureItemFromJson(json);
+  factory TreasureModel.fromJson(Map<String, dynamic> json) =>
+      _$TreasureModelFromJson(json);
 
   @override
-  List<Object?> get props => [name, image, rarity];
+  List<Object?> get props => [name, image, rarity, imageUrl];
 
-  Map<String, dynamic> toJson() => _$TreasureItemToJson(this);
+  Map<String, dynamic> toJson() => _$TreasureModelToJson(this);
 }
