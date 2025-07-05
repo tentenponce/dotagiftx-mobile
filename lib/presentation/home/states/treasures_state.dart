@@ -1,4 +1,3 @@
-import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

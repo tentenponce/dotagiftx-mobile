@@ -14,6 +14,9 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
   final Logger _logger;
   final DotagiftxRemoteConfig _dotagiftxRemoteConfig;
 
+  String searchQuery = '';
+  Iterable<TreasureModel> _treasures = [];
+
   TreasuresCubit(this._logger, this._dotagiftxRemoteConfig)
     : super(const TreasuresState());
 
@@ -29,12 +32,36 @@ class TreasuresCubit extends BaseCubit<TreasuresState>
     unawaited(_getTreasures());
   }
 
+  void searchTreasure(String searchQuery) {
+    this.searchQuery = searchQuery;
+
+    if (searchQuery.isEmpty) {
+      emit(state.copyWith(treasures: _treasures));
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        treasures: _treasures.where(
+          (treasure) =>
+              treasure.name?.toLowerCase().contains(
+                searchQuery.toLowerCase(),
+              ) ??
+              false,
+        ),
+      ),
+    );
+  }
+
   Future<void> _getTreasures() async {
     emit(state.copyWith(loadingTreasures: true));
 
     await cubitHandler<Iterable<TreasureModel>>(
       _dotagiftxRemoteConfig.getTreasures,
-      (treasures) async => emit(state.copyWith(treasures: treasures)),
+      (treasures) async {
+        _treasures = treasures;
+        emit(state.copyWith(treasures: treasures));
+      },
     );
 
     emit(state.copyWith(loadingTreasures: false));

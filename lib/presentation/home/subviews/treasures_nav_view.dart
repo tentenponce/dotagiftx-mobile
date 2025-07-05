@@ -19,10 +19,15 @@ class TreasuresNavView extends StatefulWidget {
 class _TreasuresNavViewState extends State<TreasuresNavView>
     with ViewCubitMixin<TreasuresCubit> {
   late final ScrollController _scrollController;
+  late final TextEditingController _searchController;
   bool _isScrolled = false;
 
   @override
   Widget buildView(BuildContext context) {
+    // set search query to the controller as the state is persisting as well
+    _searchController.text =
+        context.read<HomeCubit>().treasuresCubit.searchQuery;
+
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
@@ -41,69 +46,114 @@ class _TreasuresNavViewState extends State<TreasuresNavView>
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: BlocBuilder<TreasuresCubit, TreasuresState>(
-        bloc: context.read<HomeCubit>().treasuresCubit,
-        buildWhen:
-            (previous, current) =>
-                previous.treasures != current.treasures ||
-                previous.loadingTreasures != current.loadingTreasures,
-        builder: (context, state) {
-          final treasures = state.treasures.toList();
-          final itemCount = state.loadingTreasures ? 10 : treasures.length;
-
-          return Stack(
-            children: [
-              RefreshIndicator(
-                onRefresh:
-                    () async =>
-                        context
-                            .read<HomeCubit>()
-                            .treasuresCubit
-                            .onSwipeToRefresh(),
-                child: GridView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: itemCount,
-                  itemBuilder: (context, index) {
-                    if (state.loadingTreasures) {
-                      return const ShimmerTreasureCardView();
-                    }
-
-                    final treasure = treasures[index];
-                    return TreasureCard(treasure: treasure);
-                  },
+      body: Column(
+        children: [
+          // Search Field
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: I18n.of(context).treasuresSearchHint,
+                hintStyle: const TextStyle(color: AppColors.grey),
+                prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+                suffixIcon:
+                    _searchController.text.isNotEmpty
+                        ? IconButton(
+                          icon: const Icon(Icons.clear, color: AppColors.grey),
+                          onPressed: () {
+                            _searchController.clear();
+                            context
+                                .read<HomeCubit>()
+                                .treasuresCubit
+                                .searchTreasure('');
+                          },
+                        )
+                        : null,
+                filled: true,
+                fillColor: AppColors.darkGrey,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
               ),
-              // Top shadow when scrolled
-              if (_isScrolled)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          AppColors.black.withValues(alpha: 0.8),
-                          AppColors.black.withValues(alpha: 0.4),
-                          AppColors.black.withValues(alpha: 0.0),
-                        ],
+              onChanged: (value) {
+                context.read<HomeCubit>().treasuresCubit.searchTreasure(value);
+              },
+            ),
+          ),
+          // Main content
+          Expanded(
+            child: BlocBuilder<TreasuresCubit, TreasuresState>(
+              bloc: context.read<HomeCubit>().treasuresCubit,
+              buildWhen:
+                  (previous, current) =>
+                      previous.treasures != current.treasures ||
+                      previous.loadingTreasures != current.loadingTreasures,
+              builder: (context, state) {
+                final treasures = state.treasures.toList();
+                final itemCount =
+                    state.loadingTreasures ? 10 : treasures.length;
+
+                return Stack(
+                  children: [
+                    RefreshIndicator(
+                      onRefresh:
+                          () async =>
+                              context.read<HomeCubit>().treasuresCubit.init(),
+                      child: GridView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.8,
+                            ),
+                        itemCount: itemCount,
+                        itemBuilder: (context, index) {
+                          if (state.loadingTreasures) {
+                            return const ShimmerTreasureCardView();
+                          }
+
+                          final treasure = treasures[index];
+                          return TreasureCard(treasure: treasure);
+                        },
                       ),
                     ),
-                  ),
-                ),
-            ],
-          );
-        },
+                    // Top shadow when scrolled
+                    if (_isScrolled)
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColors.black.withValues(alpha: 0.8),
+                                AppColors.black.withValues(alpha: 0.4),
+                                AppColors.black.withValues(alpha: 0.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -112,6 +162,7 @@ class _TreasuresNavViewState extends State<TreasuresNavView>
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -119,6 +170,7 @@ class _TreasuresNavViewState extends State<TreasuresNavView>
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _searchController = TextEditingController();
     _scrollController.addListener(_onScroll);
   }
 

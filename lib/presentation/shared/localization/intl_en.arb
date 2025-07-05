@@ -7,5 +7,6 @@
     "homeNewBuyOrders": "New Buy Orders",
     "homeNewSellListings": "New Sell Listings",
     "homeSearchResults": "Search Results ({count})",
-    "homeSearchHint": "Search for {hint}"
+    "homeSearchHint": "Search for {hint}",
+    "treasuresSearchHint": "Search for treasure"
 }
