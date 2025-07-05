@@ -240,6 +240,8 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    _searchController.text = context.read<HomeCubit>().currentSearchQuery;
   }
 
   Widget _buildSectionHeader(String title) {
