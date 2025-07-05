@@ -63,10 +63,7 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
                           icon: const Icon(Icons.clear, color: AppColors.grey),
                           onPressed: () {
                             _searchController.clear();
-                            context
-                                .read<HomeCubit>()
-                                .treasuresCubit
-                                .searchTreasure('');
+                            treasuresCubit.searchTreasure('');
                           },
                         )
                         : null,
