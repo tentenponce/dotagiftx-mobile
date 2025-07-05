@@ -38,7 +38,7 @@ class FirebaseAppRemoteConfig implements AppRemoteConfig {
       await _firebaseRemoteConfig.setConfigSettings(
         RemoteConfigSettings(
           fetchTimeout: const Duration(minutes: 1),
-          minimumFetchInterval: const Duration(minutes: 1),
+          minimumFetchInterval: const Duration(hours: 1),
         ),
       );
 
