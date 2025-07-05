@@ -9,5 +9,6 @@
     "homeSearchResults": "Search Results ({count})",
     "homeSearchHint": "Search for {hint}",
     "treasuresSearchHint": "Search for treasure",
+    "heroesSearchHint": "Search for hero",
     "homeNavHeroes": "Heroes ({count})"
 }

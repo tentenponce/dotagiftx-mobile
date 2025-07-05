@@ -17,7 +17,9 @@ class HeroesNavView extends StatefulWidget {
 
 class _HeroesNavViewState extends State<HeroesNavView> {
   late ScrollController _scrollController;
+  late TextEditingController _searchController;
   bool _isScrolled = false;
+  bool _showClearButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,62 +35,113 @@ class _HeroesNavViewState extends State<HeroesNavView> {
         ),
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
-        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
       ),
-      body: BlocBuilder<HeroesCubit, HeroesState>(
-        bloc: heroesCubit,
-        builder: (context, state) {
-          final heroes = state.heroes;
-          final itemCount = state.loadingHeroes ? 15 : heroes.length;
-
-          return Stack(
-            children: [
-              RefreshIndicator(
-                onRefresh: () async => heroesCubit.onSwipeToRefresh(),
-                child: GridView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemCount: itemCount,
-                  itemBuilder: (context, index) {
-                    if (state.loadingHeroes) {
-                      return const ShimmerHeroCardView();
-                    }
-
-                    final hero = heroes[index];
-                    return HeroCardView(hero: hero);
-                  },
+      body: Column(
+        children: [
+          // Search Field
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: I18n.of(context).heroesSearchHint,
+                hintStyle: const TextStyle(color: AppColors.grey),
+                prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+                suffixIcon:
+                    _showClearButton
+                        ? IconButton(
+                          icon: const Icon(Icons.clear, color: AppColors.grey),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _showClearButton = false;
+                            });
+                            heroesCubit.searchHero('');
+                          },
+                        )
+                        : null,
+                filled: true,
+                fillColor: AppColors.darkGrey,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
               ),
-              // Top shadow when scrolled
-              if (_isScrolled)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          AppColors.black.withValues(alpha: 0.8),
-                          AppColors.black.withValues(alpha: 0.4),
-                          AppColors.black.withValues(alpha: 0.0),
-                        ],
+              onChanged: (value) {
+                setState(() {
+                  _showClearButton = value.isNotEmpty;
+                });
+                heroesCubit.searchHero(value);
+              },
+            ),
+          ),
+          // Main content
+          Expanded(
+            child: BlocBuilder<HeroesCubit, HeroesState>(
+              bloc: heroesCubit,
+              builder: (context, state) {
+                final heroes = state.heroes;
+                final itemCount = state.loadingHeroes ? 15 : heroes.length;
+
+                return Stack(
+                  children: [
+                    RefreshIndicator(
+                      onRefresh: () async => heroesCubit.onSwipeToRefresh(),
+                      child: GridView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 0.75,
+                            ),
+                        itemCount: itemCount,
+                        itemBuilder: (context, index) {
+                          if (state.loadingHeroes) {
+                            return const ShimmerHeroCardView();
+                          }
+
+                          final hero = heroes[index];
+                          return HeroCardView(hero: hero);
+                        },
                       ),
                     ),
-                  ),
-                ),
-            ],
-          );
-        },
+                    // Top shadow when scrolled
+                    if (_isScrolled)
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColors.black.withValues(alpha: 0.8),
+                                AppColors.black.withValues(alpha: 0.4),
+                                AppColors.black.withValues(alpha: 0.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -97,6 +150,7 @@ class _HeroesNavViewState extends State<HeroesNavView> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -104,17 +158,23 @@ class _HeroesNavViewState extends State<HeroesNavView> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _searchController = TextEditingController();
     _scrollController.addListener(_onScroll);
+
+    // Set search query to the controller as the state is persisting as well
+    _searchController.text = context.read<HomeCubit>().heroesCubit.searchQuery;
+    _showClearButton = _searchController.text.isNotEmpty;
   }
 
   void _onScroll() {
-    if (_scrollController.hasClients) {
-      final isScrolled = _scrollController.offset > 0;
-      if (isScrolled != _isScrolled) {
-        setState(() {
-          _isScrolled = isScrolled;
-        });
-      }
+    FocusScope.of(context).unfocus();
+
+    final isScrolled =
+        _scrollController.hasClients && _scrollController.offset > 0;
+    if (isScrolled != _isScrolled) {
+      setState(() {
+        _isScrolled = isScrolled;
+      });
     }
   }
 }

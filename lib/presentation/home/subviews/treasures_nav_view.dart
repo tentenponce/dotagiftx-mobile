@@ -42,7 +42,8 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
         ),
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
-        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Column(
         children: [
