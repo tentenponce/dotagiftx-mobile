@@ -8,5 +8,7 @@
     "homeNewSellListings": "New Sell Listings",
     "homeSearchResults": "Search Results ({count})",
     "homeSearchHint": "Search for {hint}",
-    "treasuresSearchHint": "Search for treasure"
+    "treasuresSearchHint": "Search for treasure",
+    "heroesSearchHint": "Search for hero",
+    "homeNavHeroes": "Heroes ({count})"
 }
