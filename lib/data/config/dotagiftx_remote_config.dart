@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/platform/app_remote_config/app_remote_config.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
@@ -14,9 +15,10 @@ abstract interface class DotagiftxRemoteConfig {
 
 @LazySingleton(as: DotagiftxRemoteConfig)
 class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
+  final Logger _logger;
   final AppRemoteConfig _appRemoteConfig;
 
-  DotagiftxRemoteConfigImpl(this._appRemoteConfig);
+  DotagiftxRemoteConfigImpl(this._logger, this._appRemoteConfig);
 
   @override
   Future<String> getDotagiftxImageBaseUrl() async {
@@ -35,10 +37,19 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
     );
 
     if (!StringUtils.isNullOrEmpty(treasuresString)) {
-      final treasuresJson = jsonDecode(treasuresString!) as List<dynamic>;
-      return treasuresJson
-          .map((e) => e as Map<String, dynamic>)
-          .map(TreasureModel.fromJson);
+      try {
+        final treasuresJson = jsonDecode(treasuresString!) as List<dynamic>;
+        return treasuresJson
+            .map((e) => e as Map<String, dynamic>)
+            .map(TreasureModel.fromJson);
+      } catch (e) {
+        _logger.log(
+          LogLevel.error,
+          'Error parsing treasures from remote config',
+          e,
+        );
+        return RemoteConfigConstants.defaultTreasures;
+      }
     }
 
     return RemoteConfigConstants.defaultTreasures;
