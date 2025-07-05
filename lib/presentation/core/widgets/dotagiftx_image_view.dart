@@ -1,5 +1,4 @@
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/viewmodels/dotagiftx_image_cubit.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,10 @@ class DotagiftxImageView extends StatelessWidget
       width: width,
       height: height,
       decoration: BoxDecoration(
-        border: Border.all(color: borderColor ?? AppColors.black, width: 2.0),
+        border: Border.all(
+          color: borderColor ?? Colors.transparent,
+          width: 2.0,
+        ),
         borderRadius: BorderRadius.circular(6),
       ),
       // Slightly smaller to account for border
