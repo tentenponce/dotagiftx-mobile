@@ -36,7 +36,7 @@ class _HeroesNavViewState extends State<HeroesNavView> {
         backgroundColor: AppColors.black,
         foregroundColor: Colors.white,
         scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.black,
       ),
       body: Column(
         children: [

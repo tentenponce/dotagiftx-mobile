@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 
 class TreasureCard extends StatelessWidget {
   final TreasureModel treasure;
+  final VoidCallback? onTap;
 
-  const TreasureCard({required this.treasure, super.key});
+  const TreasureCard({required this.treasure, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,83 +19,110 @@ class TreasureCard extends StatelessWidget {
       width: 1,
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.darkGrey,
-        borderRadius: BorderRadius.circular(12),
-        border: Border(bottom: borderSide, left: borderSide, right: borderSide),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
         children: [
-          // Image
-          Expanded(
-            flex: 3,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border(
-                  top: borderSide,
-                  left: borderSide,
-                  right: borderSide,
-                ),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                child:
-                    !StringUtils.isNullOrEmpty(treasure.imageUrl)
-                        ? Image.network(treasure.imageUrl!, fit: BoxFit.cover)
-                        : Assets.images.treasures.values
-                            .firstWhereOrNull(
-                              (element) => element.keyName.contains(
-                                treasure.image ?? '',
-                              ),
-                            )
-                            ?.image(
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return ColoredBox(
-                                  color: AppColors.grey.withValues(alpha: 0.3),
-                                  child: const Icon(
-                                    Icons.inventory,
-                                    color: AppColors.grey,
-                                    size: 40,
-                                  ),
-                                );
-                              },
-                            ),
+          // Card content (background)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.darkGrey,
+              borderRadius: BorderRadius.circular(12),
+              border: Border(
+                bottom: borderSide,
+                left: borderSide,
+                right: borderSide,
               ),
             ),
-          ),
-          // Content
-          Expanded(
-            flex: 2,
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Name
-                  Text(
-                    treasure.name ?? '',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: borderSide,
+                        left: borderSide,
+                        right: borderSide,
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
                     ),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                      child:
+                          !StringUtils.isNullOrEmpty(treasure.imageUrl)
+                              ? Image.network(
+                                treasure.imageUrl!,
+                                fit: BoxFit.cover,
+                              )
+                              : Assets.images.treasures.values
+                                  .firstWhereOrNull(
+                                    (element) => element.keyName.contains(
+                                      treasure.image ?? '',
+                                    ),
+                                  )
+                                  ?.image(
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return ColoredBox(
+                                        color: AppColors.grey.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        child: const Icon(
+                                          Icons.inventory,
+                                          color: AppColors.grey,
+                                          size: 40,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                    ),
                   ),
-                ],
+                ),
+                // Content
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Name
+                        Text(
+                          treasure.name ?? '',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // InkWell overlay (foreground)
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),

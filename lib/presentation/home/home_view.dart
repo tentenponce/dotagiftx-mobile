@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
@@ -7,6 +9,7 @@ import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.d
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeView extends StatelessWidget with ViewCubitMixin<HomeCubit> {
   const HomeView({super.key});
@@ -27,11 +30,7 @@ class _HomeView extends StatefulWidget {
 class _HomeViewState extends StateBase<_HomeView> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeNavView(),
-    const TreasuresNavView(),
-    const HeroesNavView(),
-  ];
+  late final List<Widget> _pages;
 
   @override
   Widget build(BuildContext context) {
@@ -76,5 +75,25 @@ class _HomeViewState extends StateBase<_HomeView> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomeNavView(),
+      TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
+      const HeroesNavView(),
+    ];
+  }
+
+  void _navigateToHomeWithSearch(String searchQuery) {
+    // Navigate to home tab
+    setState(() {
+      _currentIndex = 0;
+    });
+
+    // Set search query in HomeCubit
+    unawaited(context.read<HomeCubit>().searchCatalog(query: searchQuery));
   }
 }
