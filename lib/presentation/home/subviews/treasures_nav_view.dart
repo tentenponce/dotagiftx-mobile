@@ -20,12 +20,11 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
   late final ScrollController _scrollController;
   late final TextEditingController _searchController;
   bool _isScrolled = false;
+  bool _showClearButton = false;
 
   @override
   Widget build(BuildContext context) {
     final treasuresCubit = context.read<HomeCubit>().treasuresCubit;
-    // set search query to the controller as the state is persisting as well
-    _searchController.text = treasuresCubit.searchQuery;
 
     return Scaffold(
       backgroundColor: AppColors.black,
@@ -58,11 +57,14 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
                 hintStyle: const TextStyle(color: AppColors.grey),
                 prefixIcon: const Icon(Icons.search, color: AppColors.grey),
                 suffixIcon:
-                    _searchController.text.isNotEmpty
+                    _showClearButton
                         ? IconButton(
                           icon: const Icon(Icons.clear, color: AppColors.grey),
                           onPressed: () {
                             _searchController.clear();
+                            setState(() {
+                              _showClearButton = false;
+                            });
                             treasuresCubit.searchTreasure('');
                           },
                         )
@@ -78,7 +80,12 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
                   vertical: 12,
                 ),
               ),
-              onChanged: treasuresCubit.searchTreasure,
+              onChanged: (value) {
+                setState(() {
+                  _showClearButton = value.isNotEmpty;
+                });
+                treasuresCubit.searchTreasure(value);
+              },
             ),
           ),
           // Main content
@@ -164,6 +171,11 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
     _scrollController = ScrollController();
     _searchController = TextEditingController();
     _scrollController.addListener(_onScroll);
+
+    // set search query to the controller as the state is persisting as well
+    _searchController.text =
+        context.read<HomeCubit>().treasuresCubit.searchQuery;
+    _showClearButton = _searchController.text.isNotEmpty;
   }
 
   void _onScroll() {
