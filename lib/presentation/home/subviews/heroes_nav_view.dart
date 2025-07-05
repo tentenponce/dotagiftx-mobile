@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HeroesNavView extends StatefulWidget {
-  const HeroesNavView({super.key});
+  final void Function(String)? onHeroTap;
+
+  const HeroesNavView({this.onHeroTap, super.key});
 
   @override
   State<HeroesNavView> createState() => _HeroesNavViewState();
@@ -111,7 +113,11 @@ class _HeroesNavViewState extends State<HeroesNavView> {
                           }
 
                           final hero = heroes[index];
-                          return HeroCardView(hero: hero);
+                          return HeroCardView(
+                            hero: hero,
+                            onTap:
+                                () => widget.onHeroTap?.call(hero.name ?? ''),
+                          );
                         },
                       ),
                     ),

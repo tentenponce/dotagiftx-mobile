@@ -4,90 +4,114 @@ import 'package:flutter/material.dart';
 
 class HeroCardView extends StatelessWidget {
   final HeroModel hero;
+  final VoidCallback? onTap;
 
-  const HeroCardView({required this.hero, super.key});
+  const HeroCardView({required this.hero, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.darkGrey,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.grey.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
         children: [
-          // Hero Image
-          Expanded(
-            flex: 4,
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                child:
-                    hero.heroImage != null
-                        ? Image.network(
-                          hero.heroImage!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return ColoredBox(
-                              color: AppColors.grey.withValues(alpha: 0.3),
-                              child: const Icon(
-                                Icons.person,
-                                color: AppColors.grey,
-                                size: 40,
-                              ),
-                            );
-                          },
-                        )
-                        : ColoredBox(
-                          color: AppColors.grey.withValues(alpha: 0.3),
-                          child: const Icon(
-                            Icons.person,
-                            color: AppColors.grey,
-                            size: 40,
-                          ),
-                        ),
+          // Card content (background)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.darkGrey,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.grey.withValues(alpha: 0.3),
+                width: 1,
               ),
             ),
-          ),
-          // Hero Details
-          Expanded(
-            flex: 2,
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Hero Name
-                  Expanded(
-                    child: Text(
-                      hero.name ?? '',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Hero Image
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                      child:
+                          hero.heroImage != null
+                              ? Image.network(
+                                hero.heroImage!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return ColoredBox(
+                                    color: AppColors.grey.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                    child: const Icon(
+                                      Icons.person,
+                                      color: AppColors.grey,
+                                      size: 40,
+                                    ),
+                                  );
+                                },
+                              )
+                              : ColoredBox(
+                                color: AppColors.grey.withValues(alpha: 0.3),
+                                child: const Icon(
+                                  Icons.person,
+                                  color: AppColors.grey,
+                                  size: 40,
+                                ),
+                              ),
                     ),
                   ),
-                ],
+                ),
+                // Hero Details
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Hero Name
+                        Expanded(
+                          child: Text(
+                            hero.name ?? '',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // InkWell overlay (foreground)
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),

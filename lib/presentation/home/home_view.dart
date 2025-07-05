@@ -83,7 +83,7 @@ class _HomeViewState extends StateBase<_HomeView> {
     _pages = [
       const HomeNavView(),
       TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
-      const HeroesNavView(),
+      HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
     ];
   }
 
