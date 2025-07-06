@@ -1,163 +1,92 @@
-import 'package:dotagiftx_mobile/domain/models/offer_model.dart';
+import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class DotaItemDetailCubit extends BaseCubit<OffersState> {
-  static const int pageSize = 2;
+class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
+    with CubitErrorMixin<DotaItemDetailState> {
+  final Logger _logger;
+  final GetDotaItemOffersUsecase _getOffersUsecase;
 
-  static const int maxPages = 1; // Simulate finite data
-  DotaItemDetailCubit() : super(const OffersState());
+  String? itemId;
+  int _currentPage = 1;
+
+  DotaItemDetailCubit(this._logger, this._getOffersUsecase)
+    : super(const DotaItemDetailState());
+
+  @override
+  Logger get logger => _logger;
 
   @override
   Future<void> init() async {}
 
   Future<void> loadMoreOffers() async {
-    if (state.isLoadingMore || !state.hasMoreData || state.isLoading) return;
+    if (state.isLoadingMore || itemId == null) {
+      return;
+    }
+
+    // Check if there are more results based on total count
+    final hasMore = state.offers.length < state.totalOffersCount;
+    if (!hasMore) {
+      return;
+    }
 
     emit(state.copyWith(isLoadingMore: true));
 
-    try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 300));
+    final nextPage = _currentPage + 1;
 
-      final startIndex = state.currentPage * pageSize;
-      final newOffers = _generateMockOffers(startIndex, pageSize);
+    await cubitHandler(
+      () => _getOffersUsecase.get(itemId: itemId!, page: nextPage),
+      (response) async {
+        final (newOffers, totalCount) = response;
 
-      final allOffers = [...state.offers, ...newOffers];
-      final hasMore = state.currentPage < maxPages - 1;
+        final combinedOffers = [...state.offers, ...newOffers];
 
-      emit(
-        state.copyWith(
-          offers: allOffers,
-          isLoadingMore: false,
-          currentPage: state.currentPage + 1,
-          hasMoreData: hasMore,
-        ),
-      );
-    } catch (e) {
-      emit(state.copyWith(isLoadingMore: false));
-    }
+        _currentPage = nextPage;
+        emit(
+          state.copyWith(
+            offers: combinedOffers,
+            totalOffersCount: totalCount,
+            isLoadingMore: false,
+          ),
+        );
+      },
+    );
+
+    emit(state.copyWith(isLoadingMore: false));
   }
 
   Future<void> loadOffers() async {
-    if (state.isLoading) return;
+    if (state.isLoading || itemId == null) {
+      return;
+    }
 
     emit(state.copyWith(isLoading: true, error: null));
 
-    try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 500));
+    await cubitHandler(() => _getOffersUsecase.get(itemId: itemId!, page: 1), (
+      response,
+    ) async {
+      final (offers, totalCount) = response;
 
-      final newOffers = _generateMockOffers(0, pageSize);
-
+      _currentPage = 1;
       emit(
         state.copyWith(
-          offers: newOffers,
+          offers: offers,
+          totalOffersCount: totalCount,
           isLoading: false,
-          currentPage: 1,
-          hasMoreData: true,
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(isLoading: false, error: 'Failed to load offers'));
-    }
+    });
+
+    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> refresh() async {
-    emit(const OffersState());
+    emit(const DotaItemDetailState());
+    _currentPage = 1;
     await loadOffers();
-  }
-
-  List<OfferModel> _generateMockOffers(int startIndex, int count) {
-    final users = [
-      {'name': 'Mora', 'avatar': '👑', 'badge': 'PARTNER', 'verified': true},
-      {
-        'name': 'xiaoqianbi000',
-        'avatar': '🛡️',
-        'badge': 'SUPPORTER',
-        'verified': true,
-      },
-      {'name': '2099', 'avatar': '⚔️', 'badge': '', 'verified': false},
-      {'name': 'SteamUser123', 'avatar': '🎮', 'badge': '', 'verified': false},
-      {
-        'name': 'DotaTrader',
-        'avatar': '💎',
-        'badge': 'PARTNER',
-        'verified': true,
-      },
-      {'name': 'MarketKing', 'avatar': '👑', 'badge': '', 'verified': false},
-      {
-        'name': 'ItemHunter',
-        'avatar': '🏹',
-        'badge': 'SUPPORTER',
-        'verified': true,
-      },
-      {
-        'name': 'TreasureFinder',
-        'avatar': '💰',
-        'badge': '',
-        'verified': false,
-      },
-    ];
-
-    return List.generate(count, (index) {
-      final globalIndex = startIndex + index;
-      final user = users[globalIndex % users.length];
-      const basePrice = 60.0;
-      final priceVariation =
-          (globalIndex * 3.7) % 20 - 10; // -10 to +10 variation
-
-      return OfferModel(
-        id: 'offer_${globalIndex + 1}',
-        userName: user['name']! as String,
-        userAvatar: user['avatar']! as String,
-        price: basePrice + priceVariation,
-        postedDate: DateTime.now().subtract(
-          Duration(
-            minutes: (globalIndex * 17) % 1440, // Random times within last day
-          ),
-        ),
-        quantity: 1,
-        userBadge: user['badge']! as String,
-        isVerified: user['verified']! as bool,
-      );
-    });
-  }
-}
-
-class OffersState {
-  final List<OfferModel> offers;
-  final bool isLoading;
-  final bool isLoadingMore;
-  final bool hasMoreData;
-  final int currentPage;
-  final String? error;
-
-  const OffersState({
-    this.offers = const [],
-    this.isLoading = false,
-    this.isLoadingMore = false,
-    this.hasMoreData = true,
-    this.currentPage = 0,
-    this.error,
-  });
-
-  OffersState copyWith({
-    List<OfferModel>? offers,
-    bool? isLoading,
-    bool? isLoadingMore,
-    bool? hasMoreData,
-    int? currentPage,
-    String? error,
-  }) {
-    return OffersState(
-      offers: offers ?? this.offers,
-      isLoading: isLoading ?? this.isLoading,
-      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      hasMoreData: hasMoreData ?? this.hasMoreData,
-      currentPage: currentPage ?? this.currentPage,
-      error: error,
-    );
   }
 }

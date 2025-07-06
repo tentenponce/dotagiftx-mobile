@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
@@ -34,6 +36,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<DotaItemDetailCubit>();
+    cubit.itemId = widget.item.id;
+
     return Scaffold(
       backgroundColor: AppColors.black,
       body: CustomScrollView(
@@ -218,7 +223,11 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
     _tabController = TabController(length: 2, vsync: this);
     _scrollController = ScrollController();
     _tabController.addListener(() {
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {
+          // TODO(tenten): this is to refresh tab state, find a different way instead of empty set state
+        });
+      }
     });
     _scrollController.addListener(_onScroll);
   }
@@ -231,8 +240,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
         // Only load more offers if we're on the Offers tab
         final offersCubit = context.read<DotaItemDetailCubit>();
         final state = offersCubit.state;
-        if (state.hasMoreData && !state.isLoadingMore) {
-          offersCubit.loadMoreOffers();
+        if (state.totalOffersCount > state.offers.length &&
+            !state.isLoadingMore) {
+          unawaited(offersCubit.loadMoreOffers());
         }
       }
     }

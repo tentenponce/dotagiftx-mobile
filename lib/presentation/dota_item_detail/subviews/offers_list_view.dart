@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offer_card_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_offer_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,7 @@ class OffersListView extends StatefulWidget {
 class _OffersListViewState extends State<OffersListView> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DotaItemDetailCubit, OffersState>(
+    return BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
       builder: (context, state) {
         if (state.isLoading && state.offers.isEmpty) {
           return const Center(
@@ -83,18 +84,12 @@ class _OffersListViewState extends State<OffersListView> {
             // Offers
             if (index < state.offers.length) {
               final offer = state.offers[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
-                child: OfferCardView(
-                  offer: offer,
-                  onTap: () {
-                    // TODO: Handle offer tap
-                    debugPrint('Tapped offer: ${offer.id}');
-                  },
-                ),
+              return MarketOfferCardView(
+                offer: offer,
+                onTap: () {
+                  // TODO: Handle contact seller
+                  debugPrint('Contact seller: ${offer.user.name}');
+                },
               );
             }
 
