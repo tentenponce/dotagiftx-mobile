@@ -1,7 +1,9 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_offer_card_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/shimmer_market_listing_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,52 +19,33 @@ class _OffersListViewState extends State<OffersListView> {
   Widget build(BuildContext context) {
     return BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
       builder: (context, state) {
-        if (state.isLoading && state.offers.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
-          );
-        }
-
-        if (state.error != null && state.offers.isEmpty) {
-          return Center(
+        // Loading state with shimmer
+        if (state.isLoading) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error_outline,
-                  color: AppColors.grey,
-                  size: 48,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  state.error!,
-                  style: const TextStyle(color: AppColors.grey, fontSize: 16),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed:
-                      () => context.read<DotaItemDetailCubit>().loadOffers(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.black,
-                  ),
-                  child: const Text('Retry'),
-                ),
-              ],
+              children: List.generate(
+                5, // Show 5 shimmer cards
+                (index) => const ShimmerMarketListingCardView(),
+              ),
             ),
           );
         }
 
         if (state.offers.isEmpty) {
-          return const Center(
+          return Padding(
+            padding: const EdgeInsets.only(top: 24),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.inbox_outlined, color: AppColors.grey, size: 48),
-                SizedBox(height: 16),
+                const Icon(
+                  Icons.inbox_outlined,
+                  color: AppColors.grey,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
                 Text(
-                  'No offers available',
-                  style: TextStyle(color: AppColors.grey, fontSize: 16),
+                  I18n.of(context).offersEmpty,
+                  style: const TextStyle(color: AppColors.grey, fontSize: 16),
                 ),
               ],
             ),
@@ -78,7 +61,7 @@ class _OffersListViewState extends State<OffersListView> {
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(16),
           itemCount: itemCount,
           itemBuilder: (context, index) {
             // Offers
@@ -87,7 +70,7 @@ class _OffersListViewState extends State<OffersListView> {
               return MarketOfferCardView(
                 offer: offer,
                 onTap: () {
-                  // TODO: Handle contact seller
+                  // TODO(tenten): Handle contact seller
                   debugPrint('Contact seller: ${offer.user.name}');
                 },
               );
@@ -109,15 +92,5 @@ class _OffersListViewState extends State<OffersListView> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Load initial offers
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DotaItemDetailCubit>().loadOffers();
-    });
   }
 }

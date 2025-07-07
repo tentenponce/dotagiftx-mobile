@@ -66,12 +66,12 @@ class MarketListingModel extends Equatable {
   final String notes;
   final String createdAt;
   final String updatedAt;
-  final int inventoryStatus;
+  final int? inventoryStatus;
   final int deliveryStatus;
   final UserModel user;
   final DotaItemModel item;
   final InventoryModel? inventory;
-  final dynamic resell;
+  final bool? resell;
   final String sellerSteamId;
   final int userRankScore;
 
@@ -287,7 +287,7 @@ class UserModel extends Equatable {
   final String updatedAt;
   final MarketStatsModel marketStats;
   final int rankScore;
-  final int subscription;
+  final int? subscription;
   final String? subscribedAt;
   final String subscriptionType;
   final String? subscriptionEndsAt;

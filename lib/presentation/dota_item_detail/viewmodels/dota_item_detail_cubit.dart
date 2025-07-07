@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -11,8 +13,8 @@ class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
   final Logger _logger;
   final GetDotaItemOffersUsecase _getOffersUsecase;
 
-  String? itemId;
   int _currentPage = 1;
+  String? _itemId;
 
   DotaItemDetailCubit(this._logger, this._getOffersUsecase)
     : super(const DotaItemDetailState());
@@ -24,7 +26,7 @@ class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
   Future<void> init() async {}
 
   Future<void> loadMoreOffers() async {
-    if (state.isLoadingMore || itemId == null) {
+    if (state.isLoadingMore) {
       return;
     }
 
@@ -39,7 +41,7 @@ class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
     final nextPage = _currentPage + 1;
 
     await cubitHandler(
-      () => _getOffersUsecase.get(itemId: itemId!, page: nextPage),
+      () => _getOffersUsecase.get(itemId: _itemId!, page: nextPage),
       (response) async {
         final (newOffers, totalCount) = response;
 
@@ -59,34 +61,33 @@ class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
     emit(state.copyWith(isLoadingMore: false));
   }
 
-  Future<void> loadOffers() async {
-    if (state.isLoading || itemId == null) {
+  void onSwipeToRefresh() {
+    unawaited(_getNewOffers());
+  }
+
+  // String? itemId;
+
+  void setItemId(String? value) {
+    _itemId = value;
+    unawaited(_getNewOffers());
+  }
+
+  Future<void> _getNewOffers() async {
+    if (state.isLoading) {
       return;
     }
 
-    emit(state.copyWith(isLoading: true, error: null));
+    emit(state.copyWith(isLoading: true));
 
-    await cubitHandler(() => _getOffersUsecase.get(itemId: itemId!, page: 1), (
+    await cubitHandler(() => _getOffersUsecase.get(itemId: _itemId!, page: 1), (
       response,
     ) async {
       final (offers, totalCount) = response;
 
       _currentPage = 1;
-      emit(
-        state.copyWith(
-          offers: offers,
-          totalOffersCount: totalCount,
-          isLoading: false,
-        ),
-      );
+      emit(state.copyWith(offers: offers, totalOffersCount: totalCount));
     });
 
     emit(state.copyWith(isLoading: false));
-  }
-
-  Future<void> refresh() async {
-    emit(const DotaItemDetailState());
-    _currentPage = 1;
-    await loadOffers();
   }
 }

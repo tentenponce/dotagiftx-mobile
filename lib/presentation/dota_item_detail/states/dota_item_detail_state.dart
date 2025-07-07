@@ -11,6 +11,5 @@ abstract class DotaItemDetailState with _$DotaItemDetailState {
     @Default(false) bool isLoadingMore,
     @Default(0) int totalOffersCount,
     @Default(0) int currentPage,
-    String? error,
   }) = _DotaItemDetailState;
 }

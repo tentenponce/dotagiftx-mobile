@@ -16,6 +16,7 @@ class DotaItemMarketDetailSubview extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Item Image Section
         Container(
@@ -38,7 +39,7 @@ class DotaItemMarketDetailSubview extends StatelessWidget {
 
         // Item Details Section
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -77,7 +78,6 @@ class DotaItemMarketDetailSubview extends StatelessWidget {
                 '• ${item.reservedCount} Reserved • ${item.soldCount} Delivered',
                 style: const TextStyle(color: AppColors.grey, fontSize: 14),
               ),
-              const SizedBox(height: 24),
             ],
           ),
         ),
