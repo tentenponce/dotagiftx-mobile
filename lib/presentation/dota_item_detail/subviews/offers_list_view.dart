@@ -1,8 +1,9 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_offer_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/shimmer_market_listing_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,8 @@ class OffersListView extends StatefulWidget {
 class _OffersListViewState extends State<OffersListView> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
+    return BlocBuilder<OffersListCubit, OffersListState>(
+      bloc: context.read<DotaItemDetailCubit>().offersListCubit,
       builder: (context, state) {
         // Loading state with shimmer
         if (state.isLoading) {

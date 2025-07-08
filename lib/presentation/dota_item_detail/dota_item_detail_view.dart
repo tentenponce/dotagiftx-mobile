@@ -4,10 +4,11 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/dota_item_market_detail_subview.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -209,7 +210,11 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                         ),
                         const SizedBox(height: 16),
                         // Tabs
-                        BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
+                        BlocBuilder<OffersListCubit, OffersListState>(
+                          bloc:
+                              context
+                                  .read<DotaItemDetailCubit>()
+                                  .offersListCubit,
                           builder: (context, state) {
                             return TabBar(
                               controller: _tabController,
@@ -304,11 +309,11 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
       // Load more when user is 200 pixels from the bottom
       if (_tabController.index == 0) {
         // Only load more offers if we're on the Offers tab
-        final offersCubit = context.read<DotaItemDetailCubit>();
-        final state = offersCubit.state;
+        final dotaItemDetailCubit = context.read<DotaItemDetailCubit>();
+        final state = dotaItemDetailCubit.offersListCubit.state;
         if (state.totalOffersCount > state.offers.length &&
             !state.isLoadingMore) {
-          unawaited(offersCubit.loadMoreOffers());
+          unawaited(dotaItemDetailCubit.loadMoreOffers());
         }
       }
     }
