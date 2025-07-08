@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/viewmodels/dotagiftx_image_cubit.dart';
@@ -52,23 +53,25 @@ class DotagiftxImageView extends StatelessWidget
           resolvedUrl = '$state$imageUrl';
         }
 
-        return Image.network(
-          resolvedUrl,
-          width: width,
-          height: height,
-          fit: fit,
-          scale: resolvedScale,
-          errorBuilder:
-              (context, error, stackTrace) =>
-                  errorWidget ?? const Icon(Icons.broken_image),
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return loadingWidget ??
-                const Center(child: CircularProgressIndicator());
-          },
-        );
+        return StringUtils.isNullOrEmpty(imageUrl)
+            ? errorWidget ?? const Icon(Icons.broken_image)
+            : Image.network(
+              resolvedUrl,
+              width: width,
+              height: height,
+              fit: fit,
+              scale: resolvedScale,
+              errorBuilder:
+                  (context, error, stackTrace) =>
+                      errorWidget ?? const Icon(Icons.broken_image),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return loadingWidget ??
+                    const Center(child: CircularProgressIndicator());
+              },
+            );
       },
     );
 

@@ -76,7 +76,7 @@ class _OffersListViewState extends State<OffersListView> {
                 offer: offer,
                 onTap: () {
                   // TODO(tenten): Handle contact seller
-                  debugPrint('Contact seller: ${offer.user.name}');
+                  debugPrint('Contact seller: ${offer.user?.name}');
                 },
               );
             }

@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -29,7 +30,10 @@ class MarketOfferCardView extends StatelessWidget {
           children: [
             // User Avatar
             DotagiftxImageView(
-              imageUrl: offer.user.avatar.isNotEmpty ? offer.user.avatar : '',
+              imageUrl:
+                  !StringUtils.isNullOrEmpty(offer.user?.avatar)
+                      ? offer.user!.avatar!
+                      : '',
               width: 48,
               height: 48,
               errorWidget: Container(
@@ -57,7 +61,7 @@ class MarketOfferCardView extends StatelessWidget {
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 120),
                         child: Text(
-                          offer.user.name,
+                          offer.user?.name ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -71,7 +75,7 @@ class MarketOfferCardView extends StatelessWidget {
 
                       // User Badge
                       UserSubscriptionBadgeView(
-                        subscription: offer.user.subscription,
+                        subscription: offer.user?.subscription,
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -82,7 +86,9 @@ class MarketOfferCardView extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Posted ${_formatDate(offer.createdAt)}',
+                        !StringUtils.isNullOrEmpty(offer.createdAt)
+                            ? 'Posted ${_formatDate(offer.createdAt!)}'
+                            : '',
                         style: const TextStyle(
                           color: AppColors.grey,
                           fontSize: 14,
@@ -104,7 +110,7 @@ class MarketOfferCardView extends StatelessWidget {
 
             // Price
             Text(
-              '\$${offer.price.toStringAsFixed(2)}',
+              '\$${offer.price?.toStringAsFixed(2) ?? '0.00'}',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,

@@ -19,131 +19,50 @@ void main() {
     late MockLogger mockLogger;
     late MockGetDotaItemOffersUsecase mockGetOffersUsecase;
 
-    // Test data - Market Stats
-    const testMarketStats = MarketStatsModel(
-      pending: 0,
-      live: 5,
-      reserved: 0,
-      sold: 10,
-      removed: 0,
-      cancelled: 0,
-      bidLive: 0,
-      bidCompleted: 0,
-      deliveryNoHit: 0,
-      deliveryNameVerified: 0,
-      deliverySenderVerified: 0,
-      deliveryPrivate: 0,
-      deliveryError: 0,
-      inventoryNoHit: 0,
-      inventoryVerified: 0,
-      inventoryPrivate: 0,
-      inventoryError: 0,
-      resellLive: 0,
-      resellReserved: 0,
-      resellSold: 0,
-      resellRemoved: 0,
-      resellCancelled: 0,
-    );
-
     // Test data - Users
     const testUser1 = UserModel(
       id: 'user1',
-      steamId: 'steam1',
       name: 'Test User 1',
-      url: 'https://example.com/user1',
       avatar: 'https://example.com/avatar1.png',
-      status: 1,
-      notes: '',
-      donation: 0,
-      createdAt: '2023-01-01T00:00:00Z',
-      updatedAt: '2023-01-01T00:00:00Z',
-      marketStats: testMarketStats,
-      rankScore: 100,
       subscription: 1,
-      subscriptionType: 'premium',
-      hammer: false,
     );
 
     const testUser2 = UserModel(
       id: 'user2',
-      steamId: 'steam2',
       name: 'Test User 2',
-      url: 'https://example.com/user2',
       avatar: 'https://example.com/avatar2.png',
-      status: 1,
-      notes: '',
-      donation: 0,
-      createdAt: '2023-01-02T00:00:00Z',
-      updatedAt: '2023-01-02T00:00:00Z',
-      marketStats: testMarketStats,
-      rankScore: 50,
       subscription: 0,
-      subscriptionType: 'basic',
-      hammer: false,
     );
 
     // Test data - Offers
     const testOffer1 = MarketListingModel(
       id: 'offer1',
-      userId: 'user1',
-      itemId: 'item1',
-      type: 1,
       status: 1,
       price: 100.0,
-      currency: 'USD',
-      partnerSteamId: 'partner1',
-      notes: '',
       createdAt: '2023-01-01T00:00:00Z',
-      updatedAt: '2023-01-01T00:00:00Z',
       inventoryStatus: 1,
-      deliveryStatus: 1,
       user: testUser1,
       item: DotaItemModel(id: 'item1', name: 'Test Item 1'),
-      inventory: null,
-      sellerSteamId: 'seller1',
-      userRankScore: 100,
     );
 
     const testOffer2 = MarketListingModel(
       id: 'offer2',
-      userId: 'user2',
-      itemId: 'item2',
-      type: 1,
       status: 1,
       price: 200.0,
-      currency: 'USD',
-      partnerSteamId: 'partner2',
-      notes: '',
       createdAt: '2023-01-02T00:00:00Z',
-      updatedAt: '2023-01-02T00:00:00Z',
       inventoryStatus: 1,
-      deliveryStatus: 1,
       user: testUser2,
       item: DotaItemModel(id: 'item2', name: 'Test Item 2'),
-      inventory: null,
-      sellerSteamId: 'seller2',
-      userRankScore: 50,
     );
 
     const testOffer3 = MarketListingModel(
       id: 'offer3',
-      userId: 'user1',
-      itemId: 'item3',
-      type: 1,
       status: 1,
       price: 150.0,
-      currency: 'USD',
-      partnerSteamId: 'partner3',
-      notes: '',
       createdAt: '2023-01-03T00:00:00Z',
-      updatedAt: '2023-01-03T00:00:00Z',
       inventoryStatus: 1,
-      deliveryStatus: 1,
       user: testUser1,
       item: DotaItemModel(id: 'item3', name: 'Test Item 3'),
-      inventory: null,
-      sellerSteamId: 'seller3',
-      userRankScore: 100,
     );
 
     const testItemId = 'test-item-id';
