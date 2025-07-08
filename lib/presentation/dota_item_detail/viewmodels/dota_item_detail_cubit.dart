@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,13 +13,17 @@ import 'package:injectable/injectable.dart';
 class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
     with CubitErrorMixin<DotaItemDetailState> {
   final OffersListCubit offersListCubit;
+  final BuyOrdersListCubit buyOrdersListCubit;
 
   final Logger _logger;
 
   String? _itemId;
 
-  DotaItemDetailCubit(this.offersListCubit, this._logger)
-    : super(const DotaItemDetailState()) {
+  DotaItemDetailCubit(
+    this.offersListCubit,
+    this.buyOrdersListCubit,
+    this._logger,
+  ) : super(const DotaItemDetailState()) {
     _logger.logFor(this);
   }
 
@@ -38,6 +43,7 @@ class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
     }
 
     unawaited(offersListCubit.getNewOffers());
+    unawaited(buyOrdersListCubit.getNewBuyOrders());
   }
 
   void onTabChanged(MarketTab tab) {
@@ -53,5 +59,6 @@ class DotaItemDetailCubit extends BaseCubit<DotaItemDetailState>
     }
 
     offersListCubit.setItemId(_itemId!);
+    buyOrdersListCubit.setItemId(_itemId!);
   }
 }

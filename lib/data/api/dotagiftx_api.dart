@@ -30,7 +30,7 @@ abstract interface class DotagiftxApi {
     @Query('limit') int limit,
     @Query('type') int type,
     @Query('status') int status,
-    @Query('inventory_status') int inventoryStatus,
+    @Query('inventory_status') int? inventoryStatus,
     @Query('sort') String sort,
     @Query('index') String index,
   );

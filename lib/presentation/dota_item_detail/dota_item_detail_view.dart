@@ -4,11 +4,14 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/buy_orders_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/dota_item_market_detail_subview.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_listing_filter_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_list_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -212,31 +215,46 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Tabs
+                        // Tab Bar with Dynamic Counts
                         BlocBuilder<OffersListCubit, OffersListState>(
                           bloc:
                               context
                                   .read<DotaItemDetailCubit>()
                                   .offersListCubit,
-                          builder: (context, state) {
-                            return TabBar(
-                              controller: _tabController,
-                              labelColor: Colors.white,
-                              unselectedLabelColor: AppColors.grey,
-                              indicatorColor: AppColors.primary,
-                              tabs: [
-                                Tab(
-                                  text: I18n.of(context).dotaItemDetailOffers(
-                                    state.totalOffersCount.toString(),
-                                  ),
-                                ),
-                                // TODO(tenten): Add buy orders count
-                                Tab(
-                                  text: I18n.of(
-                                    context,
-                                  ).dotaItemDetailBuyOrders(0),
-                                ),
-                              ],
+                          builder: (context, offersState) {
+                            return BlocBuilder<
+                              BuyOrdersListCubit,
+                              BuyOrdersListState
+                            >(
+                              bloc:
+                                  context
+                                      .read<DotaItemDetailCubit>()
+                                      .buyOrdersListCubit,
+                              builder: (context, buyOrdersState) {
+                                return TabBar(
+                                  controller: _tabController,
+                                  labelColor: Colors.white,
+                                  unselectedLabelColor: AppColors.grey,
+                                  indicatorColor: AppColors.primary,
+                                  tabs: [
+                                    Tab(
+                                      text: I18n.of(
+                                        context,
+                                      ).dotaItemDetailOffers(
+                                        offersState.totalOffersCount.toString(),
+                                      ),
+                                    ),
+                                    Tab(
+                                      text: I18n.of(
+                                        context,
+                                      ).dotaItemDetailBuyOrders(
+                                        buyOrdersState.totalBuyOrdersCount
+                                            .toString(),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
                         ),
@@ -249,38 +267,41 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                 ),
 
                 // Dynamic Tab Content as Slivers
-                if (_tabController.index == 0)
-                  // Offers Tab Content
-                  SliverToBoxAdapter(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height * 0.75,
-                      ),
-                      child: const ColoredBox(
-                        color: AppColors.black,
-                        child: OffersListView(),
-                      ),
-                    ),
-                  )
-                else
-                  // Buy Orders Tab Content
-                  SliverToBoxAdapter(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height * 0.8,
-                      ),
-                      child: Container(
-                        color: AppColors.black,
-                        padding: const EdgeInsets.all(64),
-                        child: const Center(
-                          child: Text(
-                            'Buy orders will be shown here',
-                            style: TextStyle(color: AppColors.grey),
+                BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
+                  buildWhen: (previous, current) => current.tab != previous.tab,
+                  builder: (context, state) {
+                    switch (state.tab) {
+                      case MarketTab.offers:
+                        // Offers Tab Content
+                        return SliverToBoxAdapter(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight:
+                                  MediaQuery.of(context).size.height * 0.75,
+                            ),
+                            child: const ColoredBox(
+                              color: AppColors.black,
+                              child: OffersListView(),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
+                        );
+                      case MarketTab.buyOrders:
+                        // Buy Orders Tab Content
+                        return SliverToBoxAdapter(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight:
+                                  MediaQuery.of(context).size.height * 0.75,
+                            ),
+                            child: const ColoredBox(
+                              color: AppColors.black,
+                              child: BuyOrdersListView(),
+                            ),
+                          ),
+                        );
+                    }
+                  },
+                ),
               ],
             ),
           ),

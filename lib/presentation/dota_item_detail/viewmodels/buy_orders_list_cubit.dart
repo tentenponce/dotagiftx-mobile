@@ -1,30 +1,30 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
-import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_orders_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class OffersListCubit extends BaseCubit<OffersListState>
-    with CubitErrorMixin<OffersListState> {
+class BuyOrdersListCubit extends BaseCubit<BuyOrdersListState>
+    with CubitErrorMixin<BuyOrdersListState> {
   final Logger _logger;
-  final GetDotaItemOffersUsecase _getOffersUsecase;
+  final GetDotaItemOrdersUsecase _getOrdersUsecase;
 
   int _currentPage = 1;
   String _itemId = '';
 
-  OffersListCubit(this._logger, this._getOffersUsecase)
-    : super(const OffersListState()) {
+  BuyOrdersListCubit(this._logger, this._getOrdersUsecase)
+    : super(const BuyOrdersListState()) {
     _logger.logFor(this);
   }
 
   @override
   Logger get logger => _logger;
 
-  Future<void> getNewOffers() async {
+  Future<void> getNewBuyOrders() async {
     if (state.isLoading) {
       return;
     }
@@ -32,12 +32,14 @@ class OffersListCubit extends BaseCubit<OffersListState>
     emit(state.copyWith(isLoading: true));
 
     await cubitHandler(
-      () => _getOffersUsecase.get(itemId: _itemId, page: 1, sort: state.sort),
+      () => _getOrdersUsecase.get(itemId: _itemId, page: 1, sort: state.sort),
       (response) async {
-        final (offers, totalCount) = response;
+        final (buyOrders, totalCount) = response;
 
         _currentPage = 1;
-        emit(state.copyWith(offers: offers, totalOffersCount: totalCount));
+        emit(
+          state.copyWith(buyOrders: buyOrders, totalBuyOrdersCount: totalCount),
+        );
       },
     );
 
@@ -47,13 +49,13 @@ class OffersListCubit extends BaseCubit<OffersListState>
   @override
   Future<void> init() async {}
 
-  Future<void> loadMoreOffers() async {
+  Future<void> loadMoreBuyOrders() async {
     if (state.isLoadingMore) {
       return;
     }
 
     // Check if there are more results based on total count
-    final hasMore = state.offers.length < state.totalOffersCount;
+    final hasMore = state.buyOrders.length < state.totalBuyOrdersCount;
     if (!hasMore) {
       return;
     }
@@ -63,19 +65,22 @@ class OffersListCubit extends BaseCubit<OffersListState>
     final nextPage = _currentPage + 1;
 
     await cubitHandler(
-      () => _getOffersUsecase.get(
+      () => _getOrdersUsecase.get(
         itemId: _itemId,
         page: nextPage,
         sort: state.sort,
       ),
       (response) async {
-        final (newOffers, totalCount) = response;
+        final (newBuyOrders, totalCount) = response;
 
-        final combinedOffers = [...state.offers, ...newOffers];
+        final updatedBuyOrders = [...state.buyOrders, ...newBuyOrders];
 
         _currentPage = nextPage;
         emit(
-          state.copyWith(offers: combinedOffers, totalOffersCount: totalCount),
+          state.copyWith(
+            buyOrders: updatedBuyOrders,
+            totalBuyOrdersCount: totalCount,
+          ),
         );
       },
     );
@@ -85,7 +90,7 @@ class OffersListCubit extends BaseCubit<OffersListState>
 
   void setItemId(String itemId) {
     _itemId = itemId;
-    unawaited(getNewOffers());
+    unawaited(getNewBuyOrders());
   }
 
   void sortBy(String sort) {
@@ -94,6 +99,6 @@ class OffersListCubit extends BaseCubit<OffersListState>
     }
 
     emit(state.copyWith(sort: sort));
-    unawaited(getNewOffers());
+    unawaited(getNewBuyOrders());
   }
 }
