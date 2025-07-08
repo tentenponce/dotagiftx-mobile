@@ -1,6 +1,7 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/item_verification_icon_view.dart';
@@ -89,7 +90,7 @@ class MarketOfferCardView extends StatelessWidget {
                       Text(
                         !StringUtils.isNullOrEmpty(offer.createdAt)
                             ? I18n.of(context).marketOfferCardPostedDate(
-                              _formatDate(offer.createdAt!),
+                              DateFormatUtils.formatDate(offer.createdAt!),
                             )
                             : '',
                         style: const TextStyle(
@@ -124,31 +125,5 @@ class MarketOfferCardView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDate(String dateString) {
-    try {
-      final date = DateTime.parse(dateString);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-
-      if (difference.inDays >= 30) {
-        final months = difference.inDays ~/ 30;
-        return '$months ${months == 1 ? 'month' : 'months'} ago';
-      } else if (difference.inDays >= 7) {
-        final weeks = difference.inDays ~/ 7;
-        return '$weeks ${weeks == 1 ? 'week' : 'weeks'} ago';
-      } else if (difference.inDays > 0) {
-        return '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} ago';
-      } else if (difference.inHours > 0) {
-        return '${difference.inHours} ${difference.inHours == 1 ? 'hour' : 'hours'} ago';
-      } else if (difference.inMinutes > 0) {
-        return '${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'} ago';
-      } else {
-        return 'Just now';
-      }
-    } catch (e) {
-      return 'Unknown';
-    }
   }
 }
