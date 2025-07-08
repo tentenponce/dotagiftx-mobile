@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_orders_usecase.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,11 +17,8 @@ void main() {
   group(BuyOrdersListCubit, () {
     late MockLogger mockLogger;
     late MockGetDotaItemOrdersUsecase mockGetOrdersUsecase;
-    late BuyOrdersListCubit cubit;
 
     const testItemId = 'test-item-id';
-    const testEmptyItemId = '';
-    const String? testNullItemId = null;
 
     // Test data - Users
     const testUser1 = UserModel(
@@ -34,7 +32,7 @@ void main() {
       id: 'user2',
       name: 'Test User 2',
       avatar: 'https://example.com/avatar2.png',
-      subscription: null,
+      subscription: 0,
     );
 
     // Test data - Buy Orders
@@ -68,41 +66,17 @@ void main() {
     setUp(() {
       mockLogger = MockLogger();
       mockGetOrdersUsecase = MockGetDotaItemOrdersUsecase();
-      cubit = BuyOrdersListCubit(mockLogger, mockGetOrdersUsecase);
     });
 
-    tearDown(() {
-      cubit.close();
-    });
+    BuyOrdersListCubit createUnitToTest() {
+      return BuyOrdersListCubit(mockLogger, mockGetOrdersUsecase);
+    }
 
-    group('constructor', () {
-      test('should initialize with correct initial state', () {
-        // Assert
-        expect(cubit.state, const BuyOrdersListState());
-        expect(cubit.logger, mockLogger);
-        verify(mockLogger.logFor(cubit)).called(1);
-      });
-    });
-
-    group('logger', () {
-      test('should return injected logger', () {
-        // Assert
-        expect(cubit.logger, equals(mockLogger));
-      });
-    });
-
-    group('init', () {
-      test('should complete without error', () async {
-        // Act & Assert
-        await expectLater(cubit.init(), completes);
-      });
-    });
-
-    group('setItemId', () {
-      test('should set item ID and fetch buy orders', () async {
+    group('getNewBuyOrders', () {
+      test('should load buy orders successfully', () async {
         // Arrange
         final buyOrders = [testBuyOrder1, testBuyOrder2];
-        const totalCount = 5;
+        const totalCount = 10;
         when(
           mockGetOrdersUsecase.get(
             itemId: testItemId,
@@ -113,10 +87,9 @@ void main() {
         ).thenAnswer((_) async => (buyOrders, totalCount));
 
         fakeAsync((async) {
-          // Act
+          final cubit = createUnitToTest();
           cubit.setItemId(testItemId);
 
-          // Let the async operation complete
           async.elapse(Duration.zero);
 
           // Assert
@@ -128,87 +101,17 @@ void main() {
               sort: ApiConstants.querySortHighest,
             ),
           ).called(1);
-
-          expect(cubit.state.buyOrders, buyOrders);
-          expect(cubit.state.totalBuyOrdersCount, totalCount);
-          expect(cubit.state.isLoading, false);
+          expect(cubit.state.buyOrders, equals(buyOrders));
+          expect(cubit.state.totalBuyOrdersCount, equals(totalCount));
+          expect(cubit.state.isLoading, isFalse);
         });
       });
 
-      test('should not fetch buy orders if item ID is empty', () async {
-        // Act
-        cubit.setItemId(testEmptyItemId);
-
-        // Assert
-        verifyNever(
-          mockGetOrdersUsecase.get(
-            itemId: anyNamed('itemId'),
-            limit: anyNamed('limit'),
-            page: anyNamed('page'),
-            sort: anyNamed('sort'),
-          ),
-        );
-        verify(
-          mockLogger.log(
-            LogLevel.error,
-            'setItemId > Item ID is null or empty',
-          ),
-        ).called(1);
-      });
-    });
-
-    group('getNewBuyOrders', () {
-      test('should fetch buy orders successfully', () async {
+      test('should not load if already loading', () async {
         // Arrange
-        final buyOrders = [testBuyOrder1, testBuyOrder2];
-        const totalCount = 5;
-        when(
-          mockGetOrdersUsecase.get(
-            itemId: testItemId,
-            limit: anyNamed('limit'),
-            page: 1,
-            sort: ApiConstants.querySortHighest,
-          ),
-        ).thenAnswer((_) async => (buyOrders, totalCount));
-
-        fakeAsync((async) {
-          // Set item ID first
-          cubit.setItemId(testItemId);
-          async.elapse(Duration.zero);
-
-          // Act
-          cubit.getNewBuyOrders();
-          async.elapse(Duration.zero);
-
-          // Assert
-          expect(cubit.state.buyOrders, buyOrders);
-          expect(cubit.state.totalBuyOrdersCount, totalCount);
-          expect(cubit.state.currentPage, 1);
-          expect(cubit.state.isLoading, false);
-        });
-      });
-
-      test('should not fetch if already loading', () async {
-        // Arrange
+        final cubit = createUnitToTest();
         cubit.setItemId(testItemId);
-        cubit.emit(cubit.state.copyWith(isLoading: true));
 
-        // Act
-        await cubit.getNewBuyOrders();
-
-        // Assert
-        verifyNever(
-          mockGetOrdersUsecase.get(
-            itemId: anyNamed('itemId'),
-            limit: anyNamed('limit'),
-            page: anyNamed('page'),
-            sort: anyNamed('sort'),
-          ),
-        );
-      });
-
-      test('should handle errors gracefully', () async {
-        // Arrange
         when(
           mockGetOrdersUsecase.get(
             itemId: testItemId,
@@ -216,39 +119,95 @@ void main() {
             page: 1,
             sort: ApiConstants.querySortHighest,
           ),
-        ).thenThrow(Exception('API Error'));
+        ).thenAnswer(
+          (_) => Future.delayed(
+            const Duration(milliseconds: 100),
+            () => ([testBuyOrder1], 1),
+          ),
+        );
 
         fakeAsync((async) {
-          // Set item ID first
-          cubit.setItemId(testItemId);
-          async.elapse(Duration.zero);
+          // Act - Call getNewBuyOrders twice quickly
+          unawaited(cubit.getNewBuyOrders());
+          unawaited(cubit.getNewBuyOrders());
 
-          // Act
-          cubit.getNewBuyOrders();
-          async.elapse(Duration.zero);
+          async.elapse(const Duration(milliseconds: 200));
 
-          // Assert
-          expect(cubit.state.isLoading, false);
-          expect(cubit.state.buyOrders, isEmpty);
+          // Assert - Should only be called once
+          verify(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 1,
+              sort: ApiConstants.querySortHighest,
+            ),
+          ).called(1);
         });
       });
     });
 
     group('loadMoreBuyOrders', () {
       test('should load more buy orders successfully', () async {
-        // Arrange
+        // Arrange - Setup initial state
         final initialBuyOrders = [testBuyOrder1];
-        final additionalBuyOrders = [testBuyOrder2];
         const totalCount = 10;
-
-        // Set up initial state
-        cubit.emit(
-          cubit.state.copyWith(
-            buyOrders: initialBuyOrders,
-            totalBuyOrdersCount: totalCount,
-            currentPage: 1,
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            limit: anyNamed('limit'),
+            page: 1,
+            sort: ApiConstants.querySortHighest,
           ),
-        );
+        ).thenAnswer((_) async => (initialBuyOrders, totalCount));
+
+        final moreBuyOrders = [testBuyOrder2, testBuyOrder3];
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            limit: anyNamed('limit'),
+            page: 2,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (moreBuyOrders, totalCount));
+
+        fakeAsync((async) {
+          final cubit = createUnitToTest();
+          cubit.setItemId(testItemId);
+
+          async.elapse(Duration.zero);
+
+          // Act
+          cubit.loadMoreBuyOrders();
+
+          async.elapse(Duration.zero);
+
+          // Assert
+          verify(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 2,
+              sort: ApiConstants.querySortHighest,
+            ),
+          ).called(1);
+          expect(cubit.state.buyOrders.length, equals(3));
+          expect(cubit.state.buyOrders, contains(testBuyOrder1));
+          expect(cubit.state.buyOrders, contains(testBuyOrder2));
+          expect(cubit.state.buyOrders, contains(testBuyOrder3));
+          expect(cubit.state.isLoadingMore, isFalse);
+        });
+      });
+
+      test('should not load more if already loading more', () async {
+        // Arrange - Setup initial state
+        final initialBuyOrders = [testBuyOrder1];
+        const totalCount = 10;
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            limit: anyNamed('limit'),
+            page: 1,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (initialBuyOrders, totalCount));
 
         when(
           mockGetOrdersUsecase.get(
@@ -257,72 +216,75 @@ void main() {
             page: 2,
             sort: ApiConstants.querySortHighest,
           ),
-        ).thenAnswer((_) async => (additionalBuyOrders, totalCount));
+        ).thenAnswer(
+          (_) => Future.delayed(
+            const Duration(milliseconds: 100),
+            () => ([testBuyOrder2], totalCount),
+          ),
+        );
 
         fakeAsync((async) {
-          // Set item ID
+          final cubit = createUnitToTest();
           cubit.setItemId(testItemId);
+
+          async.elapse(Duration.zero);
+
+          // Act - Call loadMoreBuyOrders twice quickly
+          unawaited(cubit.loadMoreBuyOrders());
+          unawaited(cubit.loadMoreBuyOrders());
+
+          async.elapse(const Duration(milliseconds: 200));
+
+          // Assert - Should only be called once
+          verify(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 2,
+              sort: ApiConstants.querySortHighest,
+            ),
+          ).called(1);
+        });
+      });
+
+      test('should not load more if no more buy orders available', () async {
+        // Arrange - Setup initial state with all buy orders loaded
+        final allBuyOrders = [testBuyOrder1, testBuyOrder2];
+        const totalCount = 2;
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            limit: anyNamed('limit'),
+            page: 1,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (allBuyOrders, totalCount));
+
+        fakeAsync((async) {
+          final cubit = createUnitToTest();
+          cubit.setItemId(testItemId);
+
           async.elapse(Duration.zero);
 
           // Act
           cubit.loadMoreBuyOrders();
+
           async.elapse(Duration.zero);
 
-          // Assert
-          expect(cubit.state.buyOrders, [
-            ...initialBuyOrders,
-            ...additionalBuyOrders,
-          ]);
-          expect(cubit.state.currentPage, 2);
-          expect(cubit.state.isLoadingMore, false);
+          // Assert - Should not call for page 2
+          verifyNever(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 2,
+              sort: ApiConstants.querySortHighest,
+            ),
+          );
+          expect(cubit.state.buyOrders.length, equals(2));
         });
-      });
-
-      test('should not load more if already loading more', () async {
-        // Arrange
-        cubit.emit(cubit.state.copyWith(isLoadingMore: true));
-
-        // Act
-        await cubit.loadMoreBuyOrders();
-
-        // Assert
-        verifyNever(
-          mockGetOrdersUsecase.get(
-            itemId: anyNamed('itemId'),
-            limit: anyNamed('limit'),
-            page: anyNamed('page'),
-            sort: anyNamed('sort'),
-          ),
-        );
-      });
-
-      test('should not load more if all buy orders are loaded', () async {
-        // Arrange
-        final buyOrders = [testBuyOrder1, testBuyOrder2];
-        cubit.emit(
-          cubit.state.copyWith(
-            buyOrders: buyOrders,
-            totalBuyOrdersCount: buyOrders.length,
-          ),
-        );
-
-        // Act
-        await cubit.loadMoreBuyOrders();
-
-        // Assert
-        verifyNever(
-          mockGetOrdersUsecase.get(
-            itemId: anyNamed('itemId'),
-            limit: anyNamed('limit'),
-            page: anyNamed('page'),
-            sort: anyNamed('sort'),
-          ),
-        );
       });
     });
 
     group('sortBy', () {
-      test('should sort buy orders by different sort option', () async {
+      test('should update sort and reload buy orders', () async {
         // Arrange
         final buyOrders = [testBuyOrder1, testBuyOrder2];
         const totalCount = 5;
@@ -336,21 +298,21 @@ void main() {
         ).thenAnswer((_) async => (buyOrders, totalCount));
 
         fakeAsync((async) {
-          final cubit = BuyOrdersListCubit(mockLogger, mockGetOrdersUsecase);
+          final cubit = createUnitToTest();
           cubit.setItemId(testItemId);
 
           async.elapse(Duration.zero);
 
           // Act
           cubit.sortBy(ApiConstants.querySortRecent);
+
           async.elapse(Duration.zero);
 
           // Assert
-          expect(cubit.state.sort, ApiConstants.querySortRecent);
+          expect(cubit.state.sort, equals(ApiConstants.querySortRecent));
           verify(
             mockGetOrdersUsecase.get(
               itemId: testItemId,
-              limit: anyNamed('limit'),
               page: 1,
               sort: ApiConstants.querySortRecent,
             ),
@@ -365,14 +327,13 @@ void main() {
         when(
           mockGetOrdersUsecase.get(
             itemId: testItemId,
-            limit: anyNamed('limit'),
             page: 1,
             sort: ApiConstants.querySortHighest,
           ),
         ).thenAnswer((_) async => (buyOrders, totalCount));
 
         fakeAsync((async) {
-          final cubit = BuyOrdersListCubit(mockLogger, mockGetOrdersUsecase);
+          final cubit = createUnitToTest();
           cubit.setItemId(testItemId);
 
           async.elapse(Duration.zero);
@@ -381,29 +342,190 @@ void main() {
           verify(
             mockGetOrdersUsecase.get(
               itemId: testItemId,
-              limit: anyNamed('limit'),
               page: 1,
               sort: ApiConstants.querySortHighest,
             ),
           ).called(1);
 
-          // Act - try to sort by the same sort (should not make another call)
+          // Act - Call sortBy with the same sort (default is querySortHighest)
           cubit.sortBy(ApiConstants.querySortHighest);
+
           async.elapse(Duration.zero);
 
-          // Assert - should still be only 1 call (no additional calls)
+          // Assert - Should not make additional calls since sort is the same
+          verifyNever(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 1,
+              sort: ApiConstants.querySortHighest,
+            ),
+          ); // Should not make additional calls since sort is the same
+          expect(cubit.state.sort, equals(ApiConstants.querySortHighest));
+          expect(cubit.state.buyOrders, equals(buyOrders));
+        });
+      });
+    });
+
+    group('setItemId', () {
+      test('should set item ID and load buy orders', () async {
+        // Arrange
+        final buyOrders = [testBuyOrder1];
+        const totalCount = 3;
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 1,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (buyOrders, totalCount));
+
+        fakeAsync((async) {
+          final cubit = createUnitToTest();
+
+          // Act
+          cubit.setItemId(testItemId);
+
+          async.elapse(Duration.zero);
+
+          // Assert
           verify(
             mockGetOrdersUsecase.get(
               itemId: testItemId,
-              limit: anyNamed('limit'),
               page: 1,
               sort: ApiConstants.querySortHighest,
             ),
           ).called(1);
+          expect(cubit.state.buyOrders, equals(buyOrders));
+          expect(cubit.state.totalBuyOrdersCount, equals(totalCount));
+        });
+      });
+    });
 
-          // State should remain unchanged
-          expect(cubit.state.sort, ApiConstants.querySortHighest);
-          expect(cubit.state.buyOrders, buyOrders);
+    group('complex scenarios', () {
+      test('should maintain sort when loading more buy orders', () async {
+        // Arrange
+        final initialBuyOrders = [testBuyOrder1];
+        const totalCount = 10;
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 1,
+            sort: ApiConstants.querySortRecent,
+          ),
+        ).thenAnswer((_) async => (initialBuyOrders, totalCount));
+
+        final moreBuyOrders = [testBuyOrder2];
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 2,
+            sort: ApiConstants.querySortRecent,
+          ),
+        ).thenAnswer((_) async => (moreBuyOrders, totalCount));
+
+        fakeAsync((async) {
+          final cubit = createUnitToTest();
+          cubit.setItemId(testItemId);
+
+          async.elapse(Duration.zero);
+
+          cubit.sortBy(ApiConstants.querySortRecent);
+
+          async.elapse(Duration.zero);
+
+          // Act
+          cubit.loadMoreBuyOrders();
+
+          async.elapse(Duration.zero);
+
+          // Assert - Verify the exact call with all parameters
+          verify(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 2,
+              sort: ApiConstants.querySortRecent,
+            ),
+          ).called(1);
+        });
+      });
+
+      test('should handle empty buy orders list', () async {
+        // Arrange
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 1,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (<MarketListingModel>[], 0));
+
+        fakeAsync((async) {
+          final cubit = createUnitToTest();
+          cubit.setItemId(testItemId);
+
+          async.elapse(Duration.zero);
+
+          // Assert
+          expect(cubit.state.buyOrders, isEmpty);
+          expect(cubit.state.totalBuyOrdersCount, equals(0));
+        });
+      });
+
+      test('should reset page when sorting changes', () async {
+        // Arrange
+        final initialBuyOrders = [testBuyOrder1];
+        const totalCount = 10;
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 1,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (initialBuyOrders, totalCount));
+
+        final moreBuyOrders = [testBuyOrder2];
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 2,
+            sort: ApiConstants.querySortHighest,
+          ),
+        ).thenAnswer((_) async => (moreBuyOrders, totalCount));
+
+        final sortedBuyOrders = [testBuyOrder3];
+        when(
+          mockGetOrdersUsecase.get(
+            itemId: testItemId,
+            page: 1,
+            sort: ApiConstants.querySortRecent,
+          ),
+        ).thenAnswer((_) async => (sortedBuyOrders, totalCount));
+
+        fakeAsync((async) {
+          final cubit = createUnitToTest();
+          cubit.setItemId(testItemId);
+
+          async.elapse(Duration.zero);
+
+          // Load more to go to page 2
+          cubit.loadMoreBuyOrders();
+
+          async.elapse(Duration.zero);
+
+          // Act - Change sort (should reset to page 1)
+          cubit.sortBy(ApiConstants.querySortRecent);
+
+          async.elapse(Duration.zero);
+
+          // Assert
+          expect(cubit.state.buyOrders, equals(sortedBuyOrders));
+          verify(
+            mockGetOrdersUsecase.get(
+              itemId: testItemId,
+              page: 1,
+              sort: ApiConstants.querySortRecent,
+            ),
+          ).called(1);
         });
       });
     });

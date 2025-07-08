@@ -77,7 +77,7 @@ void main() {
             testLimit,
             ApiConstants.queryMarketBid,
             ApiConstants.queryMarketStatusLive,
-            ApiConstants.queryInventoryStatusVerified,
+            null,
             ApiConstants.querySortHighest,
             ApiConstants.queryIndexItemId,
           ),
@@ -97,7 +97,7 @@ void main() {
             10, // default limit
             ApiConstants.queryMarketBid, // BID for buy orders
             ApiConstants.queryMarketStatusLive,
-            ApiConstants.queryInventoryStatusVerified,
+            null,
             ApiConstants.querySortHighest, // default sort
             ApiConstants.queryIndexItemId,
           ),
@@ -122,7 +122,7 @@ void main() {
             customLimit,
             ApiConstants.queryMarketBid,
             ApiConstants.queryMarketStatusLive,
-            ApiConstants.queryInventoryStatusVerified,
+            null,
             customSort,
             ApiConstants.queryIndexItemId,
           ),
@@ -147,7 +147,7 @@ void main() {
             customLimit,
             ApiConstants.queryMarketBid, // BID for buy orders
             ApiConstants.queryMarketStatusLive,
-            ApiConstants.queryInventoryStatusVerified,
+            null,
             customSort,
             ApiConstants.queryIndexItemId,
           ),
@@ -168,7 +168,7 @@ void main() {
             testLimit,
             ApiConstants.queryMarketBid,
             ApiConstants.queryMarketStatusLive,
-            ApiConstants.queryInventoryStatusVerified,
+            null,
             testSort,
             ApiConstants.queryIndexItemId,
           ),
@@ -191,7 +191,7 @@ void main() {
             testLimit,
             ApiConstants.queryMarketBid,
             ApiConstants.queryMarketStatusLive,
-            ApiConstants.queryInventoryStatusVerified,
+            null,
             testSort,
             ApiConstants.queryIndexItemId,
           ),

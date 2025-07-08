@@ -17,7 +17,9 @@ class OffersListCubit extends BaseCubit<OffersListState>
   String _itemId = '';
 
   OffersListCubit(this._logger, this._getOffersUsecase)
-    : super(const OffersListState());
+    : super(const OffersListState()) {
+    _logger.logFor(this);
+  }
 
   @override
   Logger get logger => _logger;
@@ -73,11 +75,7 @@ class OffersListCubit extends BaseCubit<OffersListState>
 
         _currentPage = nextPage;
         emit(
-          state.copyWith(
-            offers: combinedOffers,
-            totalOffersCount: totalCount,
-            isLoadingMore: false,
-          ),
+          state.copyWith(offers: combinedOffers, totalOffersCount: totalCount),
         );
       },
     );
@@ -85,13 +83,13 @@ class OffersListCubit extends BaseCubit<OffersListState>
     emit(state.copyWith(isLoadingMore: false));
   }
 
-  void setItemId(String value) {
-    _itemId = value;
+  void setItemId(String itemId) {
+    _itemId = itemId;
     unawaited(getNewOffers());
   }
 
   void sortBy(String sort) {
-    if (sort == state.sort) {
+    if (state.sort == sort) {
       return;
     }
 

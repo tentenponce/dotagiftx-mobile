@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
-import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_orders_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
@@ -12,11 +11,12 @@ import 'package:injectable/injectable.dart';
 class BuyOrdersListCubit extends BaseCubit<BuyOrdersListState>
     with CubitErrorMixin<BuyOrdersListState> {
   final Logger _logger;
-  final GetDotaItemOrdersUsecase _getDotaItemOrdersUsecase;
+  final GetDotaItemOrdersUsecase _getOrdersUsecase;
 
-  String? _itemId;
+  int _currentPage = 1;
+  String _itemId = '';
 
-  BuyOrdersListCubit(this._logger, this._getDotaItemOrdersUsecase)
+  BuyOrdersListCubit(this._logger, this._getOrdersUsecase)
     : super(const BuyOrdersListState()) {
     _logger.logFor(this);
   }
@@ -29,23 +29,16 @@ class BuyOrdersListCubit extends BaseCubit<BuyOrdersListState>
       return;
     }
 
-    emit(state.copyWith(isLoading: true, currentPage: 1));
+    emit(state.copyWith(isLoading: true));
 
     await cubitHandler(
-      () => _getDotaItemOrdersUsecase.get(
-        itemId: _itemId!,
-        page: 1,
-        sort: state.sort,
-      ),
+      () => _getOrdersUsecase.get(itemId: _itemId, page: 1, sort: state.sort),
       (response) async {
         final (buyOrders, totalCount) = response;
+
+        _currentPage = 1;
         emit(
-          state.copyWith(
-            buyOrders: buyOrders,
-            totalBuyOrdersCount: totalCount,
-            currentPage: 1,
-            isLoading: false,
-          ),
+          state.copyWith(buyOrders: buyOrders, totalBuyOrdersCount: totalCount),
         );
       },
     );
@@ -57,30 +50,36 @@ class BuyOrdersListCubit extends BaseCubit<BuyOrdersListState>
   Future<void> init() async {}
 
   Future<void> loadMoreBuyOrders() async {
-    if (state.isLoadingMore ||
-        state.buyOrders.length >= state.totalBuyOrdersCount) {
+    if (state.isLoadingMore) {
+      return;
+    }
+
+    // Check if there are more results based on total count
+    final hasMore = state.buyOrders.length < state.totalBuyOrdersCount;
+    if (!hasMore) {
       return;
     }
 
     emit(state.copyWith(isLoadingMore: true));
 
-    final nextPage = state.currentPage + 1;
+    final nextPage = _currentPage + 1;
 
     await cubitHandler(
-      () => _getDotaItemOrdersUsecase.get(
-        itemId: _itemId!,
+      () => _getOrdersUsecase.get(
+        itemId: _itemId,
         page: nextPage,
         sort: state.sort,
       ),
       (response) async {
         final (newBuyOrders, totalCount) = response;
+
         final updatedBuyOrders = [...state.buyOrders, ...newBuyOrders];
+
+        _currentPage = nextPage;
         emit(
           state.copyWith(
             buyOrders: updatedBuyOrders,
             totalBuyOrdersCount: totalCount,
-            currentPage: nextPage,
-            isLoadingMore: false,
           ),
         );
       },
@@ -90,11 +89,6 @@ class BuyOrdersListCubit extends BaseCubit<BuyOrdersListState>
   }
 
   void setItemId(String itemId) {
-    if (StringUtils.isNullOrEmpty(itemId)) {
-      logger.log(LogLevel.error, 'setItemId > Item ID is null or empty');
-      return;
-    }
-
     _itemId = itemId;
     unawaited(getNewBuyOrders());
   }

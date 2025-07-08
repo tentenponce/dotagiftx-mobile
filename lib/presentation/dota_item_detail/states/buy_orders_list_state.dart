@@ -11,7 +11,6 @@ abstract class BuyOrdersListState with _$BuyOrdersListState {
     @Default(false) bool isLoading,
     @Default(false) bool isLoadingMore,
     @Default(0) int totalBuyOrdersCount,
-    @Default(0) int currentPage,
     @Default(ApiConstants.querySortHighest) String sort,
   }) = _BuyOrdersListState;
 }
