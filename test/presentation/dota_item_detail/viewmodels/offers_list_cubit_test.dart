@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
-import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
@@ -37,32 +36,26 @@ void main() {
     // Test data - Offers
     const testOffer1 = MarketListingModel(
       id: 'offer1',
-      status: 1,
       price: 100.0,
       createdAt: '2023-01-01T00:00:00Z',
       inventoryStatus: 1,
       user: testUser1,
-      item: DotaItemModel(id: 'item1', name: 'Test Item 1'),
     );
 
     const testOffer2 = MarketListingModel(
       id: 'offer2',
-      status: 1,
       price: 200.0,
       createdAt: '2023-01-02T00:00:00Z',
       inventoryStatus: 1,
       user: testUser2,
-      item: DotaItemModel(id: 'item2', name: 'Test Item 2'),
     );
 
     const testOffer3 = MarketListingModel(
       id: 'offer3',
-      status: 1,
       price: 150.0,
       createdAt: '2023-01-03T00:00:00Z',
       inventoryStatus: 1,
       user: testUser1,
-      item: DotaItemModel(id: 'item3', name: 'Test Item 3'),
     );
 
     const testItemId = 'test-item-id';

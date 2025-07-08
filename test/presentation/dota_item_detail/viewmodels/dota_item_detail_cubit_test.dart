@@ -27,6 +27,16 @@ void main() {
       return DotaItemDetailCubit(mockOffersListCubit, mockLogger);
     }
 
+    group('logger', () {
+      test('should return the injected logger', () {
+        // Arrange
+        final cubit = createUnitToTest();
+
+        // Act & Assert
+        expect(cubit.logger, equals(mockLogger));
+      });
+    });
+
     group('onTabChanged', () {
       test('should change tab to offers', () async {
         // Arrange
