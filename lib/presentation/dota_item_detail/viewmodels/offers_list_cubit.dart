@@ -4,7 +4,7 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -91,6 +91,10 @@ class OffersListCubit extends BaseCubit<OffersListState>
   }
 
   void sortBy(String sort) {
+    if (sort == state.sort) {
+      return;
+    }
+
     emit(state.copyWith(sort: sort));
     unawaited(getNewOffers());
   }

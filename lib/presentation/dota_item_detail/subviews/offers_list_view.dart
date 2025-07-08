@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_offer_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/shimmer_market_listing_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';

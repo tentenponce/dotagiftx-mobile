@@ -1,5 +1,5 @@
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';

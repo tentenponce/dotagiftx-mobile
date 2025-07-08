@@ -5,7 +5,7 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/dota_item_market_detail_subview.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_listing_filter_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_list_view.dart';
