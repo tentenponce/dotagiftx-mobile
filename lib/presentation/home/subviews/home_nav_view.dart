@@ -4,10 +4,10 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textfield_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/trending_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -186,7 +186,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                                 if (entry is SectionHeaderEntry) {
                                   return _buildSectionHeader(entry.title);
                                 } else if (entry is ItemEntry) {
-                                  return TrendingItemCardView(item: entry.item);
+                                  return DotaItemCardView(item: entry.item);
                                 } else if (entry is ShimmerEntry) {
                                   return const ShimmerItemCardView();
                                 } else {

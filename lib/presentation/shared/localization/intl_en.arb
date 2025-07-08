@@ -10,5 +10,14 @@
     "homeSearchHint": "Search for {hint}",
     "treasuresSearchHint": "Search for treasure",
     "heroesSearchHint": "Search for hero",
-    "homeNavHeroes": "Heroes ({count})"
+    "homeNavHeroes": "Heroes ({count})",
+    "offersEmpty": "No offers available",
+    "dotaItemDetailOffers": "Offers ({count})",
+    "dotaItemDetailBuyOrders": "Buy Orders ({count})",
+    "userSubscriptionBadgeSupporter": "Supporter",
+    "userSubscriptionBadgeTrader": "Trader",
+    "userSubscriptionBadgePartner": "Partner",
+    "marketListingFilterLowestPrice": "Lowest Price",
+    "marketListingFilterRecent": "Recent",
+    "marketListingFilterTopSellers": "Top Sellers"
 }

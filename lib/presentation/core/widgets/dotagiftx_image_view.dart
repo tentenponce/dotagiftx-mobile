@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/viewmodels/dotagiftx_image_cubit.dart';
@@ -14,6 +15,7 @@ class DotagiftxImageView extends StatelessWidget
   final double? scale;
   final Widget? errorWidget;
   final Widget? loadingWidget;
+  final double? borderWidth;
 
   const DotagiftxImageView({
     required this.imageUrl,
@@ -24,6 +26,7 @@ class DotagiftxImageView extends StatelessWidget
     this.scale,
     this.errorWidget,
     this.loadingWidget,
+    this.borderWidth,
     super.key,
   });
 
@@ -31,35 +34,44 @@ class DotagiftxImageView extends StatelessWidget
   Widget buildView(BuildContext context) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     final resolvedScale = scale ?? devicePixelRatio;
+    final screenSize = MediaQuery.of(context).size;
 
     final image = BlocBuilder<DotagiftxImageCubit, String>(
       builder: (context, state) {
         String resolvedUrl;
         if (width != null && height != null) {
-          final scaledWidth = (resolvedScale * width!).round();
-          final scaledHeight = (resolvedScale * height!).round();
+          // Handle double.infinity values by using screen dimensions
+          final resolvedWidth =
+              width == double.infinity ? screenSize.width : width!;
+          final resolvedHeight =
+              height == double.infinity ? screenSize.height : height!;
+
+          final scaledWidth = (resolvedScale * resolvedWidth).round();
+          final scaledHeight = (resolvedScale * resolvedHeight).round();
           resolvedUrl = '$state${scaledWidth}x$scaledHeight/$imageUrl';
         } else {
           resolvedUrl = '$state$imageUrl';
         }
 
-        return Image.network(
-          resolvedUrl,
-          width: width,
-          height: height,
-          fit: fit,
-          scale: resolvedScale,
-          errorBuilder:
-              (context, error, stackTrace) =>
-                  errorWidget ?? const Icon(Icons.broken_image),
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return loadingWidget ??
-                const Center(child: CircularProgressIndicator());
-          },
-        );
+        return StringUtils.isNullOrEmpty(imageUrl)
+            ? errorWidget ?? const Icon(Icons.broken_image)
+            : Image.network(
+              resolvedUrl,
+              width: width,
+              height: height,
+              fit: fit,
+              scale: resolvedScale,
+              errorBuilder:
+                  (context, error, stackTrace) =>
+                      errorWidget ?? const Icon(Icons.broken_image),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return loadingWidget ??
+                    const Center(child: CircularProgressIndicator());
+              },
+            );
       },
     );
 
@@ -71,7 +83,7 @@ class DotagiftxImageView extends StatelessWidget
       decoration: BoxDecoration(
         border: Border.all(
           color: borderColor ?? Colors.transparent,
-          width: 2.0,
+          width: borderWidth ?? 2.0,
         ),
         borderRadius: BorderRadius.circular(6),
       ),

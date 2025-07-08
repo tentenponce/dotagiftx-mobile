@@ -125,7 +125,7 @@ class _TreasuresNavViewState extends StateBase<TreasuresNavView> {
                           }
 
                           final treasure = treasures[index];
-                          return TreasureCard(
+                          return TreasureCardView(
                             treasure: treasure,
                             onTap:
                                 () => widget.onTreasureTap?.call(
