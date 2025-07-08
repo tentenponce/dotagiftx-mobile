@@ -170,7 +170,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                   backgroundColor: AppColors.primary,
                                   foregroundColor: Colors.black,
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
+                                    vertical: 8,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
@@ -186,7 +186,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () {
-                                  // TODO: Implement place buy order functionality
+                                  // TODO(tenten): Implement place buy order functionality
                                 },
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: AppColors.primary,
@@ -194,7 +194,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                     color: AppColors.primary,
                                   ),
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
+                                    vertical: 8,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
@@ -227,7 +227,12 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                     state.totalOffersCount.toString(),
                                   ),
                                 ),
-                                const Tab(text: 'Buy Orders'),
+                                // TODO(tenten): Add buy orders count
+                                Tab(
+                                  text: I18n.of(
+                                    context,
+                                  ).dotaItemDetailBuyOrders(0),
+                                ),
                               ],
                             );
                           },

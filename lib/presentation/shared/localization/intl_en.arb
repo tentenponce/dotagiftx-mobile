@@ -13,6 +13,7 @@
     "homeNavHeroes": "Heroes ({count})",
     "offersEmpty": "No offers available",
     "dotaItemDetailOffers": "Offers ({count})",
+    "dotaItemDetailBuyOrders": "Buy Orders ({count})",
     "userSubscriptionBadgeSupporter": "Supporter",
     "userSubscriptionBadgeTrader": "Trader",
     "userSubscriptionBadgePartner": "Partner"
