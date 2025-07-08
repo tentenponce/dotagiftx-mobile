@@ -4,8 +4,10 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/dota_item_market_detail_subview.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_listing_filter_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
@@ -39,6 +41,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
   late ScrollController _scrollController;
   double _contentHeight = 550; // Default fallback height
   bool _hasCalculatedHeight = false;
+  bool _isScrolled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +151,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                 SliverAppBar(
                   pinned: true,
                   automaticallyImplyLeading: false,
-                  toolbarHeight: 74,
+                  toolbarHeight: 130, // Increased to accommodate filter buttons
                   flexibleSpace: Container(
                     color: AppColors.black,
                     padding: const EdgeInsets.only(
@@ -237,6 +240,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                             );
                           },
                         ),
+                        const SizedBox(height: 12),
+                        // Filter Buttons
+                        const MarketListingFilterButtonsView(),
                       ],
                     ),
                   ),
@@ -278,6 +284,30 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
               ],
             ),
           ),
+          // Top scroll shadow for offers section
+          if (_isScrolled && _tabController.index == 0)
+            Positioned(
+              top:
+                  kToolbarHeight +
+                  MediaQuery.of(context).padding.top +
+                  170, // After all pinned content including filter buttons
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 20,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.black.withValues(alpha: 0.8),
+                      AppColors.black.withValues(alpha: 0.4),
+                      AppColors.black.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -299,16 +329,24 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
     _tabController = TabController(length: 2, vsync: this);
     _scrollController = ScrollController();
     _tabController.addListener(() {
-      if (mounted) {
-        setState(() {
-          // TODO(tenten): this is to refresh tab state, find a different way instead of empty set state
-        });
-      }
+      cubit.onTabChanged(
+        _tabController.index == 0 ? MarketTab.offers : MarketTab.buyOrders,
+      );
     });
     _scrollController.addListener(_onScroll);
   }
 
   void _onScroll() {
+    // Check if we should show the scroll shadow
+    final shouldShowShadow =
+        _scrollController.offset >
+        _contentHeight - 40; // After content and some scroll into offers
+    if (shouldShowShadow != _isScrolled) {
+      setState(() {
+        _isScrolled = shouldShowShadow;
+      });
+    }
+
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       // Load more when user is 200 pixels from the bottom
@@ -318,7 +356,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
         final state = dotaItemDetailCubit.offersListCubit.state;
         if (state.totalOffersCount > state.offers.length &&
             !state.isLoadingMore) {
-          unawaited(dotaItemDetailCubit.loadMoreOffers());
+          unawaited(dotaItemDetailCubit.offersListCubit.loadMoreOffers());
         }
       }
     }

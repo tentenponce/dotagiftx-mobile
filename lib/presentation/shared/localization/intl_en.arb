@@ -16,5 +16,8 @@
     "dotaItemDetailBuyOrders": "Buy Orders ({count})",
     "userSubscriptionBadgeSupporter": "Supporter",
     "userSubscriptionBadgeTrader": "Trader",
-    "userSubscriptionBadgePartner": "Partner"
+    "userSubscriptionBadgePartner": "Partner",
+    "marketListingFilterLowestPrice": "Lowest Price",
+    "marketListingFilterRecent": "Recent",
+    "marketListingFilterTopSellers": "Top Sellers"
 }

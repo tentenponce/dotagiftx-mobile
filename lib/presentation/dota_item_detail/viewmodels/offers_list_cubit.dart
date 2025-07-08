@@ -14,6 +14,7 @@ class OffersListCubit extends BaseCubit<OffersListState>
   final GetDotaItemOffersUsecase _getOffersUsecase;
 
   int _currentPage = 1;
+  String _itemId = '';
 
   OffersListCubit(this._logger, this._getOffersUsecase)
     : super(const OffersListState());
@@ -21,21 +22,22 @@ class OffersListCubit extends BaseCubit<OffersListState>
   @override
   Logger get logger => _logger;
 
-  Future<void> getNewOffers(String itemId) async {
+  Future<void> getNewOffers() async {
     if (state.isLoading) {
       return;
     }
 
     emit(state.copyWith(isLoading: true));
 
-    await cubitHandler(() => _getOffersUsecase.get(itemId: itemId, page: 1), (
-      response,
-    ) async {
-      final (offers, totalCount) = response;
+    await cubitHandler(
+      () => _getOffersUsecase.get(itemId: _itemId, page: 1, sort: state.sort),
+      (response) async {
+        final (offers, totalCount) = response;
 
-      _currentPage = 1;
-      emit(state.copyWith(offers: offers, totalOffersCount: totalCount));
-    });
+        _currentPage = 1;
+        emit(state.copyWith(offers: offers, totalOffersCount: totalCount));
+      },
+    );
 
     emit(state.copyWith(isLoading: false));
   }
@@ -43,7 +45,7 @@ class OffersListCubit extends BaseCubit<OffersListState>
   @override
   Future<void> init() async {}
 
-  Future<void> loadMoreOffers(String itemId) async {
+  Future<void> loadMoreOffers() async {
     if (state.isLoadingMore) {
       return;
     }
@@ -59,7 +61,11 @@ class OffersListCubit extends BaseCubit<OffersListState>
     final nextPage = _currentPage + 1;
 
     await cubitHandler(
-      () => _getOffersUsecase.get(itemId: itemId, page: nextPage),
+      () => _getOffersUsecase.get(
+        itemId: _itemId,
+        page: nextPage,
+        sort: state.sort,
+      ),
       (response) async {
         final (newOffers, totalCount) = response;
 
@@ -77,5 +83,15 @@ class OffersListCubit extends BaseCubit<OffersListState>
     );
 
     emit(state.copyWith(isLoadingMore: false));
+  }
+
+  void setItemId(String value) {
+    _itemId = value;
+    unawaited(getNewOffers());
+  }
+
+  void sortBy(String sort) {
+    emit(state.copyWith(sort: sort));
+    unawaited(getNewOffers());
   }
 }

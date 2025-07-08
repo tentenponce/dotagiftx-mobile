@@ -6,10 +6,8 @@ part 'dota_item_detail_state.freezed.dart';
 @freezed
 abstract class DotaItemDetailState with _$DotaItemDetailState {
   const factory DotaItemDetailState({
-    @Default([]) List<MarketListingModel> offers,
-    @Default(false) bool isLoading,
-    @Default(false) bool isLoadingMore,
-    @Default(0) int totalOffersCount,
-    @Default(0) int currentPage,
+    @Default(MarketTab.offers) MarketTab tab,
   }) = _DotaItemDetailState;
 }
+
+enum MarketTab { offers, buyOrders }

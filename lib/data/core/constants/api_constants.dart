@@ -3,6 +3,7 @@ abstract final class ApiConstants {
   static const String querySortRecent = 'recent';
   static const String querySortPopular = 'popular';
   static const String querySortLowest = 'lowest';
+  static const String querySortBest = 'best';
 
   static const String queryIndexItemId = 'item_id';
 

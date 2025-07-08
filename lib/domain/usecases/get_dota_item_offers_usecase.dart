@@ -8,6 +8,7 @@ abstract interface class GetDotaItemOffersUsecase {
     required String itemId,
     int limit,
     int page,
+    String sort,
   });
 }
 
@@ -22,6 +23,7 @@ class GetDotaItemOffersUsecaseImpl implements GetDotaItemOffersUsecase {
     required String itemId,
     int limit = 10,
     int page = 1,
+    String sort = ApiConstants.querySortLowest,
   }) async {
     final response = await _dotagiftxApi.getMarkets(
       itemId,
@@ -30,7 +32,7 @@ class GetDotaItemOffersUsecaseImpl implements GetDotaItemOffersUsecase {
       ApiConstants.queryMarketAsk,
       ApiConstants.queryMarketStatusLive,
       ApiConstants.queryInventoryStatusVerified,
-      ApiConstants.querySortLowest,
+      sort,
       ApiConstants.queryIndexItemId,
     );
 
