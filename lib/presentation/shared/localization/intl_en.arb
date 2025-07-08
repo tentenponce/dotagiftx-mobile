@@ -12,6 +12,7 @@
     "heroesSearchHint": "Search for hero",
     "homeNavHeroes": "Heroes ({count})",
     "offersEmpty": "No offers available",
+    "buyOrdersEmpty": "No buy orders available",
     "dotaItemDetailOffers": "Offers ({count})",
     "dotaItemDetailBuyOrders": "Buy Orders ({count})",
     "userSubscriptionBadgeSupporter": "Supporter",
@@ -19,5 +20,9 @@
     "userSubscriptionBadgePartner": "Partner",
     "marketListingFilterLowestPrice": "Lowest Price",
     "marketListingFilterRecent": "Recent",
-    "marketListingFilterTopSellers": "Top Sellers"
+    "marketListingFilterTopSellers": "Top Sellers",
+    "marketListingFilterHighestPrice": "Highest Price",
+    "marketListingFilterTopBuyers": "Top Buyers",
+    "marketOfferCardPostedDate": "Posted {date}",
+    "marketBuyOrderCardOrderedDate": "Ordered {date}"
 }

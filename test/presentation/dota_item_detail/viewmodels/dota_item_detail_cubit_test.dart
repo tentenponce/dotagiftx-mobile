@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,11 +9,16 @@ import 'package:mockito/mockito.dart';
 
 import 'dota_item_detail_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<Logger>(), MockSpec<OffersListCubit>()])
+@GenerateNiceMocks([
+  MockSpec<Logger>(),
+  MockSpec<OffersListCubit>(),
+  MockSpec<BuyOrdersListCubit>(),
+])
 void main() {
   group(DotaItemDetailCubit, () {
     late MockLogger mockLogger;
     late MockOffersListCubit mockOffersListCubit;
+    late MockBuyOrdersListCubit mockBuyOrdersListCubit;
 
     const testItemId = 'test-item-id';
     const testEmptyItemId = '';
@@ -21,10 +27,15 @@ void main() {
     setUp(() {
       mockLogger = MockLogger();
       mockOffersListCubit = MockOffersListCubit();
+      mockBuyOrdersListCubit = MockBuyOrdersListCubit();
     });
 
     DotaItemDetailCubit createUnitToTest() {
-      return DotaItemDetailCubit(mockOffersListCubit, mockLogger);
+      return DotaItemDetailCubit(
+        mockOffersListCubit,
+        mockBuyOrdersListCubit,
+        mockLogger,
+      );
     }
 
     group('logger', () {

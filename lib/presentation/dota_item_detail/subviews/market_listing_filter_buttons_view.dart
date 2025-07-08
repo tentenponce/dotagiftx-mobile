@@ -1,5 +1,9 @@
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_filter_button_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -11,64 +15,105 @@ class MarketListingFilterButtonsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _offerFilterButton(
-          context: context,
-          label: I18n.of(context).marketListingFilterLowestPrice,
-          sort: ApiConstants.querySortLowest,
-        ),
-        const SizedBox(width: 8),
-        _offerFilterButton(
-          context: context,
-          label: I18n.of(context).marketListingFilterRecent,
-          sort: ApiConstants.querySortRecent,
-        ),
-        const SizedBox(width: 8),
-        _offerFilterButton(
-          context: context,
-          label: I18n.of(context).marketListingFilterTopSellers,
-          sort: ApiConstants.querySortBest,
-        ),
-      ],
+    return BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
+      buildWhen: (previous, current) => previous.tab != current.tab,
+      bloc: context.read<DotaItemDetailCubit>(),
+      builder: (context, state) {
+        switch (state.tab) {
+          case MarketTab.offers:
+            return _buildOffersFilterButtons(context);
+          case MarketTab.buyOrders:
+            return _buildBuyOrdersFilterButtons(context);
+        }
+      },
     );
   }
 
-  Widget _offerFilterButton({
-    required BuildContext context,
-    required String label,
-    required String sort,
-  }) {
+  Widget _buildBuyOrdersFilterButtons(BuildContext context) {
+    return BlocBuilder<BuyOrdersListCubit, BuyOrdersListState>(
+      buildWhen: (previous, current) => previous.sort != current.sort,
+      bloc: context.read<DotaItemDetailCubit>().buyOrdersListCubit,
+      builder: (context, state) {
+        return Row(
+          children: [
+            MarketFilterButtonView(
+              label: I18n.of(context).marketListingFilterHighestPrice,
+              sort: ApiConstants.querySortHighest,
+              currentSort: state.sort,
+              onTap: () {
+                context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
+                  ApiConstants.querySortHighest,
+                );
+              },
+            ),
+            const SizedBox(width: 8),
+            MarketFilterButtonView(
+              label: I18n.of(context).marketListingFilterRecent,
+              sort: ApiConstants.querySortRecent,
+              currentSort: state.sort,
+              onTap: () {
+                context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
+                  ApiConstants.querySortRecent,
+                );
+              },
+            ),
+            const SizedBox(width: 8),
+            MarketFilterButtonView(
+              label: I18n.of(context).marketListingFilterTopBuyers,
+              sort: ApiConstants.querySortBest,
+              currentSort: state.sort,
+              onTap: () {
+                context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
+                  ApiConstants.querySortBest,
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildOffersFilterButtons(BuildContext context) {
     return BlocBuilder<OffersListCubit, OffersListState>(
       buildWhen: (previous, current) => previous.sort != current.sort,
       bloc: context.read<DotaItemDetailCubit>().offersListCubit,
       builder: (context, state) {
-        return ElevatedButton(
-          onPressed: () {
-            context.read<DotaItemDetailCubit>().offersListCubit.sortBy(sort);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor:
-                state.sort == sort
-                    ? const Color.fromARGB(255, 214, 214, 214)
-                    : Colors.transparent,
-            foregroundColor:
-                state.sort == sort
-                    ? Colors.black
-                    : const Color.fromARGB(255, 214, 214, 214),
-            side: const BorderSide(
-              color: Color.fromRGBO(81, 81, 81, 1),
-              width: 1,
+        return Row(
+          children: [
+            MarketFilterButtonView(
+              label: I18n.of(context).marketListingFilterLowestPrice,
+              sort: ApiConstants.querySortLowest,
+              currentSort: state.sort,
+              onTap: () {
+                context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
+                  ApiConstants.querySortLowest,
+                );
+              },
             ),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
+            const SizedBox(width: 8),
+            MarketFilterButtonView(
+              label: I18n.of(context).marketListingFilterRecent,
+              sort: ApiConstants.querySortRecent,
+              currentSort: state.sort,
+              onTap: () {
+                context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
+                  ApiConstants.querySortRecent,
+                );
+              },
             ),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+            const SizedBox(width: 8),
+            MarketFilterButtonView(
+              label: I18n.of(context).marketListingFilterTopSellers,
+              sort: ApiConstants.querySortBest,
+              currentSort: state.sort,
+              onTap: () {
+                context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
+                  ApiConstants.querySortBest,
+                );
+              },
+            ),
+          ],
         );
       },
     );

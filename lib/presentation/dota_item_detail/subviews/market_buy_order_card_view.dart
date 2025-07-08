@@ -3,16 +3,15 @@ import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/item_verification_icon_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class MarketOfferCardView extends StatelessWidget {
-  final MarketListingModel offer;
+class MarketBuyOrderCardView extends StatelessWidget {
+  final MarketListingModel buyOrder;
   final VoidCallback onTap;
 
-  const MarketOfferCardView({
-    required this.offer,
+  const MarketBuyOrderCardView({
+    required this.buyOrder,
     required this.onTap,
     super.key,
   });
@@ -32,8 +31,8 @@ class MarketOfferCardView extends StatelessWidget {
             // User Avatar
             DotagiftxImageView(
               imageUrl:
-                  !StringUtils.isNullOrEmpty(offer.user?.avatar)
-                      ? offer.user!.avatar!
+                  !StringUtils.isNullOrEmpty(buyOrder.user?.avatar)
+                      ? buyOrder.user!.avatar!
                       : '',
               width: 48,
               height: 48,
@@ -62,7 +61,7 @@ class MarketOfferCardView extends StatelessWidget {
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 120),
                         child: Text(
-                          offer.user?.name ?? '',
+                          buyOrder.user?.name ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -76,34 +75,21 @@ class MarketOfferCardView extends StatelessWidget {
 
                       // User Badge
                       UserSubscriptionBadgeView(
-                        subscription: offer.user?.subscription,
+                        subscription: buyOrder.user?.subscription,
                       ),
                       const SizedBox(width: 8),
                     ],
                   ),
                   const SizedBox(height: 6),
 
-                  // Posted Date
-                  Row(
-                    children: [
-                      Text(
-                        !StringUtils.isNullOrEmpty(offer.createdAt)
-                            ? I18n.of(context).marketOfferCardPostedDate(
-                              _formatDate(offer.createdAt!),
-                            )
-                            : '',
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Verification Checkmark
-                      ItemVerificationIconView(
-                        status: offer.inventoryStatus,
-                        isResell: offer.resell,
-                      ),
-                    ],
+                  // Ordered Date (no verification icon)
+                  Text(
+                    !StringUtils.isNullOrEmpty(buyOrder.createdAt)
+                        ? I18n.of(context).marketBuyOrderCardOrderedDate(
+                          _formatDate(buyOrder.createdAt!),
+                        )
+                        : '',
+                    style: const TextStyle(color: AppColors.grey, fontSize: 14),
                   ),
                 ],
               ),
@@ -113,7 +99,7 @@ class MarketOfferCardView extends StatelessWidget {
 
             // Price
             Text(
-              '\$${offer.price?.toStringAsFixed(2) ?? '0.00'}',
+              '\$${buyOrder.price?.toStringAsFixed(2) ?? '0.00'}',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
