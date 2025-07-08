@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/ofer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_offer_card_view.dart';
@@ -54,11 +56,12 @@ class _OffersListViewState extends State<OffersListView> {
           );
         }
 
-        // Calculate total items: offers + loading indicator + bottom padding
+        // Calculate total items: offers + loading more shimmer items + bottom padding
+        final remainingOffers = state.totalOffersCount - state.offers.length;
+        final maxShimmerItems =
+            state.isLoadingMore ? min(remainingOffers, 10) : 0;
         final itemCount =
-            state.offers.length + // offers
-            (state.isLoadingMore ? 1 : 0) + // loading indicator
-            1; // bottom padding
+            state.offers.length + maxShimmerItems + 1; // +1 for bottom padding
 
         return ListView.builder(
           shrinkWrap: true,
@@ -78,14 +81,12 @@ class _OffersListViewState extends State<OffersListView> {
               );
             }
 
-            // Loading more indicator
-            if (state.isLoadingMore && index == state.offers.length) {
-              return const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                ),
-              );
+            // Check if this is a loading more shimmer item
+            if (state.isLoadingMore && index >= state.offers.length) {
+              final shimmerIndex = index - state.offers.length;
+              if (shimmerIndex < maxShimmerItems) {
+                return const ShimmerMarketListingCardView();
+              }
             }
 
             // Bottom padding (last item)
