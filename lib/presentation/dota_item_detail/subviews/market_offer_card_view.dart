@@ -103,7 +103,7 @@ class MarketOfferCardView extends StatelessWidget {
                                     ? I18n.of(
                                       context,
                                     ).marketOfferCardPostedDate(
-                                      DateFormatUtils.formatDate(
+                                      DateFormatUtils.formatDateAgo(
                                         offer.createdAt!,
                                       ),
                                     )

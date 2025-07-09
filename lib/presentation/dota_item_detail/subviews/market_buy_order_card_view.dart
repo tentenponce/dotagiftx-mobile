@@ -87,7 +87,7 @@ class MarketBuyOrderCardView extends StatelessWidget {
                   Text(
                     !StringUtils.isNullOrEmpty(buyOrder.createdAt)
                         ? I18n.of(context).marketBuyOrderCardOrderedDate(
-                          DateFormatUtils.formatDate(buyOrder.createdAt!),
+                          DateFormatUtils.formatDateAgo(buyOrder.createdAt!),
                         )
                         : '',
                     style: const TextStyle(color: AppColors.grey, fontSize: 14),

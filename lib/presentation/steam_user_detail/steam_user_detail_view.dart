@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -164,24 +165,24 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildActionButton(
-          'Steam Inventory',
+          I18n.of(context).steamUserDetailSteamInventoryButton,
           () => _showWebviewBottomSheet(
             'https://steamcommunity.com/profiles/${widget.steamUser.steamId}/inventory/',
-            'Steam Inventory',
+            I18n.of(context).steamUserDetailSteamInventoryButton,
           ),
         ),
         _buildActionButton(
-          'SteamRep',
+          I18n.of(context).steamUserDetailSteamRepButton,
           () => _showWebviewBottomSheet(
             'https://steamrep.com/search?q=${widget.steamUser.steamId}',
-            'SteamRep',
+            I18n.of(context).steamUserDetailSteamRepButton,
           ),
         ),
         _buildActionButton(
-          'Dotabuff',
+          I18n.of(context).steamUserDetailDotabuffButton,
           () => _showWebviewBottomSheet(
             'https://www.dotabuff.com/players/${widget.steamUser.steamId}',
-            'Dotabuff',
+            I18n.of(context).steamUserDetailDotabuffButton,
           ),
         ),
       ],
@@ -246,9 +247,11 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
           const SizedBox(height: 8),
 
           // Join Date (placeholder for now)
-          const Text(
-            'Joined a year ago',
-            style: TextStyle(color: AppColors.grey, fontSize: 14),
+          Text(
+            I18n.of(context).steamUserDetailJoinedDate(
+              DateFormatUtils.formatDateAgo(widget.steamUser.createdAt ?? ''),
+            ),
+            style: const TextStyle(color: AppColors.grey, fontSize: 14),
           ),
           const SizedBox(height: 12),
 

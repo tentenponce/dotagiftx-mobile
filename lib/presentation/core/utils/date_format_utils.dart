@@ -1,11 +1,14 @@
 abstract final class DateFormatUtils {
-  static String formatDate(String dateString) {
+  static String formatDateAgo(String dateString) {
     try {
       final date = DateTime.parse(dateString);
       final now = DateTime.now();
       final difference = now.difference(date);
 
-      if (difference.inDays >= 30) {
+      if (difference.inDays >= 365) {
+        final years = difference.inDays ~/ 365;
+        return '$years ${years == 1 ? 'year' : 'years'} ago';
+      } else if (difference.inDays >= 30) {
         final months = difference.inDays ~/ 30;
         return '$months ${months == 1 ? 'month' : 'months'} ago';
       } else if (difference.inDays >= 7) {

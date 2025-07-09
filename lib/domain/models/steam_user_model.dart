@@ -38,6 +38,7 @@ class SteamUserModel extends Equatable {
   final String? avatar;
   final int? subscription;
   final SteamUserMarketStatsModel? marketStats;
+  final String? createdAt;
 
   const SteamUserModel({
     required this.id,
@@ -47,6 +48,7 @@ class SteamUserModel extends Equatable {
     this.url,
     this.avatar,
     this.marketStats,
+    this.createdAt,
   });
 
   factory SteamUserModel.fromJson(Map<String, dynamic> json) =>
@@ -61,6 +63,7 @@ class SteamUserModel extends Equatable {
     steamId,
     url,
     marketStats,
+    createdAt,
   ];
 
   Map<String, dynamic> toJson() => _$SteamUserModelToJson(this);
