@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,7 +12,7 @@ class MarketListingModel extends Equatable {
   final double? price;
   final String? createdAt;
   final int? inventoryStatus;
-  final UserModel? user;
+  final SteamUserModel? user;
   final bool? resell;
 
   const MarketListingModel({
@@ -37,28 +38,4 @@ class MarketListingModel extends Equatable {
   ];
 
   Map<String, dynamic> toJson() => _$MarketListingModelToJson(this);
-}
-
-@CopyWith()
-@JsonSerializable(fieldRename: FieldRename.snake)
-class UserModel extends Equatable {
-  final String id;
-  final String? name;
-  final String? avatar;
-  final int? subscription;
-
-  const UserModel({
-    required this.id,
-    required this.subscription,
-    this.name,
-    this.avatar,
-  });
-
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
-
-  @override
-  List<Object?> get props => [id, subscription, name, avatar];
-
-  Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }

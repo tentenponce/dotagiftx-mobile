@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
 import 'package:fake_async/fake_async.dart';
@@ -19,14 +20,14 @@ void main() {
     late MockGetDotaItemOffersUsecase mockGetOffersUsecase;
 
     // Test data - Users
-    const testUser1 = UserModel(
+    const testUser1 = SteamUserModel(
       id: 'user1',
       name: 'Test User 1',
       avatar: 'https://example.com/avatar1.png',
       subscription: 1,
     );
 
-    const testUser2 = UserModel(
+    const testUser2 = SteamUserModel(
       id: 'user2',
       name: 'Test User 2',
       avatar: 'https://example.com/avatar2.png',
