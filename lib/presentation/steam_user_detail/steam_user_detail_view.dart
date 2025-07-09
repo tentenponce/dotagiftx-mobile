@@ -9,7 +9,7 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/steam_user_detail/guidelines_view.dart';
-import 'package:dotagiftx_mobile/presentation/steam_user_detail/user_detail_webview.dart';
+import 'package:dotagiftx_mobile/presentation/steam_user_detail/user_detail_webview_view.dart';
 import 'package:flutter/material.dart';
 
 class SteamUserDetailView extends StatefulWidget {
@@ -294,7 +294,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => WebViewBottomSheet(url: url, title: title),
+        builder: (context) => UserDetailWebviewView(url: url, title: title),
       ),
     );
   }

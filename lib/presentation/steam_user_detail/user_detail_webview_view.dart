@@ -6,17 +6,21 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewBottomSheet extends StatefulWidget {
+class UserDetailWebviewView extends StatefulWidget {
   final String url;
   final String title;
 
-  const WebViewBottomSheet({required this.url, required this.title, super.key});
+  const UserDetailWebviewView({
+    required this.url,
+    required this.title,
+    super.key,
+  });
 
   @override
-  State<WebViewBottomSheet> createState() => _WebViewBottomSheetState();
+  State<UserDetailWebviewView> createState() => _UserDetailWebviewViewState();
 }
 
-class _WebViewBottomSheetState extends State<WebViewBottomSheet> {
+class _UserDetailWebviewViewState extends State<UserDetailWebviewView> {
   late final WebViewController _controller;
   bool _isLoading = true;
 
