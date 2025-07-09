@@ -6,6 +6,8 @@ abstract final class RemoteConfigConstants {
 
   static const String defaultDotagiftxImageBaseUrl =
       'https://api.dotagiftx.com/images/';
+
+  static const String defaultMiddlemanUrl = 'https://dotagiftx.com/middleman';
   static const Iterable<TreasureModel> defaultTreasures = [
     TreasureModel(
       name: "Spring 2025 Heroes' Hoard",
@@ -188,4 +190,15 @@ abstract final class RemoteConfigConstants {
       rarity: 'mythical',
     ),
   ];
+
+  static String defaultDotabuffUrl(String steamId) =>
+      'https://www.dotabuff.com/players/$steamId';
+
+  static String defaultSteamInventoryUrl(String steamId) =>
+      'https://steamcommunity.com/profiles/$steamId/inventory/';
+  static String defaultSteamRepUrl(String steamId) =>
+      'https://steamrep.com/search?q=$steamId';
+
+  static String defaultTransactionHistoryUrl(String steamId) =>
+      'https://dotagiftx.com/profiles/$steamId/delivered';
 }

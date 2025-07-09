@@ -45,5 +45,9 @@
     "steamUserDetailGuideline5Prefix": "If you need a middleman, I only suggest you get ",
     "steamUserDetailGuideline5LinkText": "Middleman here",
     "steamUserDetailGuideline5Suffix": ".",
-    "steamUserDetailGuideline1LinkText": "inventory"
+    "steamUserDetailGuideline1LinkText": "inventory",
+    "guidelinesWebviewTitleInventory": "Steam Inventory",
+    "guidelinesWebviewTitleSteamRep": "SteamRep",
+    "guidelinesWebviewTitleTransactionHistory": "Transaction History",
+    "guidelinesWebviewTitleMiddleman": "Middleman Service"
 }

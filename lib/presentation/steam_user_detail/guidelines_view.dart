@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/gestures.dart';
@@ -35,8 +36,10 @@ class GuidelinesView extends StatelessWidget {
             isLink: true,
             onTap:
                 () => onShowWebview(
-                  'https://steamcommunity.com/profiles/${steamUser.steamId}/inventory/',
-                  'Dota 2 Inventory',
+                  RemoteConfigConstants.defaultSteamInventoryUrl(
+                    steamUser.steamId ?? '',
+                  ),
+                  I18n.of(context).guidelinesWebviewTitleInventory,
                 ),
           ),
           TextSegment(text: I18n.of(context).steamUserDetailGuideline1Suffix),
@@ -58,8 +61,10 @@ class GuidelinesView extends StatelessWidget {
             isLink: true,
             onTap:
                 () => onShowWebview(
-                  'https://steamrep.com/search?q=${steamUser.steamId}',
-                  'SteamRep',
+                  RemoteConfigConstants.defaultSteamRepUrl(
+                    steamUser.steamId ?? '',
+                  ),
+                  I18n.of(context).guidelinesWebviewTitleSteamRep,
                 ),
           ),
           TextSegment(text: I18n.of(context).steamUserDetailGuideline4Middle),
@@ -68,8 +73,10 @@ class GuidelinesView extends StatelessWidget {
             isLink: true,
             onTap: () {
               onShowWebview(
-                'https://dotagiftx.com/profiles/${steamUser.steamId}/delivered',
-                'Transaction History',
+                RemoteConfigConstants.defaultTransactionHistoryUrl(
+                  steamUser.steamId ?? '',
+                ),
+                I18n.of(context).guidelinesWebviewTitleTransactionHistory,
               );
             },
           ),
@@ -84,8 +91,8 @@ class GuidelinesView extends StatelessWidget {
             isLink: true,
             onTap:
                 () => onShowWebview(
-                  'https://dotagiftx.com/middleman',
-                  'Middleman Service',
+                  RemoteConfigConstants.defaultMiddlemanUrl,
+                  I18n.of(context).guidelinesWebviewTitleMiddleman,
                 ),
           ),
           TextSegment(text: I18n.of(context).steamUserDetailGuideline5Suffix),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
@@ -167,21 +168,27 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
         _buildActionButton(
           I18n.of(context).steamUserDetailSteamInventoryButton,
           () => _showWebviewBottomSheet(
-            'https://steamcommunity.com/profiles/${widget.steamUser.steamId}/inventory/',
+            RemoteConfigConstants.defaultSteamInventoryUrl(
+              widget.steamUser.steamId ?? '',
+            ),
             I18n.of(context).steamUserDetailSteamInventoryButton,
           ),
         ),
         _buildActionButton(
           I18n.of(context).steamUserDetailSteamRepButton,
           () => _showWebviewBottomSheet(
-            'https://steamrep.com/search?q=${widget.steamUser.steamId}',
+            RemoteConfigConstants.defaultSteamRepUrl(
+              widget.steamUser.steamId ?? '',
+            ),
             I18n.of(context).steamUserDetailSteamRepButton,
           ),
         ),
         _buildActionButton(
           I18n.of(context).steamUserDetailDotabuffButton,
           () => _showWebviewBottomSheet(
-            'https://www.dotabuff.com/players/${widget.steamUser.steamId}',
+            RemoteConfigConstants.defaultDotabuffUrl(
+              widget.steamUser.steamId ?? '',
+            ),
             I18n.of(context).steamUserDetailDotabuffButton,
           ),
         ),
