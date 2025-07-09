@@ -192,10 +192,15 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
   String _buildStatsText() {
     final stats = widget.steamUser.marketStats;
     if (stats == null) {
-      return '0 Items • 0 Reserved • 0 Delivered • 0 Bought';
+      return I18n.of(context).steamUserDetailStats(0, 0, 0, 0);
     }
 
-    return '${stats.live ?? 0} Items • ${stats.reserved ?? 0} Reserved • ${stats.sold ?? 0} Delivered • ${stats.bidCompleted ?? 0} Bought';
+    return I18n.of(context).steamUserDetailStats(
+      stats.live ?? 0,
+      stats.reserved ?? 0,
+      stats.sold ?? 0,
+      stats.bidCompleted ?? 0,
+    );
   }
 
   Widget _buildUserInfoSection() {
@@ -246,7 +251,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
             const SizedBox.shrink(),
           const SizedBox(height: 8),
 
-          // Join Date (placeholder for now)
+          // Join Date
           Text(
             I18n.of(context).steamUserDetailJoinedDate(
               DateFormatUtils.formatDateAgo(widget.steamUser.createdAt ?? ''),

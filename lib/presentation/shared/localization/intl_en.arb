@@ -28,6 +28,7 @@
     "steamUserDetailTitle": "Contact Seller",
     "steamUserDetailSteamProfileButton": "Steam Profile",
     "steamUserDetailJoinedDate": "Joined {date}",
+    "steamUserDetailStats": "{live} Items • {reserved} Reserved • {sold} Delivered • {bidCompleted} Bought",
     "steamUserDetailSteamInventoryButton": "Steam Inventory",
     "steamUserDetailSteamRepButton": "SteamRep",
     "steamUserDetailDotabuffButton": "Dotabuff",
