@@ -42,7 +42,7 @@ class SteamUserModel extends Equatable {
 
   const SteamUserModel({
     required this.id,
-    required this.subscription,
+    this.subscription,
     this.steamId,
     this.name,
     this.url,
