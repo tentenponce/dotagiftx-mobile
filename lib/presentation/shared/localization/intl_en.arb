@@ -24,5 +24,21 @@
     "marketListingFilterHighestPrice": "Highest Price",
     "marketListingFilterTopBuyers": "Top Buyers",
     "marketOfferCardPostedDate": "Posted {date}",
-    "marketBuyOrderCardOrderedDate": "Ordered {date}"
+    "marketBuyOrderCardOrderedDate": "Ordered {date}",
+    "steamUserDetailTitle": "Contact Seller",
+    "steamUserDetailSteamProfileButton": "Steam Profile",
+    "steamUserDetailGuidelinesTitle": "Guides for buying Giftables",
+    "steamUserDetailGuideline1Prefix": "Always check the item or set availability on seller's Dota 2 ",
+    "steamUserDetailGuideline1Suffix": ".",
+    "steamUserDetailGuideline2": "Ask seller to reserve the item to your profile. This can be use later for Scam Report and order details to avoid impersonation.",
+    "steamUserDetailGuideline3": "Dota 2 Giftables transaction only viable if the two steam user parties have been friends for 30 days.",
+    "steamUserDetailGuideline4Prefix": "As Giftables involves a party having to go first, please always check seller's reputation through ",
+    "steamUserDetailGuideline4Middle": " and ",
+    "steamUserDetailGuideline4LinkText1": "SteamRep",
+    "steamUserDetailGuideline4LinkText2": "transaction history",
+    "steamUserDetailGuideline4Suffix": ".",
+    "steamUserDetailGuideline5Prefix": "If you need a middleman, I only suggest you get ",
+    "steamUserDetailGuideline5LinkText": "Middleman here",
+    "steamUserDetailGuideline5Suffix": ".",
+    "steamUserDetailGuideline1LinkText": "inventory"
 }

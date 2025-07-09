@@ -2,6 +2,7 @@ import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_item_offers_usecase.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -16,14 +17,14 @@ void main() {
     late GetDotaItemOffersUsecaseImpl usecase;
 
     // Test data
-    const testUser1 = UserModel(
+    const testUser1 = SteamUserModel(
       id: 'user1',
       name: 'Test User 1',
       avatar: 'https://example.com/avatar1.png',
       subscription: 1,
     );
 
-    const testUser2 = UserModel(
+    const testUser2 = SteamUserModel(
       id: 'user2',
       name: 'Test User 2',
       avatar: 'https://example.com/avatar2.png',

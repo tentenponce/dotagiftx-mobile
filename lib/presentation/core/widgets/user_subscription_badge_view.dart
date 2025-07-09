@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 
 class UserSubscriptionBadgeView extends StatelessWidget {
   final int? subscription;
+  final double? fontSize;
 
-  const UserSubscriptionBadgeView({required this.subscription, super.key});
+  const UserSubscriptionBadgeView({
+    required this.subscription,
+    this.fontSize,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +18,13 @@ class UserSubscriptionBadgeView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: _getBadgeColor(),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(50),
       ),
       child: Text(
         _getUserBadge(context),
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
-          fontSize: 10,
+          fontSize: fontSize ?? 10,
           fontWeight: FontWeight.bold,
         ),
       ),

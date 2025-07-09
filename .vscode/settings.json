@@ -7,7 +7,7 @@
         "**/*.mocks.dart": true,
         "**/Gemfile": true,
         "**/Gemfile.lock": true,
-        "**/pubspec.lock": true,
+        "**/pubspec.lock": false,
         "**/*.freezed.dart": true,
     },
     "dart.flutterSdkPath": ".fvm/versions/3.29.3",

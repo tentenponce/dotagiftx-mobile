@@ -50,286 +50,305 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      body: Stack(
-        children: [
-          // Hidden measurement widget to adjust expanded height dynamically
-          // and not let title overlap with the content
-          Offstage(
-            child: MeasureSizeView(
-              onChange: (size) {
-                if (!_hasCalculatedHeight) {
-                  setState(() {
-                    // add 120 to account for the title to not overlap with the content
-                    _contentHeight = size.height + 120;
-                    _hasCalculatedHeight = true;
-                  });
-                }
-              },
-              child: DotaItemMarketDetailSubview(item: widget.item),
+      extendBody: false,
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        top: false, // Keep top false to allow SliverAppBar to handle status bar
+        bottom: true, // Ensure bottom respects navigation bar
+        child: Stack(
+          children: [
+            // Hidden measurement widget to adjust expanded height dynamically
+            // and not let title overlap with the content
+            Offstage(
+              child: MeasureSizeView(
+                onChange: (size) {
+                  if (!_hasCalculatedHeight) {
+                    setState(() {
+                      // add 120 to account for the title to not overlap with the content
+                      _contentHeight = size.height + 120;
+                      _hasCalculatedHeight = true;
+                    });
+                  }
+                },
+                child: DotaItemMarketDetailSubview(item: widget.item),
+              ),
             ),
-          ),
-          // Main content
-          RefreshIndicator(
-            onRefresh: () async {
-              context.read<DotaItemDetailCubit>().onSwipeToRefresh();
-            },
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                // Main collapsing header with item details
-                SliverAppBar(
-                  backgroundColor: AppColors.black,
-                  foregroundColor: Colors.white,
-                  scrolledUnderElevation: 0,
-                  surfaceTintColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  pinned: true,
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  expandedHeight: _contentHeight,
-                  flexibleSpace: LayoutBuilder(
-                    builder: (
-                      BuildContext context,
-                      BoxConstraints constraints,
-                    ) {
-                      final minExtent =
-                          kToolbarHeight + MediaQuery.of(context).padding.top;
+            // Main content
+            RefreshIndicator(
+              onRefresh: () async {
+                context.read<DotaItemDetailCubit>().onSwipeToRefresh();
+              },
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  // Main collapsing header with item details
+                  SliverAppBar(
+                    backgroundColor: AppColors.black,
+                    foregroundColor: Colors.white,
+                    scrolledUnderElevation: 0,
+                    surfaceTintColor: Colors.transparent,
+                    automaticallyImplyLeading: false,
+                    pinned: true,
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    expandedHeight: _contentHeight,
+                    flexibleSpace: LayoutBuilder(
+                      builder: (
+                        BuildContext context,
+                        BoxConstraints constraints,
+                      ) {
+                        final minExtent =
+                            kToolbarHeight + MediaQuery.of(context).padding.top;
 
-                      final t = ((constraints.maxHeight - minExtent) /
-                              (_contentHeight - minExtent))
-                          .clamp(0.0, 1.0);
+                        final t = ((constraints.maxHeight - minExtent) /
+                                (_contentHeight - minExtent))
+                            .clamp(0.0, 1.0);
 
-                      // Interpolated padding
-                      const double startPadding = 64; // when collapsed
-                      const double endPadding = 16; // when expanded
-                      final interpolatedPadding =
-                          startPadding * (1 - t) + endPadding * t;
+                        // Interpolated padding
+                        const double startPadding = 64; // when collapsed
+                        const double endPadding = 16; // when expanded
+                        final interpolatedPadding =
+                            startPadding * (1 - t) + endPadding * t;
 
-                      return FlexibleSpaceBar(
-                        title: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                widget.item.name ?? '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        titlePadding: EdgeInsets.only(
-                          left: interpolatedPadding,
-                          bottom: 18,
-                          right: 16,
-                        ),
-                        collapseMode: CollapseMode.parallax,
-                        background: Container(
-                          padding: EdgeInsets.only(top: minExtent),
-                          child: Stack(
+                        return FlexibleSpaceBar(
+                          title: Row(
                             children: [
-                              DotaItemMarketDetailSubview(item: widget.item),
-                              // Gradient overlay that fades to black when collapsed
-                              Positioned.fill(
-                                child: Container(
-                                  color: AppColors.black.withAlpha(
-                                    (255 * 1.0 * (1 - t)).toInt(),
+                              Expanded(
+                                child: Text(
+                                  widget.item.name ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          titlePadding: EdgeInsets.only(
+                            left: interpolatedPadding,
+                            bottom: 18,
+                            right: 16,
+                          ),
+                          collapseMode: CollapseMode.parallax,
+                          background: Container(
+                            padding: EdgeInsets.only(top: minExtent),
+                            child: Stack(
+                              children: [
+                                DotaItemMarketDetailSubview(item: widget.item),
+                                // Gradient overlay that fades to black when collapsed
+                                Positioned.fill(
+                                  child: Container(
+                                    color: AppColors.black.withAlpha(
+                                      (255 * 1.0 * (1 - t)).toInt(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Pinned Action Buttons and Tabs Section
+                  SliverAppBar(
+                    pinned: true,
+                    automaticallyImplyLeading: false,
+                    toolbarHeight:
+                        130, // Increased to accommodate filter buttons
+                    flexibleSpace: Container(
+                      color: AppColors.black,
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        bottom: 0,
+                      ),
+                      child: Column(
+                        children: [
+                          // Action Buttons
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // TODO: Implement post item functionality
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Post this item',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    // TODO(tenten): Implement place buy order functionality
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.primary,
+                                    side: const BorderSide(
+                                      color: AppColors.primary,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Place buy order',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      );
+                          const SizedBox(height: 16),
+                          // Tab Bar with Dynamic Counts
+                          BlocBuilder<OffersListCubit, OffersListState>(
+                            bloc:
+                                context
+                                    .read<DotaItemDetailCubit>()
+                                    .offersListCubit,
+                            builder: (context, offersState) {
+                              return BlocBuilder<
+                                BuyOrdersListCubit,
+                                BuyOrdersListState
+                              >(
+                                bloc:
+                                    context
+                                        .read<DotaItemDetailCubit>()
+                                        .buyOrdersListCubit,
+                                builder: (context, buyOrdersState) {
+                                  return TabBar(
+                                    controller: _tabController,
+                                    labelColor: Colors.white,
+                                    unselectedLabelColor: AppColors.grey,
+                                    indicatorColor: AppColors.primary,
+                                    tabs: [
+                                      Tab(
+                                        text: I18n.of(
+                                          context,
+                                        ).dotaItemDetailOffers(
+                                          offersState.totalOffersCount
+                                              .toString(),
+                                        ),
+                                      ),
+                                      Tab(
+                                        text: I18n.of(
+                                          context,
+                                        ).dotaItemDetailBuyOrders(
+                                          buyOrdersState.totalBuyOrdersCount
+                                              .toString(),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          // Filter Buttons
+                          const MarketListingFilterButtonsView(),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Dynamic Tab Content as Slivers
+                  BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
+                    buildWhen:
+                        (previous, current) => current.tab != previous.tab,
+                    builder: (context, state) {
+                      switch (state.tab) {
+                        case MarketTab.offers:
+                          // Offers Tab Content with bottom padding for navigation bar
+                          return SliverToBoxAdapter(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight:
+                                    MediaQuery.of(context).size.height * 0.75,
+                              ),
+                              child: Container(
+                                color: AppColors.black,
+                                padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context).padding.bottom,
+                                ),
+                                child: const OffersListView(),
+                              ),
+                            ),
+                          );
+                        case MarketTab.buyOrders:
+                          // Buy Orders Tab Content with bottom padding for navigation bar
+                          return SliverToBoxAdapter(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight:
+                                    MediaQuery.of(context).size.height * 0.75,
+                              ),
+                              child: Container(
+                                color: AppColors.black,
+                                padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context).padding.bottom,
+                                ),
+                                child: const BuyOrdersListView(),
+                              ),
+                            ),
+                          );
+                      }
                     },
                   ),
-                ),
-
-                // Pinned Action Buttons and Tabs Section
-                SliverAppBar(
-                  pinned: true,
-                  automaticallyImplyLeading: false,
-                  toolbarHeight: 130, // Increased to accommodate filter buttons
-                  flexibleSpace: Container(
-                    color: AppColors.black,
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      bottom: 0,
-                    ),
-                    child: Column(
-                      children: [
-                        // Action Buttons
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // TODO: Implement post item functionality
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  foregroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Post this item',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  // TODO(tenten): Implement place buy order functionality
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: AppColors.primary,
-                                  side: const BorderSide(
-                                    color: AppColors.primary,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Place buy order',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        // Tab Bar with Dynamic Counts
-                        BlocBuilder<OffersListCubit, OffersListState>(
-                          bloc:
-                              context
-                                  .read<DotaItemDetailCubit>()
-                                  .offersListCubit,
-                          builder: (context, offersState) {
-                            return BlocBuilder<
-                              BuyOrdersListCubit,
-                              BuyOrdersListState
-                            >(
-                              bloc:
-                                  context
-                                      .read<DotaItemDetailCubit>()
-                                      .buyOrdersListCubit,
-                              builder: (context, buyOrdersState) {
-                                return TabBar(
-                                  controller: _tabController,
-                                  labelColor: Colors.white,
-                                  unselectedLabelColor: AppColors.grey,
-                                  indicatorColor: AppColors.primary,
-                                  tabs: [
-                                    Tab(
-                                      text: I18n.of(
-                                        context,
-                                      ).dotaItemDetailOffers(
-                                        offersState.totalOffersCount.toString(),
-                                      ),
-                                    ),
-                                    Tab(
-                                      text: I18n.of(
-                                        context,
-                                      ).dotaItemDetailBuyOrders(
-                                        buyOrdersState.totalBuyOrdersCount
-                                            .toString(),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        // Filter Buttons
-                        const MarketListingFilterButtonsView(),
+                ],
+              ),
+            ),
+            // Top scroll shadow for offers section
+            if (_isScrolled && _tabController.index == 0)
+              Positioned(
+                top:
+                    kToolbarHeight +
+                    MediaQuery.of(context).padding.top +
+                    170, // After all pinned content including filter buttons
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 20,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.black.withValues(alpha: 0.8),
+                        AppColors.black.withValues(alpha: 0.4),
+                        AppColors.black.withValues(alpha: 0.0),
                       ],
                     ),
                   ),
                 ),
-
-                // Dynamic Tab Content as Slivers
-                BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
-                  buildWhen: (previous, current) => current.tab != previous.tab,
-                  builder: (context, state) {
-                    switch (state.tab) {
-                      case MarketTab.offers:
-                        // Offers Tab Content
-                        return SliverToBoxAdapter(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight:
-                                  MediaQuery.of(context).size.height * 0.75,
-                            ),
-                            child: const ColoredBox(
-                              color: AppColors.black,
-                              child: OffersListView(),
-                            ),
-                          ),
-                        );
-                      case MarketTab.buyOrders:
-                        // Buy Orders Tab Content
-                        return SliverToBoxAdapter(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight:
-                                  MediaQuery.of(context).size.height * 0.75,
-                            ),
-                            child: const ColoredBox(
-                              color: AppColors.black,
-                              child: BuyOrdersListView(),
-                            ),
-                          ),
-                        );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          // Top scroll shadow for offers section
-          if (_isScrolled && _tabController.index == 0)
-            Positioned(
-              top:
-                  kToolbarHeight +
-                  MediaQuery.of(context).padding.top +
-                  170, // After all pinned content including filter buttons
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 20,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.black.withValues(alpha: 0.8),
-                      AppColors.black.withValues(alpha: 0.4),
-                      AppColors.black.withValues(alpha: 0.0),
-                    ],
-                  ),
-                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
