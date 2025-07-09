@@ -30,8 +30,8 @@ class GuidelinesView extends StatelessWidget {
         const SizedBox(height: 16),
 
         _buildGuidelineItem([
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline1Prefix),
-          TextSegment(
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline1Prefix),
+          _TextSegment(
             text: I18n.of(context).steamUserDetailGuideline1LinkText,
             isLink: true,
             onTap:
@@ -42,12 +42,12 @@ class GuidelinesView extends StatelessWidget {
                   I18n.of(context).guidelinesWebviewTitleInventory,
                 ),
           ),
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline1Suffix),
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline1Suffix),
         ]),
         const SizedBox(height: 12),
 
         _buildGuidelineItem([
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline2),
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline2),
         ]),
         const SizedBox(height: 12),
 
@@ -55,8 +55,8 @@ class GuidelinesView extends StatelessWidget {
         const SizedBox(height: 12),
 
         _buildGuidelineItem([
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline4Prefix),
-          TextSegment(
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline4Prefix),
+          _TextSegment(
             text: I18n.of(context).steamUserDetailGuideline4LinkText1,
             isLink: true,
             onTap:
@@ -67,8 +67,8 @@ class GuidelinesView extends StatelessWidget {
                   I18n.of(context).guidelinesWebviewTitleSteamRep,
                 ),
           ),
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline4Middle),
-          TextSegment(
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline4Middle),
+          _TextSegment(
             text: I18n.of(context).steamUserDetailGuideline4LinkText2,
             isLink: true,
             onTap: () {
@@ -80,13 +80,13 @@ class GuidelinesView extends StatelessWidget {
               );
             },
           ),
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline4Suffix),
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline4Suffix),
         ]),
         const SizedBox(height: 12),
 
         _buildGuidelineItem([
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline5Prefix),
-          TextSegment(
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline5Prefix),
+          _TextSegment(
             text: I18n.of(context).steamUserDetailGuideline5LinkText,
             isLink: true,
             onTap:
@@ -95,13 +95,13 @@ class GuidelinesView extends StatelessWidget {
                   I18n.of(context).guidelinesWebviewTitleMiddleman,
                 ),
           ),
-          TextSegment(text: I18n.of(context).steamUserDetailGuideline5Suffix),
+          _TextSegment(text: I18n.of(context).steamUserDetailGuideline5Suffix),
         ]),
       ],
     );
   }
 
-  Widget _buildGuidelineItem(List<TextSegment> segments) {
+  Widget _buildGuidelineItem(List<_TextSegment> segments) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -138,14 +138,6 @@ class GuidelinesView extends StatelessWidget {
   }
 }
 
-class TextSegment {
-  final String text;
-  final bool isLink;
-  final VoidCallback? onTap;
-
-  const TextSegment({required this.text, this.isLink = false, this.onTap});
-}
-
 class _GuidelineItem extends StatelessWidget {
   final String text;
 
@@ -166,4 +158,12 @@ class _GuidelineItem extends StatelessWidget {
       ],
     );
   }
+}
+
+class _TextSegment {
+  final String text;
+  final bool isLink;
+  final VoidCallback? onTap;
+
+  const _TextSegment({required this.text, this.isLink = false, this.onTap});
 }
