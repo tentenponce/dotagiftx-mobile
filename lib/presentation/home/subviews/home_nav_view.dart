@@ -9,6 +9,7 @@ import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textf
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,6 +51,19 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
         foregroundColor: Colors.white,
         scrolledUnderElevation: 0,
         surfaceTintColor: AppColors.black,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            onPressed: () {
+              unawaited(
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RoadmapView()),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
