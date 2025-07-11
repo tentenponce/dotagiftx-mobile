@@ -50,9 +50,14 @@ class _HomeViewState extends StateBase<_HomeView> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+            if (index == 3) {
+              // Navigate to RoadmapView instead of changing tab
+              _navigateToRoadmap();
+            } else {
+              setState(() {
+                _currentIndex = index;
+              });
+            }
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: AppColors.darkGrey,
@@ -89,7 +94,6 @@ class _HomeViewState extends StateBase<_HomeView> {
       const HomeNavView(),
       TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
       HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
-      const RoadmapView(),
     ];
   }
 
@@ -101,5 +105,13 @@ class _HomeViewState extends StateBase<_HomeView> {
 
     // Set search query in HomeCubit
     unawaited(context.read<HomeCubit>().searchCatalog(query: searchQuery));
+  }
+
+  void _navigateToRoadmap() {
+    unawaited(
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => const RoadmapView())),
+    );
   }
 }

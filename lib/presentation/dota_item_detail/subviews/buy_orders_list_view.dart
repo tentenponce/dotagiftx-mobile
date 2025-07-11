@@ -75,13 +75,7 @@ class _BuyOrdersListViewState extends State<BuyOrdersListView> {
             // Buy Orders
             if (index < state.buyOrders.length) {
               final buyOrder = state.buyOrders[index];
-              return MarketBuyOrderCardView(
-                buyOrder: buyOrder,
-                onTap: () {
-                  // TODO(tenten): Handle contact buyer
-                  debugPrint('Contact buyer: ${buyOrder.user?.name}');
-                },
-              );
+              return MarketBuyOrderCardView(buyOrder: buyOrder);
             }
 
             // Check if this is a loading more shimmer item
