@@ -1,7 +1,9 @@
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
-import 'package:dotagiftx_mobile/data/config/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
+import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_votes_usecase.dart';
+import 'package:dotagiftx_mobile/domain/usecases/submit_vote_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:injectable/injectable.dart';
@@ -11,19 +13,59 @@ class RoadmapCubit extends BaseCubit<List<RoadmapModel>>
     with CubitErrorMixin<List<RoadmapModel>> {
   final Logger _logger;
   final DotagiftxRemoteConfig _dotagiftxRemoteConfig;
+  final SubmitVoteUsecase _submitVoteUsecase;
+  final GetVotesUsecase _getVotesUsecase;
 
-  RoadmapCubit(this._logger, this._dotagiftxRemoteConfig)
-    : super(RemoteConfigConstants.defaultRoadmap.toList());
+  RoadmapCubit(
+    this._logger,
+    this._dotagiftxRemoteConfig,
+    this._submitVoteUsecase,
+    this._getVotesUsecase,
+  ) : super(RemoteConfigConstants.defaultRoadmap.toList());
 
   @override
   Logger get logger => _logger;
 
   @override
   Future<void> init() async {
-    await cubitHandler<Iterable<RoadmapModel>>(
-      _dotagiftxRemoteConfig.getRoadmap,
+    await cubitHandler<List<RoadmapModel>>(
+      () async {
+        final roadmap = await _dotagiftxRemoteConfig.getRoadmap();
+        final votes = await _getVotesUsecase.getVotes();
+
+        return roadmap.map((roadmap) {
+          return roadmap.copyWith(
+            isVoted: votes.any((vote) => vote.featureId == roadmap.id),
+          );
+        }).toList();
+      },
       (roadmap) async {
-        emit(roadmap.toList());
+        emit(roadmap);
+      },
+    );
+  }
+
+  Future<void> vote(String featureId) async {
+    final roadmap =
+        state.map((roadmap) {
+          if (roadmap.id == featureId) {
+            return roadmap.copyWith(isVoted: true);
+          }
+          return roadmap;
+        }).toList();
+    emit(roadmap);
+
+    await cubitHandler<void>(
+      () async {
+        await _submitVoteUsecase.vote(featureId);
+      },
+      (_) async {},
+      onError: (error) async {
+        _logger.log(
+          LogLevel.error,
+          'Error voting for feature $featureId',
+          error,
+        );
       },
     );
   }

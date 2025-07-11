@@ -8,32 +8,40 @@ abstract final class RemoteConfigConstants {
 
   static const Iterable<RoadmapModel> defaultRoadmap = [
     RoadmapModel(
+      id: 'initial_login',
       title: 'Initial Login',
       description: 'Allows you to manage your listings and orders',
       icon: '0xe3b2',
       isCompleted: false,
       isActive: true,
+      isVoted: false,
     ),
     RoadmapModel(
+      id: 'notification',
       title: 'Notification System',
       description: 'Real-time notifications for your offers, and orders',
       icon: '0xe450',
       isCompleted: false,
       isActive: true,
+      isVoted: false,
     ),
     RoadmapModel(
+      id: 'in_app_messaging',
       title: 'In-app Messaging',
       description: 'In-app messaging between users for seamless communication',
       icon: '0xe155',
       isCompleted: false,
       isActive: false,
+      isVoted: false,
     ),
     RoadmapModel(
+      id: 'listings_and_orders',
       title: 'Create Listings & Orders',
       description: 'Create sell listings and buy orders in the app',
       icon: '0xe04c',
       isCompleted: false,
       isActive: false,
+      isVoted: false,
     ),
   ];
 

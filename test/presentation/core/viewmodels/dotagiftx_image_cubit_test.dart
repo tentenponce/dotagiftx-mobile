@@ -1,6 +1,6 @@
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
-import 'package:dotagiftx_mobile/data/config/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
+import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/presentation/core/viewmodels/dotagiftx_image_cubit.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';

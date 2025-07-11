@@ -60,5 +60,8 @@
     "roadmapViewSuggestionDescription": "We'd love to hear your ideas! Share your thoughts on what features would make your experience even better.",
     "roadmapViewSuggestionHint": "Share your thoughts...",
     "roadmapViewSubmitSuggestionButton": "Submit Suggestion",
-    "roadmapViewSubmitSuggestionSuccess": "Thank you for your suggestion! We'll review it and consider it for future updates."
+    "roadmapViewSubmitSuggestionSuccess": "Thank you for your suggestion! We'll review it and consider it for future updates.",
+    "roadmapItemViewInProgress": "In Progress",
+    "roadmapItemViewCompleted": "Completed",
+    "roadmapItemViewSuccessVote": "Thanks for your vote!"
 }
