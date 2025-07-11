@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,6 +72,10 @@ class _HomeViewState extends StateBase<_HomeView> {
               icon: const Icon(Icons.groups),
               label: I18n.of(context).homeHeroes,
             ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.account_circle),
+              label: I18n.of(context).homeProfile,
+            ),
           ],
         ),
       ),
@@ -84,6 +89,7 @@ class _HomeViewState extends StateBase<_HomeView> {
       const HomeNavView(),
       TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
       HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
+      const RoadmapView(),
     ];
   }
 
