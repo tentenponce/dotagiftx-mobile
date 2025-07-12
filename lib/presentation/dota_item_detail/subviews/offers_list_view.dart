@@ -72,13 +72,7 @@ class _OffersListViewState extends State<OffersListView> {
             // Offers
             if (index < state.offers.length) {
               final offer = state.offers[index];
-              return MarketOfferCardView(
-                offer: offer,
-                onTap: () {
-                  // TODO(tenten): Handle contact seller
-                  debugPrint('Contact seller: ${offer.user?.name}');
-                },
-              );
+              return MarketOfferCardView(offer: offer);
             }
 
             // Check if this is a loading more shimmer item

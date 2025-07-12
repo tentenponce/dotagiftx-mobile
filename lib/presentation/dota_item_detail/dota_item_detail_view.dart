@@ -14,6 +14,7 @@ import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_l
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -176,7 +177,15 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // TODO: Implement post item functionality
+                                    unawaited(
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => const RoadmapView(),
+                                        ),
+                                      ),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primary,
@@ -188,9 +197,11 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: const Text(
-                                    'Post this item',
-                                    style: TextStyle(
+                                  child: Text(
+                                    I18n.of(
+                                      context,
+                                    ).dotaItemDetailPostItemButton,
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -200,7 +211,15 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                               Expanded(
                                 child: OutlinedButton(
                                   onPressed: () {
-                                    // TODO(tenten): Implement place buy order functionality
+                                    unawaited(
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => const RoadmapView(),
+                                        ),
+                                      ),
+                                    );
                                   },
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: AppColors.primary,
@@ -214,9 +233,11 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: const Text(
-                                    'Place buy order',
-                                    style: TextStyle(
+                                  child: Text(
+                                    I18n.of(
+                                      context,
+                                    ).dotaItemDetailBuyOrderButton,
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

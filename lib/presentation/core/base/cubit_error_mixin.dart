@@ -21,14 +21,20 @@ mixin CubitErrorMixin<State> on BaseCubit<State> {
       }
     } catch (e, st) {
       if (!isClosed) {
-        logger.log(LogLevel.error, 'Failed calling: $call', e, st);
-        onError != null ? await onError(e) : await defaultErrorHandler(e);
+        onError != null
+            ? await onError(e)
+            : await defaultErrorHandler(call, e, st);
       }
     }
   }
 
-  Future<T?> defaultErrorHandler<T extends Object?>(Object? exception) {
+  Future<T?> defaultErrorHandler<T extends Object?>(
+    Future<T?> Function() call,
+    Object? exception,
+    StackTrace? stackTrace,
+  ) {
     // TODO(tenten): Implement default error handler
+    logger.log(LogLevel.error, 'Failed calling: $call', exception, stackTrace);
     return Future.value(null);
   }
 }

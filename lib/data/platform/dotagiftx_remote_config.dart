@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/core/platform/app_remote_config/app_remote_conf
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/hero_model.dart';
+import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
 import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,8 @@ abstract interface class DotagiftxRemoteConfig {
   Future<String> getDotagiftxImageBaseUrl();
 
   Future<Iterable<HeroModel>> getHeroes();
+
+  Future<Iterable<RoadmapModel>> getRoadmap();
 
   Future<Iterable<TreasureModel>> getTreasures();
 }
@@ -41,6 +44,31 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
     final heroesString = await rootBundle.loadString(Assets.json.heroes);
     final heroesJson = jsonDecode(heroesString) as List<dynamic>;
     return heroesJson.map((e) => HeroModel.fromJson(e as Map<String, dynamic>));
+  }
+
+  @override
+  Future<Iterable<RoadmapModel>> getRoadmap() async {
+    final roadmapString = await _appRemoteConfig.tryGetData<String>(
+      RemoteConfigConstants.keyRoadmap,
+    );
+
+    if (!StringUtils.isNullOrEmpty(roadmapString)) {
+      try {
+        final roadmapJson = jsonDecode(roadmapString!) as List<dynamic>;
+        return roadmapJson
+            .map((e) => e as Map<String, dynamic>)
+            .map(RoadmapModel.fromJson);
+      } catch (e) {
+        _logger.log(
+          LogLevel.error,
+          'Error parsing roadmap from remote config',
+          e,
+        );
+        return RemoteConfigConstants.defaultRoadmap;
+      }
+    }
+
+    return RemoteConfigConstants.defaultRoadmap;
   }
 
   @override

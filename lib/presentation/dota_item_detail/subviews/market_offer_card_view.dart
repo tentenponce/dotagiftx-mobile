@@ -13,13 +13,8 @@ import 'package:flutter/material.dart';
 
 class MarketOfferCardView extends StatelessWidget {
   final MarketListingModel offer;
-  final VoidCallback onTap;
 
-  const MarketOfferCardView({
-    required this.offer,
-    required this.onTap,
-    super.key,
-  });
+  const MarketOfferCardView({required this.offer, super.key});
 
   @override
   Widget build(BuildContext context) {

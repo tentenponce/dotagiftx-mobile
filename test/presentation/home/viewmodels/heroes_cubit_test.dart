@@ -1,5 +1,5 @@
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
-import 'package:dotagiftx_mobile/data/config/dotagiftx_remote_config.dart';
+import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/hero_model.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/heroes_cubit.dart';
 import 'package:fake_async/fake_async.dart';
