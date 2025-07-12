@@ -8,16 +8,15 @@ part 'suggestion_model.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class SuggestionModel extends Equatable {
   final String? userId;
-  final String? featureId;
   final String? comment;
 
-  const SuggestionModel({this.userId, this.featureId, this.comment});
+  const SuggestionModel({this.userId, this.comment});
 
   factory SuggestionModel.fromJson(Map<String, dynamic> json) =>
       _$SuggestionModelFromJson(json);
 
   @override
-  List<Object?> get props => [userId, featureId, comment];
+  List<Object?> get props => [userId, comment];
 
   Map<String, dynamic> toJson() => _$SuggestionModelToJson(this);
 }

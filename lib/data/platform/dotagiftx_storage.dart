@@ -8,7 +8,7 @@ import 'package:dotagiftx_mobile/domain/models/vote_model.dart';
 import 'package:injectable/injectable.dart';
 
 abstract interface class DotagiftxStorage {
-  Future<void> submitSuggestion(String featureId, String comment);
+  Future<void> submitSuggestion(String comment);
 
   Future<void> submitVote(String featureId);
 }
@@ -21,14 +21,10 @@ class DotagiftxStorageImpl implements DotagiftxStorage {
   DotagiftxStorageImpl(this._appStorage, this._keychainStorage);
 
   @override
-  Future<void> submitSuggestion(String featureId, String comment) async {
+  Future<void> submitSuggestion(String comment) async {
     final userId = await _keychainStorage.getValue(KeychainKeys.userId);
 
-    final suggestion = SuggestionModel(
-      userId: userId,
-      featureId: featureId,
-      comment: comment,
-    );
+    final suggestion = SuggestionModel(userId: userId, comment: comment);
 
     final timestamp = FieldValue.serverTimestamp();
     final suggestionWithTimestamp =
@@ -37,6 +33,7 @@ class DotagiftxStorageImpl implements DotagiftxStorage {
     await _appStorage.write(
       StorageConstants.collectionSuggestions,
       suggestionWithTimestamp,
+      docId: userId,
     );
   }
 

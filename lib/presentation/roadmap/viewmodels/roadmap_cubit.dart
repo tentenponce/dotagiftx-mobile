@@ -3,6 +3,7 @@ import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dar
 import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_votes_usecase.dart';
+import 'package:dotagiftx_mobile/domain/usecases/submit_suggestion_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/submit_vote_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
@@ -15,12 +16,14 @@ class RoadmapCubit extends BaseCubit<List<RoadmapModel>>
   final DotagiftxRemoteConfig _dotagiftxRemoteConfig;
   final SubmitVoteUsecase _submitVoteUsecase;
   final GetVotesUsecase _getVotesUsecase;
+  final SubmitSuggestionUsecase _submitSuggestionUsecase;
 
   RoadmapCubit(
     this._logger,
     this._dotagiftxRemoteConfig,
     this._submitVoteUsecase,
     this._getVotesUsecase,
+    this._submitSuggestionUsecase,
   ) : super(RemoteConfigConstants.defaultRoadmap.toList());
 
   @override
@@ -45,7 +48,14 @@ class RoadmapCubit extends BaseCubit<List<RoadmapModel>>
     );
   }
 
+  Future<void> submitSuggestion(String suggestion) async {
+    await cubitHandler<void>(() async {
+      await _submitSuggestionUsecase.submit(suggestion);
+    }, (_) async {}); // ignore if success or error, just submit
+  }
+
   Future<void> vote(String featureId) async {
+    // optimistic update, don't wait for the result regardless if error occurs
     final roadmap =
         state.map((roadmap) {
           if (roadmap.id == featureId) {
@@ -55,18 +65,8 @@ class RoadmapCubit extends BaseCubit<List<RoadmapModel>>
         }).toList();
     emit(roadmap);
 
-    await cubitHandler<void>(
-      () async {
-        await _submitVoteUsecase.vote(featureId);
-      },
-      (_) async {},
-      onError: (error) async {
-        _logger.log(
-          LogLevel.error,
-          'Error voting for feature $featureId',
-          error,
-        );
-      },
-    );
+    await cubitHandler<void>(() async {
+      await _submitVoteUsecase.vote(featureId);
+    }, (_) async {});
   }
 }

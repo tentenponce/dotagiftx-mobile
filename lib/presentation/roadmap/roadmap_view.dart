@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
@@ -10,19 +12,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RoadmapView extends StatefulWidget {
+class RoadmapView extends StatelessWidget with ViewCubitMixin<RoadmapCubit> {
   const RoadmapView({super.key});
 
   @override
-  State<RoadmapView> createState() => _RoadmapViewState();
+  Widget buildView(BuildContext context) {
+    return _RoadmapView();
+  }
 }
 
-class _RoadmapViewState extends State<RoadmapView>
-    with ViewCubitMixin<RoadmapCubit> {
+class _RoadmapView extends StatefulWidget {
+  @override
+  State<_RoadmapView> createState() => _RoadmapViewState();
+}
+
+class _RoadmapViewState extends State<_RoadmapView> {
   final TextEditingController _suggestionController = TextEditingController();
 
   @override
-  Widget buildView(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
@@ -236,6 +244,10 @@ class _RoadmapViewState extends State<RoadmapView>
   }
 
   void _submitSuggestion() {
+    unawaited(
+      context.read<RoadmapCubit>().submitSuggestion(_suggestionController.text),
+    );
+
     // Handle suggestion submission
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
