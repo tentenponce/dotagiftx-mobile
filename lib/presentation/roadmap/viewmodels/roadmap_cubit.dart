@@ -2,6 +2,7 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
+import 'package:dotagiftx_mobile/domain/models/vote_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_votes_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/submit_suggestion_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/submit_vote_usecase.dart';
@@ -34,7 +35,15 @@ class RoadmapCubit extends BaseCubit<List<RoadmapModel>>
     await cubitHandler<List<RoadmapModel>>(
       () async {
         final roadmap = await _dotagiftxRemoteConfig.getRoadmap();
-        final votes = await _getVotesUsecase.getVotes();
+
+        Iterable<VoteModel> votes = [];
+
+        // ignore error from votes, should still return roadmap properly
+        try {
+          votes = await _getVotesUsecase.getVotes();
+        } catch (e) {
+          _logger.log(LogLevel.error, 'Error getting votes', e);
+        }
 
         return roadmap.map((roadmap) {
           return roadmap.copyWith(
