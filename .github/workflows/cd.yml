@@ -1,7 +1,10 @@
 name: Release
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Code Quality"]
+    types:
+      - completed
     branches:
       - 'feature/deploy'
 
@@ -10,11 +13,70 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Check CI workflow result
+      run: |
+        if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+          echo "❌ Code Quality workflow failed or was cancelled"
+          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
+          exit 1
+        fi
+        echo "✅ Code Quality workflow completed successfully"
+        echo "Proceeding with release build..."
+    
+    - name: Workflow run info
+      run: |
+        echo "## Workflow Run Information" >> $GITHUB_STEP_SUMMARY
+        echo "- **Triggering Workflow:** ${{ github.event.workflow_run.name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Workflow Run ID:** ${{ github.event.workflow_run.id }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch:** ${{ github.event.workflow_run.head_branch }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Conclusion:** ${{ github.event.workflow_run.conclusion }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Workflow URL:** ${{ github.event.workflow_run.html_url }}" >> $GITHUB_STEP_SUMMARY
+    
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.workflow_run.head_sha }}
 
-    - name: Setup Flutter Environment
-      uses: ./.github/actions/setup-flutter
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.29.3'
+        channel: 'stable'
+
+    - name: Cache Flutter dependencies
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.pub-cache
+          ${{ github.workspace }}/.dart_tool
+        key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          flutter-deps-${{ runner.os }}-
+
+    - name: Cache status
+      run: |
+        if [ "${{ steps.cache.outputs.cache-hit }}" = "true" ]; then
+          echo "✅ Using cached Flutter dependencies (faster build)"
+        else
+          echo "🔄 Installing Flutter dependencies (first time or cache miss)"
+        fi
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate internationalization code
+      run: |
+        echo "🌍 Generating internationalization code..."
+        flutter pub run intl_utils:generate
+        echo "✅ Internationalization code generated"
+
+    - name: Code generation
+      run: |
+        echo "🔧 Running code generation..."
+        dart run build_runner build --delete-conflicting-outputs
+        echo "✅ Code generation completed"
 
     - name: Setup production environment and keystore
       env:
@@ -112,8 +174,15 @@ jobs:
           ## Release ${{ steps.version.outputs.version }}
           
           **Version:** `${{ steps.version.outputs.version }}` (from pubspec.yaml)
-          **Build Date:** ${{ github.event.head_commit.timestamp }}
-          **Commit:** ${{ github.sha }}
+          **Build Date:** ${{ github.event.workflow_run.updated_at }}
+          **Branch:** ${{ github.event.workflow_run.head_branch }}
+          **Commit:** ${{ github.event.workflow_run.head_sha }}
+          
+          ### Quality Assurance
+          ✅ **Code Quality Check:** [Passed](${{ github.event.workflow_run.html_url }})
+          - All tests passed with >80% coverage
+          - Code analysis completed successfully
+          - Ready for production deployment
           
           ### Downloads
           - **app-arm64-v8a-release.apk** - For most modern Android devices (64-bit ARM)
@@ -123,7 +192,11 @@ jobs:
           Choose the APK that matches your device architecture. Most users should download **app-arm64-v8a-release.apk**.
           
           ### How to Update Version
-          To release a new version, update the `version` field in `pubspec.yaml` and push to `feature/deploy` branch.
+          To release a new version:
+          1. Update the `version` field in `pubspec.yaml`
+          2. Push to `feature/deploy` branch
+          3. Wait for Code Quality workflow to pass
+          4. Release will be automatically created
         draft: false
         prerelease: false
 
