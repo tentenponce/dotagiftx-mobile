@@ -7,6 +7,8 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
     
     steps:
     - name: Checkout code
@@ -19,6 +21,7 @@ jobs:
         channel: 'stable'
 
     - name: Cache Flutter dependencies
+      id: cache
       uses: actions/cache@v4
       with:
         path: |
@@ -29,6 +32,7 @@ jobs:
           flutter-deps-${{ runner.os }}-
 
     - name: Get dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: flutter pub get
 
   analyze:
@@ -38,6 +42,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Cache status
+      run: |
+        echo "Cache hit: ${{ needs.setup.outputs.cache-hit }}"
+        if [ "${{ needs.setup.outputs.cache-hit }}" = "true" ]; then
+          echo "✅ Using cached dependencies (fast path)"
+        else
+          echo "🔄 Dependencies were updated (slower path)"
+        fi
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -74,6 +87,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Cache status
+      run: |
+        echo "Cache hit: ${{ needs.setup.outputs.cache-hit }}"
+        if [ "${{ needs.setup.outputs.cache-hit }}" = "true" ]; then
+          echo "✅ Using cached dependencies (fast path)"
+        else
+          echo "🔄 Dependencies were updated (slower path)"
+        fi
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
