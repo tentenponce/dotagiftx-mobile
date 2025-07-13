@@ -1,0 +1,13 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 80%
+  ignore:
+    - "lib/data/*"
+    - "lib/domain/models/*"
+    - "**/core/*"
+    - "lib/presentation/shared/*"
+    - "lib/presentation/**/*_view.dart"
+    - "lib/presentation/**/subviews/*"

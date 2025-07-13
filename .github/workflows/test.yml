@@ -1,0 +1,56 @@
+name: CI CD setup
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.29.3
+      - run: |
+          flutter --version
+          flutter pub get
+          dart pub global activate flutter_gen
+          fluttergen
+          dart run build_runner build --delete-conflicting-outputs
+          flutter pub global activate intl_utils
+          flutter pub global run intl_utils:generate
+          flutter analyze
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.29.3
+
+      - name: Restore packages
+        run: |
+          flutter --version
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run tests
+        run: flutter test --coverage
+
+      - name: Upload to code coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          files: coverage/lcov.info
+          fail_ci_if_error: true
