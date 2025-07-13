@@ -48,6 +48,20 @@ jobs:
         name: coverage-html-report
         path: coverage/html
 
+    - name: Check coverage threshold
+      run: |
+        COVERAGE=$(lcov --summary coverage/lcov.info | grep -E "lines\.*:" | sed 's/.*lines.*: \([0-9.]*\)%.*/\1/')
+        echo "Coverage: ${COVERAGE}%"
+        # Convert to integer by multiplying by 100 and removing decimal point
+        COVERAGE_SCALED=$(echo "$COVERAGE * 100" | awk '{printf "%.0f", $1}')
+        THRESHOLD_SCALED=8000  # 80.00 * 100
+        if [ "$COVERAGE_SCALED" -lt "$THRESHOLD_SCALED" ]; then
+          echo "❌ Coverage ${COVERAGE}% is below minimum threshold of 80%"
+          exit 1
+        else
+          echo "✅ Coverage ${COVERAGE}% meets minimum threshold of 80%"
+        fi
+
     - name: Coverage summary
       run: |
         echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
