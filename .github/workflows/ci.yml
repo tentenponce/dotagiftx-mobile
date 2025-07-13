@@ -34,11 +34,20 @@ jobs:
     - name: Run tests with coverage
       run: flutter test --coverage
 
-    - name: Install lcov
+    - name: Install lcov 2.2
       run: |
-        # Install latest lcov version from Ubuntu repository
-        sudo apt-get update && sudo apt-get install -y lcov
-        
+        sudo apt-get remove --purge -y lcov || true
+        sudo apt-get update
+        sudo apt-get install -y curl make gcc
+
+        echo "Downloading lcov 2.2..."
+        curl -LO https://github.com/linux-test-project/lcov/releases/download/v2.2/lcov-2.2.tar.gz
+        tar -xzf lcov-2.2.tar.gz
+        cd lcov-2.2
+
+        echo "Installing lcov 2.2..."
+        sudo make install
+
         echo "Installed lcov version:"
         lcov --version
 
