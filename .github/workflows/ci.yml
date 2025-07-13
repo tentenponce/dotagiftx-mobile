@@ -35,12 +35,33 @@ jobs:
       run: flutter test --coverage
 
     - name: Install lcov
-      run: sudo apt-get update && sudo apt-get install -y lcov
+      run: |
+        # Install dependencies for building lcov
+        sudo apt-get update && sudo apt-get install -y build-essential perl
+        
+        # Download and install lcov 2.2-1 (same as local version)
+        wget https://github.com/linux-test-project/lcov/archive/refs/tags/v2.2-1.tar.gz
+        tar -xzf v2.2-1.tar.gz
+        cd lcov-2.2-1
+        sudo make install
+        
+        echo "Installed lcov version:"
+        lcov --version
 
     - name: Process coverage data
       run: |
-        # Extract coverage for target directories
+        echo "Files in original coverage:"
+        lcov --list coverage/lcov.info | head -20
+        
+        echo "Extracting coverage for target directories..."
         lcov --extract coverage/lcov.info 'lib/presentation/**/viewmodels/*' 'lib/domain/usecases/*' -o coverage/lcov.info
+        
+        echo "Files in filtered coverage:"
+        lcov --list coverage/lcov.info
+        
+        echo "Coverage summary:"
+        lcov --summary coverage/lcov.info
+        
         genhtml coverage/lcov.info -o coverage/html
 
     - name: Upload coverage report
