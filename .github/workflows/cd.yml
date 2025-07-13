@@ -18,6 +18,7 @@ jobs:
       env:
         PAT: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       run: |
+        echo "🔍 Verifying PAT push permissions..."
         if [ -z "$PAT" ]; then
           echo "❌ DOTAGIFTX_REPO_TOKEN is empty or not set"
           exit 1
