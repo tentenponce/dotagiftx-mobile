@@ -14,23 +14,59 @@ jobs:
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
 
-    - name: Verify PAT can push to repository
+    - name: Verify PAT can push to repository using REST API
       env:
         PAT: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+        echo "🔍 Verifying PAT with GitHub REST API..."
 
-        git remote set-url origin https://x-access-token:${PAT}@github.com/${{ github.repository }}
+        REPO="${{ github.repository }}"
+        VERSION_TAG="test-pat-push-check"
+        COMMIT_SHA=$(git rev-parse HEAD)
 
-        echo "🔍 Creating test tag..."
-        git tag test-pat-push-check || true
+        # Check if tag already exists
+        TAG_EXISTS=$(curl -s -H "Authorization: token $PAT" \
+          https://api.github.com/repos/$REPO/git/refs/tags/$VERSION_TAG | jq -r '.ref // empty')
 
-        echo "🚀 Attempting push..."
-        GIT_TRACE=1 GIT_CURL_VERBOSE=1 git push origin test-pat-push-check || {
-          echo "❌ Push failed"
-          exit 1
-        }
+        if [ "$TAG_EXISTS" ]; then
+          echo "ℹ️ Tag $VERSION_TAG already exists. Skipping creation."
+        else
+          echo "📝 Creating test annotated tag object..."
+          TAG_RESPONSE=$(curl -s -X POST https://api.github.com/repos/$REPO/git/tags \
+            -H "Authorization: token $PAT" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg tag "$VERSION_TAG" \
+              --arg message "Test push via PAT" \
+              --arg object "$COMMIT_SHA" \
+              --arg type "commit" \
+              --arg name "GitHub Actions" \
+              --arg email "actions@github.com" \
+              --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              '{tag: $tag, message: $message, object: $object, type: $type, tagger: {name: $name, email: $email, date: $date}}'")
+
+          TAG_SHA=$(echo "$TAG_RESPONSE" | jq -r '.sha // empty')
+
+          if [ -z "$TAG_SHA" ]; then
+            echo "❌ Failed to create tag object via REST API"
+            echo "$TAG_RESPONSE"
+            exit 1
+          fi
+
+          echo "🔗 Creating ref for tag..."
+          REF_RESPONSE=$(curl -s -X POST https://api.github.com/repos/$REPO/git/refs \
+            -H "Authorization: token $PAT" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg ref "refs/tags/$VERSION_TAG" --arg sha "$TAG_SHA" '{ref: $ref, sha: $sha}')")
+
+          if echo "$REF_RESPONSE" | jq -e '.ref' >/dev/null; then
+            echo "✅ Tag $VERSION_TAG created successfully via REST API"
+          else
+            echo "❌ Failed to create tag ref"
+            echo "$REF_RESPONSE"
+            exit 1
+          fi
+        fi
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -153,23 +189,38 @@ jobs:
         echo "Version: v$VERSION"
         echo "✅ Version extracted from pubspec.yaml: $VERSION"
 
-    - name: Create Git tag
+    - name: Create Git tag via REST API
       env:
+        PAT: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
         VERSION: ${{ steps.version.outputs.version }}
-        GITHUB_ACTOR: ${{ github.actor }}
-        PAT_GITHUB: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+        SHA=$(git rev-parse HEAD)
+        echo "Creating annotated tag object..."
 
-        git remote set-url origin https://x-access-token:${PAT_GITHUB}@github.com/${{ github.repository }}
+        curl -s -X POST https://api.github.com/repos/${{ github.repository }}/git/tags \
+          -H "Authorization: token $PAT" \
+          -H "Content-Type: application/json" \
+          -d "{\n            \"tag\": \"$VERSION\",\n            \"message\": \"Release $VERSION\",\n            \"object\": \"$SHA\",\n            \"type\": \"commit\"\n          }" > tag_response.json
 
-        if git rev-parse "$VERSION" >/dev/null 2>&1; then
-          echo "Tag $VERSION already exists"
+        TAG_SHA=$(jq -r '.sha' tag_response.json)
+        if [ "$TAG_SHA" = "null" ]; then
+          echo "❌ Failed to create tag object"
+          cat tag_response.json
+          exit 1
+        fi
+
+        echo "Creating tag reference..."
+        curl -s -X POST https://api.github.com/repos/${{ github.repository }}/git/refs \
+          -H "Authorization: token $PAT" \
+          -H "Content-Type: application/json" \
+          -d "{\n            \"ref\": \"refs/tags/$VERSION\",\n            \"sha\": \"$TAG_SHA\"\n          }" > ref_response.json
+
+        if grep -q '"ref":' ref_response.json; then
+          echo "✅ Tag $VERSION created"
         else
-          git tag -a "$VERSION" -m "Release $VERSION"
-          git push origin "$VERSION"
-          echo "✅ Created and pushed tag: $VERSION"
+          echo "❌ Failed to create tag ref"
+          cat ref_response.json
+          exit 1
         fi
 
     - name: Create Release
