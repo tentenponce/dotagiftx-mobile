@@ -1,4 +1,6 @@
 import java.util.Base64
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -8,6 +10,24 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.firebase-perf")
+}
+
+val keystoreProperties = Properties()
+val keyStorePropertiesFileName = "dotagiftx.keystore.properties"
+val keystorePropertiesFile = file(keyStorePropertiesFileName)
+var keystoreFileExists = false
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    val keystoreFile = file(keystoreProperties.getProperty("storeFile") ?: "")
+    keystoreFileExists = keystoreFile.exists()
+    if (keystoreFileExists) {
+        println("Signing with provided keystore")
+     } else {
+        println("Could not find signing keystore")
+     }
+} else {
+    println("Could not find signing keystore properties")
 }
 
 val dartDefines = getDartDefines()
@@ -34,12 +54,34 @@ android {
         versionName = flutter.versionName
         manifestPlaceholders["appName"] = dartDefines["appName"] ?: error("Missing appName in env")
     }
+    
+    signingConfigs {
+        create("release").apply {
+            if (keystoreFileExists) {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = file(keystoreProperties.getProperty("storeFile")!!)
+                storePassword = keystoreProperties.getProperty("storePassword")
+                enableV1Signing = true
+                enableV2Signing = true
+            }
+        }
+    }
 
     buildTypes {
         release {
-            // TODO: Add own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            multiDexEnabled = true
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = if (keystoreFileExists) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
+        }
+
+        debug {
+            signingConfig = if (keystoreFileExists) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
         }
     }
 }

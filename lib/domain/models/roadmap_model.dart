@@ -10,7 +10,6 @@ class RoadmapModel extends Equatable {
   final String id;
   final String title;
   final String description;
-  final String icon;
   final bool isCompleted;
   final bool isActive;
   final bool? isVoted;
@@ -19,7 +18,6 @@ class RoadmapModel extends Equatable {
     required this.id,
     required this.title,
     required this.description,
-    required this.icon,
     required this.isCompleted,
     required this.isActive,
     this.isVoted,
@@ -33,7 +31,6 @@ class RoadmapModel extends Equatable {
     id,
     title,
     description,
-    icon,
     isCompleted,
     isActive,
     isVoted,

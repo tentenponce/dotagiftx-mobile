@@ -46,12 +46,7 @@ class RoadmapItemView extends StatelessWidget {
                       ),
                     ),
                     child: Icon(
-                      item.isCompleted
-                          ? Icons.check
-                          : IconData(
-                            int.parse(item.icon),
-                            fontFamily: 'MaterialIcons',
-                          ),
+                      item.isCompleted ? Icons.check : getIcon(item.id),
                       color:
                           item.isCompleted
                               ? Colors.white
@@ -209,6 +204,21 @@ class RoadmapItemView extends StatelessWidget {
         if (!isLast) SizedBox(height: 16.h),
       ],
     );
+  }
+
+  IconData getIcon(String id) {
+    switch (id) {
+      case 'initial_login':
+        return Icons.login;
+      case 'notification':
+        return Icons.notifications_active;
+      case 'in_app_messaging':
+        return Icons.messenger_outline;
+      case 'listings_and_orders':
+        return Icons.add_business;
+      default:
+        return Icons.question_mark;
+    }
   }
 
   void _showFeedback(BuildContext context, String featureId) {
