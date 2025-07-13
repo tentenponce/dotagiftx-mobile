@@ -23,7 +23,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate internationalization code
-      run: dart run intl_utils:generate
+      run: flutter pub run intl_utils:generate
 
     - name: Generate code
       run: dart run build_runner build --delete-conflicting-outputs
