@@ -74,6 +74,9 @@ jobs:
         # Extract and decode keystore properties
         echo "$PROD_ENV" | jq -r '.keystoreProperties' | base64 -d > android/app/dotagiftx.keystore.properties
         
+        # Extract and decode google-services.json
+        echo "$PROD_ENV" | jq -r '.googleServicesJson' | base64 -d > android/app/google-services.json
+        
         # Verify files were created
         if [ -f "android/app/dotagiftx.keystore" ]; then
           echo "✅ Keystore file created successfully"
@@ -89,6 +92,14 @@ jobs:
           grep -E '^(storeFile|keyAlias)=' android/app/dotagiftx.keystore.properties || echo "Basic structure verified"
         else
           echo "❌ Failed to create keystore properties file"
+          exit 1
+        fi
+        
+        if [ -f "android/app/google-services.json" ]; then
+          echo "✅ Google Services JSON file created successfully"
+          echo "File size: $(stat -c%s android/app/google-services.json) bytes"
+        else
+          echo "❌ Failed to create Google Services JSON file"
           exit 1
         fi
         
@@ -212,5 +223,6 @@ jobs:
         echo "Cleaning up sensitive files..."
         rm -f android/app/dotagiftx.keystore
         rm -f android/app/dotagiftx.keystore.properties
+        rm -f android/app/google-services.json
         rm -f .env/prod.json
         echo "✅ All sensitive files cleaned up" 
