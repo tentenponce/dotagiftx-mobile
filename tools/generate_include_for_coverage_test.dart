@@ -17,7 +17,9 @@ void main() {
 
   for (final path in includePatterns) {
     final dir = Directory(path);
-    if (!dir.existsSync()) continue;
+    if (!dir.existsSync()) {
+      continue;
+    }
 
     for (final file in dir.listSync(recursive: true)) {
       if (file is File &&
@@ -38,8 +40,12 @@ void main() {
   output.createSync(recursive: true);
   output.writeAsStringSync(buffer.toString());
 
+  // ignore: avoid_print
   print('✅ Generated test/include_for_coverage_test.dart with imports from:');
   for (final line in buffer.toString().split('\n')) {
-    if (line.startsWith('import')) print('  $line');
+    if (line.startsWith('import')) {
+      // ignore: avoid_print
+      print('  $line');
+    }
   }
 }
