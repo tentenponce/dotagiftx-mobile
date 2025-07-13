@@ -7,7 +7,7 @@ import 'package:dotagiftx_mobile/data/core/constants/keychain_keys.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/app/app.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
@@ -30,11 +30,13 @@ class _InitAppState extends State<InitApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           return const App();
         }
-        return const Directionality(
+        return Directionality(
           textDirection: TextDirection.ltr,
           child: Scaffold(
-            backgroundColor: AppColors.primary,
-            body: SizedBox.shrink(),
+            backgroundColor: const Color(0xFF515151),
+            body: Center(
+              child: Assets.icon.icon.image(height: 100, width: 100),
+            ),
           ),
         );
       },
