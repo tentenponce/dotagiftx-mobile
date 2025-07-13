@@ -39,7 +39,12 @@ jobs:
 
     - name: Process coverage data
       run: |
-        lcov --extract coverage/lcov.info 'lib/presentation/**/viewmodels/*' 'lib/domain/usecases/*' -o coverage/lcov.info
+        # Create baseline coverage to include all files (even untested ones)
+        lcov --capture --initial --directory lib/presentation --directory lib/domain --output-file coverage/lcov.base
+        # Combine baseline with test coverage
+        lcov --add-tracefile coverage/lcov.base --add-tracefile coverage/lcov.info --output-file coverage/lcov.combined
+        # Extract only the target directories
+        lcov --extract coverage/lcov.combined 'lib/presentation/**/viewmodels/*' 'lib/domain/usecases/*' -o coverage/lcov.info
         genhtml coverage/lcov.info -o coverage/html
 
     - name: Upload coverage report
@@ -52,10 +57,9 @@ jobs:
       run: |
         COVERAGE=$(lcov --summary coverage/lcov.info | grep -E "lines\.*:" | sed 's/.*lines.*: \([0-9.]*\)%.*/\1/')
         echo "Coverage: ${COVERAGE}%"
-        # Convert to integer by multiplying by 100 and removing decimal point
-        COVERAGE_SCALED=$(echo "$COVERAGE * 100" | awk '{printf "%.0f", $1}')
-        THRESHOLD_SCALED=8000  # 80.00 * 100
-        if [ "$COVERAGE_SCALED" -lt "$THRESHOLD_SCALED" ]; then
+        # Use awk to properly multiply and compare
+        RESULT=$(echo "$COVERAGE" | awk '{if ($1 < 80) print "FAIL"; else print "PASS"}')
+        if [ "$RESULT" = "FAIL" ]; then
           echo "❌ Coverage ${COVERAGE}% is below minimum threshold of 80%"
           exit 1
         else
