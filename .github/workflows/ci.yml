@@ -51,41 +51,17 @@ jobs:
 
     - name: Check coverage threshold
       run: |
-        # Count all files in target directories
-        TOTAL_FILES=$(find lib/presentation -name "*.dart" -path "*/viewmodels/*" | wc -l)
-        TOTAL_FILES=$((TOTAL_FILES + $(find lib/domain/usecases -name "*.dart" | wc -l)))
-        
-        # Count files with coverage
-        COVERED_FILES=$(grep -c "^SF:" coverage/lcov.info || echo "0")
-        
-        # Get coverage percentage from lcov
+        # Use the same coverage calculation as makefile (lcov standard)
         COVERAGE=$(lcov --summary coverage/lcov.info | grep -E "lines\.*:" | sed 's/.*lines.*: \([0-9.]*\)%.*/\1/')
+        echo "Coverage: ${COVERAGE}%"
         
-        echo "Total files in target directories: $TOTAL_FILES"
-        echo "Files with coverage: $COVERED_FILES"
-        echo "Coverage for tested files: ${COVERAGE}%"
-        
-        # Calculate actual coverage including untested files
-        if [ "$TOTAL_FILES" -gt 0 ]; then
-          if [ "$COVERED_FILES" -eq 0 ]; then
-            ACTUAL_COVERAGE=0
-          else
-            # Weighted coverage: (covered_files / total_files) * coverage_percentage
-            ACTUAL_COVERAGE=$(echo "$COVERED_FILES $TOTAL_FILES $COVERAGE" | awk '{printf "%.1f", ($1/$2)*$3}')
-          fi
-        else
-          ACTUAL_COVERAGE=100
-        fi
-        
-        echo "Actual coverage (including untested files): ${ACTUAL_COVERAGE}%"
-        
-        # Check threshold
-        RESULT=$(echo "$ACTUAL_COVERAGE" | awk '{if ($1 < 80) print "FAIL"; else print "PASS"}')
+        # Check threshold using the same logic as makefile
+        RESULT=$(echo "$COVERAGE" | awk '{if ($1 < 80) print "FAIL"; else print "PASS"}')
         if [ "$RESULT" = "FAIL" ]; then
-          echo "❌ Coverage ${ACTUAL_COVERAGE}% is below minimum threshold of 80%"
+          echo "❌ Coverage ${COVERAGE}% is below minimum threshold of 80%"
           exit 1
         else
-          echo "✅ Coverage ${ACTUAL_COVERAGE}% meets minimum threshold of 80%"
+          echo "✅ Coverage ${COVERAGE}% meets minimum threshold of 80%"
         fi
 
     - name: Coverage summary
