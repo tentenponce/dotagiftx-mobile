@@ -7,8 +7,35 @@ on:
 
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
     steps:
+    - name: Verify PAT can push to repository
+      env:
+        PAT: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
+      run: |
+        echo "🔍 Verifying PAT push permissions..."
+        
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+
+        # Set remote using PAT
+        git remote set-url origin https://x-access-token:${PAT}@github.com/${{ github.repository }}
+
+        # Test push permission by doing a dry-run (no real push)
+        touch .token_push_test_file
+        git add .token_push_test_file
+        git commit -m "🔒 test commit for token push check" || echo "Skipping commit if nothing changed"
+        
+        if git push --dry-run origin HEAD:refs/heads/token-push-test > /dev/null 2>&1; then
+          echo "✅ PAT can push to this repository."
+          git reset --hard HEAD~1
+          rm .token_push_test_file
+        else
+          echo "❌ PAT CANNOT push to this repository."
+          echo "Make sure the PAT has 'Contents: Read and write' access to this repo."
+          exit 1
+        fi
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
