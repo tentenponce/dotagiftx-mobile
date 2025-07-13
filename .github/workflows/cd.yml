@@ -26,13 +26,13 @@ jobs:
 
         # Check if tag already exists
         TAG_EXISTS=$(curl -s -H "Authorization: token $PAT" \
-          https://api.github.com/repos/$REPO/git/refs/tags/$VERSION_TAG | jq -r '.ref // empty')
+          "https://api.github.com/repos/$REPO/git/refs/tags/$VERSION_TAG" | jq -r '.ref // empty')
 
         if [ "$TAG_EXISTS" ]; then
           echo "ℹ️ Tag $VERSION_TAG already exists. Skipping creation."
         else
           echo "📝 Creating test annotated tag object..."
-          TAG_RESPONSE=$(curl -s -X POST https://api.github.com/repos/$REPO/git/tags \
+          TAG_RESPONSE=$(curl -s -X POST "https://api.github.com/repos/$REPO/git/tags" \
             -H "Authorization: token $PAT" \
             -H "Content-Type: application/json" \
             -d "$(jq -n \
@@ -43,7 +43,7 @@ jobs:
               --arg name "GitHub Actions" \
               --arg email "actions@github.com" \
               --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              '{tag: $tag, message: $message, object: $object, type: $type, tagger: {name: $name, email: $email, date: $date}}'")
+              '{tag: $tag, message: $message, object: $object, type: $type, tagger: {name: $name, email: $email, date: $date}}')")
 
           TAG_SHA=$(echo "$TAG_RESPONSE" | jq -r '.sha // empty')
 
@@ -54,7 +54,7 @@ jobs:
           fi
 
           echo "🔗 Creating ref for tag..."
-          REF_RESPONSE=$(curl -s -X POST https://api.github.com/repos/$REPO/git/refs \
+          REF_RESPONSE=$(curl -s -X POST "https://api.github.com/repos/$REPO/git/refs" \
             -H "Authorization: token $PAT" \
             -H "Content-Type: application/json" \
             -d "$(jq -n --arg ref "refs/tags/$VERSION_TAG" --arg sha "$TAG_SHA" '{ref: $ref, sha: $sha}')")
