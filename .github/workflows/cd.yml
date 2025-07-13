@@ -13,6 +13,53 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
+    
+    - name: Test Create Git tag via REST API
+      env:
+        PAT: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
+        VERSION: 0.1.0
+      run: |
+        SHA=$(git rev-parse HEAD)
+        echo "Creating annotated tag object..."
+
+        TAG_PAYLOAD=$(jq -n \
+          --arg tag "$VERSION" \
+          --arg message "Release $VERSION" \
+          --arg object "$SHA" \
+          --arg type "commit" \
+          '{tag: $tag, message: $message, object: $object, type: $type}'
+        )
+
+        echo "Payload:"
+        echo "$TAG_PAYLOAD"
+
+        curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/git/tags" \
+          -H "Authorization: token $PAT" \
+          -H "Content-Type: application/json" \
+          -d "$TAG_PAYLOAD" > tag_response.json
+
+        TAG_SHA=$(jq -r '.sha' tag_response.json)
+        if [ "$TAG_SHA" = "null" ]; then
+          echo "❌ Failed to create tag object"
+          cat tag_response.json
+          exit 1
+        fi
+
+        echo "Creating tag reference..."
+        REF_PAYLOAD=$(jq -n --arg ref "refs/tags/$VERSION" --arg sha "$TAG_SHA" '{ref: $ref, sha: $sha}')
+
+        curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/git/refs" \
+          -H "Authorization: token $PAT" \
+          -H "Content-Type: application/json" \
+          -d "$REF_PAYLOAD" > ref_response.json
+
+        if grep -q '"ref":' ref_response.json; then
+          echo "✅ Tag $VERSION created"
+        else
+          echo "❌ Failed to create tag ref"
+          cat ref_response.json
+          exit 1
+        fi
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -143,10 +190,21 @@ jobs:
         SHA=$(git rev-parse HEAD)
         echo "Creating annotated tag object..."
 
-        curl -s -X POST https://api.github.com/repos/${{ github.repository }}/git/tags \
+        TAG_PAYLOAD=$(jq -n \
+          --arg tag "$VERSION" \
+          --arg message "Release $VERSION" \
+          --arg object "$SHA" \
+          --arg type "commit" \
+          '{tag: $tag, message: $message, object: $object, type: $type}'
+        )
+
+        echo "Payload:"
+        echo "$TAG_PAYLOAD"
+
+        curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/git/tags" \
           -H "Authorization: token $PAT" \
           -H "Content-Type: application/json" \
-          -d "{\n            \"tag\": \"$VERSION\",\n            \"message\": \"Release $VERSION\",\n            \"object\": \"$SHA\",\n            \"type\": \"commit\"\n          }" > tag_response.json
+          -d "$TAG_PAYLOAD" > tag_response.json
 
         TAG_SHA=$(jq -r '.sha' tag_response.json)
         if [ "$TAG_SHA" = "null" ]; then
@@ -156,10 +214,12 @@ jobs:
         fi
 
         echo "Creating tag reference..."
-        curl -s -X POST https://api.github.com/repos/${{ github.repository }}/git/refs \
+        REF_PAYLOAD=$(jq -n --arg ref "refs/tags/$VERSION" --arg sha "$TAG_SHA" '{ref: $ref, sha: $sha}')
+
+        curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/git/refs" \
           -H "Authorization: token $PAT" \
           -H "Content-Type: application/json" \
-          -d "{\n            \"ref\": \"refs/tags/$VERSION\",\n            \"sha\": \"$TAG_SHA\"\n          }" > ref_response.json
+          -d "$REF_PAYLOAD" > ref_response.json
 
         if grep -q '"ref":' ref_response.json; then
           echo "✅ Tag $VERSION created"
