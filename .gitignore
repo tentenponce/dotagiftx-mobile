@@ -65,6 +65,7 @@ app.*.map.json
 coverage
 coverage.xml
 lcov.info
+test/include_for_coverage_test.dart
 
 # Signing Keys and Profiles
 *.jks
