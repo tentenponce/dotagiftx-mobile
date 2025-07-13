@@ -39,24 +39,8 @@ jobs:
 
     - name: Process coverage data
       run: |
-        # Create baseline coverage for all Dart files in target directories
-        echo "TN:" > coverage/lcov.base
-        find lib/presentation -name "*.dart" -path "*/viewmodels/*" | while read file; do
-          echo "SF:$file" >> coverage/lcov.base
-          echo "LH:0" >> coverage/lcov.base
-          echo "LF:1" >> coverage/lcov.base
-          echo "end_of_record" >> coverage/lcov.base
-        done
-        find lib/domain/usecases -name "*.dart" | while read file; do
-          echo "SF:$file" >> coverage/lcov.base
-          echo "LH:0" >> coverage/lcov.base
-          echo "LF:1" >> coverage/lcov.base
-          echo "end_of_record" >> coverage/lcov.base
-        done
-        # Combine baseline with test coverage
-        lcov --add-tracefile coverage/lcov.base --add-tracefile coverage/lcov.info --output-file coverage/lcov.combined
-        # Extract only the target directories
-        lcov --extract coverage/lcov.combined 'lib/presentation/**/viewmodels/*' 'lib/domain/usecases/*' -o coverage/lcov.info
+        # Extract coverage for target directories
+        lcov --extract coverage/lcov.info 'lib/presentation/**/viewmodels/*' 'lib/domain/usecases/*' -o coverage/lcov.info
         genhtml coverage/lcov.info -o coverage/html
 
     - name: Upload coverage report
@@ -67,15 +51,41 @@ jobs:
 
     - name: Check coverage threshold
       run: |
+        # Count all files in target directories
+        TOTAL_FILES=$(find lib/presentation -name "*.dart" -path "*/viewmodels/*" | wc -l)
+        TOTAL_FILES=$((TOTAL_FILES + $(find lib/domain/usecases -name "*.dart" | wc -l)))
+        
+        # Count files with coverage
+        COVERED_FILES=$(grep -c "^SF:" coverage/lcov.info || echo "0")
+        
+        # Get coverage percentage from lcov
         COVERAGE=$(lcov --summary coverage/lcov.info | grep -E "lines\.*:" | sed 's/.*lines.*: \([0-9.]*\)%.*/\1/')
-        echo "Coverage: ${COVERAGE}%"
-        # Use awk to properly multiply and compare
-        RESULT=$(echo "$COVERAGE" | awk '{if ($1 < 80) print "FAIL"; else print "PASS"}')
+        
+        echo "Total files in target directories: $TOTAL_FILES"
+        echo "Files with coverage: $COVERED_FILES"
+        echo "Coverage for tested files: ${COVERAGE}%"
+        
+        # Calculate actual coverage including untested files
+        if [ "$TOTAL_FILES" -gt 0 ]; then
+          if [ "$COVERED_FILES" -eq 0 ]; then
+            ACTUAL_COVERAGE=0
+          else
+            # Weighted coverage: (covered_files / total_files) * coverage_percentage
+            ACTUAL_COVERAGE=$(echo "$COVERED_FILES $TOTAL_FILES $COVERAGE" | awk '{printf "%.1f", ($1/$2)*$3}')
+          fi
+        else
+          ACTUAL_COVERAGE=100
+        fi
+        
+        echo "Actual coverage (including untested files): ${ACTUAL_COVERAGE}%"
+        
+        # Check threshold
+        RESULT=$(echo "$ACTUAL_COVERAGE" | awk '{if ($1 < 80) print "FAIL"; else print "PASS"}')
         if [ "$RESULT" = "FAIL" ]; then
-          echo "❌ Coverage ${COVERAGE}% is below minimum threshold of 80%"
+          echo "❌ Coverage ${ACTUAL_COVERAGE}% is below minimum threshold of 80%"
           exit 1
         else
-          echo "✅ Coverage ${COVERAGE}% meets minimum threshold of 80%"
+          echo "✅ Coverage ${ACTUAL_COVERAGE}% meets minimum threshold of 80%"
         fi
 
     - name: Coverage summary
