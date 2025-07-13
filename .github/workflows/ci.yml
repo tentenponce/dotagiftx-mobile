@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.29.3'
+        channel: 'stable'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Verify formatting
+      run: dart format --output=none --set-exit-if-changed .
+
+    - name: Analyze code
+      run: flutter analyze .
+
+    - name: Run tests with coverage
+      run: flutter test --coverage
+
+    - name: Install lcov
+      run: sudo apt-get update && sudo apt-get install -y lcov
+
+    - name: Extract coverage for specific paths
+      run: |
+        lcov --extract coverage/lcov.info \
+          'lib/presentation/**/viewmodels/*' \
+          'lib/domain/usecases/*' \
+          -o coverage/lcov_filtered.info
+
+    - name: Generate HTML coverage report
+      run: genhtml coverage/lcov_filtered.info -o coverage/html
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov_filtered.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
+    - name: Upload coverage HTML report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/html
+
+    - name: Comment coverage on PR
+      if: github.event_name == 'pull_request'
+      uses: 5monkeys/cobertura-action@master
+      with:
+        path: coverage/lcov_filtered.info
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 80
+        show_missing: true
+        show_class_names: true 

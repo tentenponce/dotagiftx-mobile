@@ -1,0 +1,53 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.29.3'
+        channel: 'stable'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Code generation
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Code format validation
+      run: flutter analyze .
+
+    - name: Run tests with coverage
+      run: flutter test --coverage
+
+    - name: Install lcov
+      run: sudo apt-get update && sudo apt-get install -y lcov
+
+    - name: Process coverage data
+      run: |
+        lcov --extract coverage/lcov.info 'lib/presentation/**/viewmodels/*' 'lib/domain/usecases/*' -o coverage/lcov.info
+        genhtml coverage/lcov.info -o coverage/html
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-html-report
+        path: coverage/html
+
+    - name: Coverage summary
+      run: |
+        echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo "Coverage report has been generated and uploaded as an artifact." >> $GITHUB_STEP_SUMMARY
+        lcov --summary coverage/lcov.info >> $GITHUB_STEP_SUMMARY 
