@@ -36,14 +36,8 @@ jobs:
 
     - name: Install lcov
       run: |
-        # Install dependencies for building lcov
-        sudo apt-get update && sudo apt-get install -y build-essential perl
-        
-        # Download and install lcov 2.2-1 (same as local version)
-        wget https://github.com/linux-test-project/lcov/archive/refs/tags/v2.2-1.tar.gz
-        tar -xzf v2.2-1.tar.gz
-        cd lcov-2.2-1
-        sudo make install
+        # Install latest lcov version from Ubuntu repository
+        sudo apt-get update && sudo apt-get install -y lcov
         
         echo "Installed lcov version:"
         lcov --version
