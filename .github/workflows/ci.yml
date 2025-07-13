@@ -11,30 +11,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Flutter Environment
-      uses: ./.github/actions/setup-flutter
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.29.3'
+        channel: 'stable'
 
     - name: Cache Flutter dependencies
       uses: actions/cache@v4
       with:
         path: |
           ~/.pub-cache
-          build/
-        key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('**/build.yaml') }}
+          ${{ github.workspace }}/.dart_tool
+        key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
         restore-keys: |
-          flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-
-          flutter-${{ runner.os }}-
+          flutter-deps-${{ runner.os }}-
 
-    - name: Upload generated code
-      uses: actions/upload-artifact@v4
-      with:
-        name: generated-code
-        path: |
-          lib/presentation/shared/localization/generated/
-          **/*.g.dart
-          **/*.gen.dart
-          **/*.config.dart
-        retention-days: 1
+    - name: Get dependencies
+      run: flutter pub get
 
   analyze:
     runs-on: ubuntu-latest
@@ -44,7 +38,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Flutter (minimal)
+    - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.29.3'
@@ -55,19 +49,19 @@ jobs:
       with:
         path: |
           ~/.pub-cache
-          build/
-        key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('**/build.yaml') }}
+          ${{ github.workspace }}/.dart_tool
+        key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
         restore-keys: |
-          flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-
-          flutter-${{ runner.os }}-
-
-    - name: Download generated code
-      uses: actions/download-artifact@v4
-      with:
-        name: generated-code
+          flutter-deps-${{ runner.os }}-
 
     - name: Get dependencies (from cache)
       run: flutter pub get
+
+    - name: Generate internationalization code
+      run: flutter pub run intl_utils:generate
+
+    - name: Code generation
+      run: dart run build_runner build --delete-conflicting-outputs
 
     - name: Code format validation
       run: flutter analyze .
@@ -80,7 +74,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Flutter (minimal)
+    - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.29.3'
@@ -91,19 +85,19 @@ jobs:
       with:
         path: |
           ~/.pub-cache
-          build/
-        key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('**/build.yaml') }}
+          ${{ github.workspace }}/.dart_tool
+        key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
         restore-keys: |
-          flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}-
-          flutter-${{ runner.os }}-
-
-    - name: Download generated code
-      uses: actions/download-artifact@v4
-      with:
-        name: generated-code
+          flutter-deps-${{ runner.os }}-
 
     - name: Get dependencies (from cache)
       run: flutter pub get
+
+    - name: Generate internationalization code
+      run: flutter pub run intl_utils:generate
+
+    - name: Code generation
+      run: dart run build_runner build --delete-conflicting-outputs
 
     - name: Run tests with coverage
       run: |
