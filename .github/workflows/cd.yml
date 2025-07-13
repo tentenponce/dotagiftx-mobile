@@ -136,24 +136,29 @@ jobs:
         echo "✅ Version extracted from pubspec.yaml: $VERSION"
 
     - name: Create Git tag
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+        GITHUB_ACTOR: ${{ github.actor }}
+        PAT_GITHUB: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        
-        # Check if tag already exists
-        if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
-          echo "Tag ${{ steps.version.outputs.version }} already exists"
+
+        git remote set-url origin https://x-access-token:${PAT_GITHUB}@github.com/${{ github.repository }}
+
+        if git rev-parse "$VERSION" >/dev/null 2>&1; then
+          echo "Tag $VERSION already exists"
         else
-          git tag -a "${{ steps.version.outputs.version }}" -m "Release ${{ steps.version.outputs.version }}"
-          git push origin "${{ steps.version.outputs.version }}"
-          echo "✅ Created and pushed tag: ${{ steps.version.outputs.version }}"
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
+          echo "✅ Created and pushed tag: $VERSION"
         fi
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       with:
         tag_name: ${{ steps.version.outputs.version }}
         release_name: Release ${{ steps.version.outputs.version }}
@@ -190,7 +195,7 @@ jobs:
     - name: Upload ARM64 APK
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
@@ -200,7 +205,7 @@ jobs:
     - name: Upload ARMv7 APK
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
@@ -210,7 +215,7 @@ jobs:
     - name: Upload x86_64 APK
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DOTAGIFTX_REPO_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: build/app/outputs/flutter-apk/app-x86_64-release.apk
