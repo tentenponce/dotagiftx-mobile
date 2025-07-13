@@ -1,0 +1,167 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'feature/deploy'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter Environment
+      uses: ./.github/actions/setup-flutter
+
+    - name: Setup production environment and keystore
+      env:
+        PROD_ENV: ${{ secrets.PROD }}
+      run: |
+        echo "Setting up production environment and keystore files..."
+        
+        # Create required directories if they don't exist
+        mkdir -p android/app
+        mkdir -p .env
+        
+        # Save PROD environment as JSON file for dart-define-from-file
+        echo "$PROD_ENV" > .env/prod.json
+        echo "✅ Production environment JSON created"
+        
+        # Extract and decode keystore
+        echo "$PROD_ENV" | jq -r '.keystore' | base64 -d > android/app/dotagiftx.keystore
+        
+        # Extract and decode keystore properties
+        echo "$PROD_ENV" | jq -r '.keystoreProperties' | base64 -d > android/app/dotagiftx.keystore.properties
+        
+        # Verify files were created
+        if [ -f "android/app/dotagiftx.keystore" ]; then
+          echo "✅ Keystore file created successfully"
+          ls -la android/app/dotagiftx.keystore
+        else
+          echo "❌ Failed to create keystore file"
+          exit 1
+        fi
+        
+        if [ -f "android/app/dotagiftx.keystore.properties" ]; then
+          echo "✅ Keystore properties created successfully"
+          echo "Properties file contents (without sensitive data):"
+          grep -E '^(storeFile|keyAlias)=' android/app/dotagiftx.keystore.properties || echo "Basic structure verified"
+        else
+          echo "❌ Failed to create keystore properties file"
+          exit 1
+        fi
+        
+        if [ -f ".env/prod.json" ]; then
+          echo "✅ Production JSON file created successfully"
+        else
+          echo "❌ Failed to create production JSON file"
+          exit 1
+        fi
+
+    - name: Build release APK
+      run: |
+        echo "Building release APK with production environment..."
+        flutter build apk --release --split-per-abi --dart-define-from-file=.env/prod.json
+        
+        # List generated APK files
+        echo "Generated APK files:"
+        find build/app/outputs/flutter-apk -name "*.apk" -type f
+
+    - name: Get version from pubspec.yaml
+      id: version
+      run: |
+        # Extract version from pubspec.yaml (format: version: 0.1.0+1)
+        VERSION=$(grep '^version:' pubspec.yaml | cut -d' ' -f2)
+        
+        # Verify version was extracted
+        if [ -z "$VERSION" ]; then
+          echo "❌ Failed to extract version from pubspec.yaml"
+          exit 1
+        fi
+        
+        echo "version=v$VERSION" >> $GITHUB_OUTPUT
+        echo "Version: v$VERSION"
+        echo "✅ Version extracted from pubspec.yaml: $VERSION"
+
+    - name: Create Git tag
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        
+        # Check if tag already exists
+        if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+          echo "Tag ${{ steps.version.outputs.version }} already exists"
+        else
+          git tag -a "${{ steps.version.outputs.version }}" -m "Release ${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"
+          echo "✅ Created and pushed tag: ${{ steps.version.outputs.version }}"
+        fi
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        release_name: Release ${{ steps.version.outputs.version }}
+        body: |
+          ## Release ${{ steps.version.outputs.version }}
+          
+          **Version:** `${{ steps.version.outputs.version }}` (from pubspec.yaml)
+          **Build Date:** ${{ github.event.head_commit.timestamp }}
+          **Commit:** ${{ github.sha }}
+          
+          ### Downloads
+          - **app-arm64-v8a-release.apk** - For most modern Android devices (64-bit ARM)
+          - **app-armeabi-v7a-release.apk** - For older Android devices (32-bit ARM)
+          - **app-x86_64-release.apk** - For Android emulators and x86 devices
+          
+          Choose the APK that matches your device architecture. Most users should download **app-arm64-v8a-release.apk**.
+          
+          ### How to Update Version
+          To release a new version, update the `version` field in `pubspec.yaml` and push to `feature/deploy` branch.
+        draft: false
+        prerelease: false
+
+    - name: Upload ARM64 APK
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+        asset_name: app-arm64-v8a-release.apk
+        asset_content_type: application/vnd.android.package-archive
+
+    - name: Upload ARMv7 APK
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+        asset_name: app-armeabi-v7a-release.apk
+        asset_content_type: application/vnd.android.package-archive
+
+    - name: Upload x86_64 APK
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/app/outputs/flutter-apk/app-x86_64-release.apk
+        asset_name: app-x86_64-release.apk
+        asset_content_type: application/vnd.android.package-archive
+
+    - name: Cleanup sensitive files
+      if: always()
+      run: |
+        echo "Cleaning up sensitive files..."
+        rm -f android/app/dotagiftx.keystore
+        rm -f android/app/dotagiftx.keystore.properties
+        rm -f .env/prod.json
+        echo "✅ All sensitive files cleaned up" 

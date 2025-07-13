@@ -4,5 +4,7 @@
     "firebaseApiKey": "firebaseApiKey",
     "firebaseAppId": "firebaseAppId",
     "firebaseProjectId": "firebaseProjectId",
-    "firebaseStorageBucket": "firebaseStorageBucket"
+    "firebaseStorageBucket": "firebaseStorageBucket",
+    "keystore": "keystore base64 here",
+    "keystoreProperties": "keystore properties base64 here"
 }
