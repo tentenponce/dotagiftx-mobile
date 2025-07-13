@@ -38,7 +38,7 @@ jobs:
       run: |
         sudo apt-get remove --purge -y lcov || true
         sudo apt-get update
-        sudo apt-get install -y curl make gcc
+        sudo apt-get install -y curl make gcc perl libcapture-tiny-perl
 
         echo "Downloading lcov 2.2..."
         curl -LO https://github.com/linux-test-project/lcov/releases/download/v2.2/lcov-2.2.tar.gz
