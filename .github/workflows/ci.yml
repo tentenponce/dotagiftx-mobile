@@ -39,8 +39,20 @@ jobs:
 
     - name: Process coverage data
       run: |
-        # Create baseline coverage to include all files (even untested ones)
-        lcov --capture --initial --directory lib/presentation --directory lib/domain --output-file coverage/lcov.base
+        # Create baseline coverage for all Dart files in target directories
+        echo "TN:" > coverage/lcov.base
+        find lib/presentation -name "*.dart" -path "*/viewmodels/*" | while read file; do
+          echo "SF:$file" >> coverage/lcov.base
+          echo "LH:0" >> coverage/lcov.base
+          echo "LF:1" >> coverage/lcov.base
+          echo "end_of_record" >> coverage/lcov.base
+        done
+        find lib/domain/usecases -name "*.dart" | while read file; do
+          echo "SF:$file" >> coverage/lcov.base
+          echo "LH:0" >> coverage/lcov.base
+          echo "LF:1" >> coverage/lcov.base
+          echo "end_of_record" >> coverage/lcov.base
+        done
         # Combine baseline with test coverage
         lcov --add-tracefile coverage/lcov.base --add-tracefile coverage/lcov.info --output-file coverage/lcov.combined
         # Extract only the target directories
