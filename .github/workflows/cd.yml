@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - feature/deploy
+      - master
 
 jobs:
   build-and-release:
@@ -214,9 +214,8 @@ jobs:
           ### How to Update Version
           To release a new version:
           1. Update the `version` field in `pubspec.yaml`
-          2. Push to `feature/deploy` branch
-          3. Wait for Code Quality workflow to pass
-          4. Release will be automatically created
+          2. Create pull request to `master` branch
+          3. Once merged, release will be automatically created
         draft: false
         prerelease: false
 
