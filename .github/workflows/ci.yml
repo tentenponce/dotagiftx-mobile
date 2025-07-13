@@ -32,7 +32,9 @@ jobs:
       run: flutter analyze .
 
     - name: Run tests with coverage
-      run: flutter test --coverage
+      run: |
+        dart run tools/generate_include_for_coverage_test.dart
+        flutter test --coverage
 
     - name: Install lcov 2.2
       run: |
