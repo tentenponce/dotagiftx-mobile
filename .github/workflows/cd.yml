@@ -124,106 +124,106 @@ jobs:
     #       exit 1
     #     fi
 
-    - name: Setup bundletool and extract APKs (signed)
-      run: |
-        echo "Setting up bundletool..."
+    # - name: Setup bundletool and extract APKs (signed)
+    #   run: |
+    #     echo "Setting up bundletool..."
         
-        # Download bundletool
-        wget https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar -O bundletool.jar
+    #     # Download bundletool
+    #     wget https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar -O bundletool.jar
 
-        if [ ! -f "bundletool.jar" ]; then
-          echo "❌ Failed to download bundletool"
-          exit 1
-        else
-          echo "✅ bundletool downloaded successfully"
-        fi
+    #     if [ ! -f "bundletool.jar" ]; then
+    #       echo "❌ Failed to download bundletool"
+    #       exit 1
+    #     else
+    #       echo "✅ bundletool downloaded successfully"
+    #     fi
         
-        # Read keystore credentials
-        KEYSTORE_FILE="android/app/$(grep '^storeFile=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)"
-        KEY_ALIAS=$(grep '^keyAlias=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
-        STORE_PASSWORD=$(grep '^storePassword=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
-        KEY_PASSWORD=$(grep '^keyPassword=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
+    #     # Read keystore credentials
+    #     KEYSTORE_FILE="android/app/$(grep '^storeFile=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)"
+    #     KEY_ALIAS=$(grep '^keyAlias=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
+    #     STORE_PASSWORD=$(grep '^storePassword=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
+    #     KEY_PASSWORD=$(grep '^keyPassword=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
 
-        # Ensure path is correct
-        echo "Using keystore: $KEYSTORE_FILE"
+    #     # Ensure path is correct
+    #     echo "Using keystore: $KEYSTORE_FILE"
 
-        # Create output directory
-        mkdir -p build/app/outputs/flutter-apk
-        mkdir -p device-specs
+    #     # Create output directory
+    #     mkdir -p build/app/outputs/flutter-apk
+    #     mkdir -p device-specs
 
-        # Define specs for each architecture
-        declare -A ABIS=(
-          ["arm64-v8a"]="arm64-v8a"
-          ["armeabi-v7a"]="armeabi-v7a"
-          ["x86_64"]="x86_64"
-        )
+    #     # Define specs for each architecture
+    #     declare -A ABIS=(
+    #       ["arm64-v8a"]="arm64-v8a"
+    #       ["armeabi-v7a"]="armeabi-v7a"
+    #       ["x86_64"]="x86_64"
+    #     )
 
-        for ABI in "${!ABIS[@]}"; do
-          echo "Creating device spec for $ABI..."
-          cat > device-specs/$ABI.json <<EOF
-        {
-          "supportedAbis": ["${ABIS[$ABI]}"],
-          "supportedLocales": ["en"],
-          "screenDensity": 420,
-          "sdkVersion": 21
-        }
-        EOF
+    #     for ABI in "${!ABIS[@]}"; do
+    #       echo "Creating device spec for $ABI..."
+    #       cat > device-specs/$ABI.json <<EOF
+    #     {
+    #       "supportedAbis": ["${ABIS[$ABI]}"],
+    #       "supportedLocales": ["en"],
+    #       "screenDensity": 420,
+    #       "sdkVersion": 21
+    #     }
+    #     EOF
 
-          echo "Building APK set for $ABI..."
-          java -jar bundletool.jar build-apks \
-            --bundle=app-release.aab \
-            --output=build/app/outputs/flutter-apk/app-$ABI.apks \
-            --device-spec=device-specs/$ABI.json \
-            --ks=$KEYSTORE_FILE \
-            --ks-pass=pass:$STORE_PASSWORD \
-            --ks-key-alias=$KEY_ALIAS \
-            --key-pass=pass:$KEY_PASSWORD \
-            --overwrite
+    #       echo "Building APK set for $ABI..."
+    #       java -jar bundletool.jar build-apks \
+    #         --bundle=app-release.aab \
+    #         --output=build/app/outputs/flutter-apk/app-$ABI.apks \
+    #         --device-spec=device-specs/$ABI.json \
+    #         --ks=$KEYSTORE_FILE \
+    #         --ks-pass=pass:$STORE_PASSWORD \
+    #         --ks-key-alias=$KEY_ALIAS \
+    #         --key-pass=pass:$KEY_PASSWORD \
+    #         --overwrite
 
-          if [ $? -eq 0 ]; then
-            echo "✅ Bundletool build for $ABI successful: app-$ABI.apks created"
-            ls -lh build/app/outputs/flutter-apk/app-$ABI.apks
-          else
-            echo "❌ Bundletool build for $ABI failed"
-            exit 1
-          fi
-        done
+    #       if [ $? -eq 0 ]; then
+    #         echo "✅ Bundletool build for $ABI successful: app-$ABI.apks created"
+    #         ls -lh build/app/outputs/flutter-apk/app-$ABI.apks
+    #       else
+    #         echo "❌ Bundletool build for $ABI failed"
+    #         exit 1
+    #       fi
+    #     done
 
-        echo "Extracting APKs..."
-        cd build/app/outputs/flutter-apk
+    #     echo "Extracting APKs..."
+    #     cd build/app/outputs/flutter-apk
 
-        for ABI in "${!ABIS[@]}"; do
-          echo "🔍 Unzipping app-$ABI.apks..."
-          unzip -q app-$ABI.apks -d tmp-$ABI
+    #     for ABI in "${!ABIS[@]}"; do
+    #       echo "🔍 Unzipping app-$ABI.apks..."
+    #       unzip -q app-$ABI.apks -d tmp-$ABI
 
-          echo "📂 Contents of extracted directory (tmp-$ABI):"
-          find tmp-$ABI -name "*.apk"
+    #       echo "📂 Contents of extracted directory (tmp-$ABI):"
+    #       find tmp-$ABI -name "*.apk"
 
-          APK_NAME="app-$ABI-release.apk"
-          FOUND_APK=$(find tmp-$ABI -type f -name "*.apk" | grep -E "$ABI|standalone" | head -1)
+    #       APK_NAME="app-$ABI-release.apk"
+    #       FOUND_APK=$(find tmp-$ABI -type f -name "*.apk" | grep -E "$ABI|standalone" | head -1)
 
-          if [ -n "$FOUND_APK" ] && [ -f "$FOUND_APK" ]; then
-            cp "$FOUND_APK" "$APK_NAME"
-            echo "✅ Extracted $APK_NAME from $FOUND_APK"
-          else
-            echo "❌ Could not find APK for $ABI"
-            exit 1
-          fi
+    #       if [ -n "$FOUND_APK" ] && [ -f "$FOUND_APK" ]; then
+    #         cp "$FOUND_APK" "$APK_NAME"
+    #         echo "✅ Extracted $APK_NAME from $FOUND_APK"
+    #       else
+    #         echo "❌ Could not find APK for $ABI"
+    #         exit 1
+    #       fi
 
-          rm -rf tmp-$ABI
-          rm -f app-$ABI.apks
-        done
+    #       rm -rf tmp-$ABI
+    #       rm -f app-$ABI.apks
+    #     done
 
-        cd ../../../..
-        echo "✅ All APKs extracted and signed:"
-        find build/app/outputs/flutter-apk -name "*.apk"
+    #     cd ../../../..
+    #     echo "✅ All APKs extracted and signed:"
+    #     find build/app/outputs/flutter-apk -name "*.apk"
     
     - name: Upload AAB to Google Play Internal Track
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT }}
         packageName: com.dotagiftx
-        releaseFiles: build/app/outputs/bundle/release/app-release.aab
+        releaseFiles: app-release.aab
         track: internal
         status: draft
         whatsNewDirectory: release-notes
