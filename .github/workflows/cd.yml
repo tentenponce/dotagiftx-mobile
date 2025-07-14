@@ -14,45 +14,45 @@ jobs:
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.29.3'
-        channel: 'stable'
+    # - name: Setup Flutter
+    #   uses: subosito/flutter-action@v2
+    #   with:
+    #     flutter-version: '3.29.3'
+    #     channel: 'stable'
 
-    - name: Cache Flutter dependencies
-      id: cache
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.pub-cache
-          ${{ github.workspace }}/.dart_tool
-        key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-        restore-keys: |
-          flutter-deps-${{ runner.os }}-
+    # - name: Cache Flutter dependencies
+    #   id: cache
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: |
+    #       ~/.pub-cache
+    #       ${{ github.workspace }}/.dart_tool
+    #     key: flutter-deps-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+    #     restore-keys: |
+    #       flutter-deps-${{ runner.os }}-
 
-    - name: Cache status
-      run: |
-        if [ "${{ steps.cache.outputs.cache-hit }}" = "true" ]; then
-          echo "✅ Using cached Flutter dependencies (faster build)"
-        else
-          echo "🔄 Installing Flutter dependencies (first time or cache miss)"
-        fi
+    # - name: Cache status
+    #   run: |
+    #     if [ "${{ steps.cache.outputs.cache-hit }}" = "true" ]; then
+    #       echo "✅ Using cached Flutter dependencies (faster build)"
+    #     else
+    #       echo "🔄 Installing Flutter dependencies (first time or cache miss)"
+    #     fi
 
-    - name: Get dependencies
-      run: flutter pub get
+    # - name: Get dependencies
+    #   run: flutter pub get
 
-    - name: Generate internationalization code
-      run: |
-        echo "🌍 Generating internationalization code..."
-        flutter pub run intl_utils:generate
-        echo "✅ Internationalization code generated"
+    # - name: Generate internationalization code
+    #   run: |
+    #     echo "🌍 Generating internationalization code..."
+    #     flutter pub run intl_utils:generate
+    #     echo "✅ Internationalization code generated"
 
-    - name: Code generation
-      run: |
-        echo "🔧 Running code generation..."
-        dart run build_runner build --delete-conflicting-outputs
-        echo "✅ Code generation completed"
+    # - name: Code generation
+    #   run: |
+    #     echo "🔧 Running code generation..."
+    #     dart run build_runner build --delete-conflicting-outputs
+    #     echo "✅ Code generation completed"
 
     - name: Setup production environment and keystore
       env:
@@ -161,13 +161,13 @@ jobs:
         for ABI in "${!ABIS[@]}"; do
           echo "Creating device spec for $ABI..."
           cat > device-specs/$ABI.json <<EOF
-          {
-            "supportedAbis": ["${ABIS[$ABI]}"],
-            "supportedLocales": ["en"],
-            "screenDensity": 420,
-            "sdkVersion": 21
-          }
-          EOF
+        {
+          "supportedAbis": ["${ABIS[$ABI]}"],
+          "supportedLocales": ["en"],
+          "screenDensity": 420,
+          "sdkVersion": 21
+        }
+        EOF
 
           echo "Building APK set for $ABI..."
           java -jar bundletool.jar build-apks \
