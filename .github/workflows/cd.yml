@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - feature/playstore
+      - master
 
 jobs:
   build-and-release:
