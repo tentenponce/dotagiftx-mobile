@@ -179,25 +179,38 @@ jobs:
             --ks-key-alias=$KEY_ALIAS \
             --key-pass=pass:$KEY_PASSWORD \
             --overwrite
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Bundletool build for $ABI successful: app-$ABI.apks created"
+            ls -lh build/app/outputs/flutter-apk/app-$ABI.apks
+          else
+            echo "❌ Bundletool build for $ABI failed"
+            exit 1
+          fi
         done
 
         echo "Extracting APKs..."
         cd build/app/outputs/flutter-apk
 
         for ABI in "${!ABIS[@]}"; do
-          unzip -q app-$ABI.apks
-          APK_NAME="app-$ABI-release.apk"
-          FOUND_APK=$(find . -name "*.apk" | grep "$ABI" | head -1)
+          echo "🔍 Unzipping app-$ABI.apks..."
+          unzip -q app-$ABI.apks -d tmp-$ABI
 
-          if [ -f "$FOUND_APK" ]; then
+          echo "📂 Contents of extracted directory (tmp-$ABI):"
+          find tmp-$ABI -name "*.apk"
+
+          APK_NAME="app-$ABI-release.apk"
+          FOUND_APK=$(find tmp-$ABI -type f -name "*.apk" | grep -E "$ABI|standalone" | head -1)
+
+          if [ -n "$FOUND_APK" ] && [ -f "$FOUND_APK" ]; then
             cp "$FOUND_APK" "$APK_NAME"
-            echo "✅ Extracted $APK_NAME"
+            echo "✅ Extracted $APK_NAME from $FOUND_APK"
           else
             echo "❌ Could not find APK for $ABI"
             exit 1
           fi
 
-          rm -rf splits_config.* *.apk base-* standalone-* 2>/dev/null || true
+          rm -rf tmp-$ABI
           rm -f app-$ABI.apks
         done
 
