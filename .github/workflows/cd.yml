@@ -124,7 +124,7 @@ jobs:
           exit 1
         fi
 
-    - name: Setup bundletool and extract APKs
+    - name: Setup bundletool and extract APKs (signed)
       run: |
         echo "Setting up bundletool..."
         
@@ -138,93 +138,72 @@ jobs:
           echo "✅ bundletool downloaded successfully"
         fi
         
+        # Read keystore credentials
+        KEYSTORE_FILE="android/app/$(grep '^storeFile=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)"
+        KEY_ALIAS=$(grep '^keyAlias=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
+        STORE_PASSWORD=$(grep '^storePassword=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
+        KEY_PASSWORD=$(grep '^keyPassword=' android/app/dotagiftx.keystore.properties | cut -d'=' -f2)
+
+        # Ensure path is correct
+        echo "Using keystore: $KEYSTORE_FILE"
+
         # Create output directory
         mkdir -p build/app/outputs/flutter-apk
-        
-        # Extract APKs for different architectures
-        echo "Extracting APKs from AAB..."
-        
-        # Create device specification files for each architecture
         mkdir -p device-specs
-        
-        # ARM64 device spec
-        cat > device-specs/arm64-v8a.json << 'EOF'
-        {
-          "supportedAbis": ["arm64-v8a"],
-          "supportedLocales": ["en"],
-          "screenDensity": 420,
-          "sdkVersion": 21
-        }
-        EOF
-        
-        # ARMv7 device spec
-        cat > device-specs/armeabi-v7a.json << 'EOF'
-        {
-          "supportedAbis": ["armeabi-v7a"],
-          "supportedLocales": ["en"],
-          "screenDensity": 420,
-          "sdkVersion": 21
-        }
-        EOF
-        
-        # x86_64 device spec
-        cat > device-specs/x86_64.json << 'EOF'
-        {
-          "supportedAbis": ["x86_64"],
-          "supportedLocales": ["en"],
-          "screenDensity": 420,
-          "sdkVersion": 21
-        }
-        EOF
-        
-        # Generate APK sets for each architecture
-        echo "Generating architecture-specific APKs..."
-        
-        # ARM64
-        java -jar bundletool.jar build-apks \
-          --bundle=build/app/outputs/bundle/release/app-release.aab \
-          --output=build/app/outputs/flutter-apk/app-arm64-v8a.apks \
-          --device-spec=device-specs/arm64-v8a.json
-        
-        # ARMv7
-        java -jar bundletool.jar build-apks \
-          --bundle=build/app/outputs/bundle/release/app-release.aab \
-          --output=build/app/outputs/flutter-apk/app-armeabi-v7a.apks \
-          --device-spec=device-specs/armeabi-v7a.json
-        
-        # x86_64
-        java -jar bundletool.jar build-apks \
-          --bundle=build/app/outputs/bundle/release/app-release.aab \
-          --output=build/app/outputs/flutter-apk/app-x86_64.apks \
-          --device-spec=device-specs/x86_64.json
-        
-        # Extract APKs from APKS files
-        echo "Extracting APKs from APKS files..."
+
+        # Define specs for each architecture
+        declare -A ABIS=(
+          ["arm64-v8a"]="arm64-v8a"
+          ["armeabi-v7a"]="armeabi-v7a"
+          ["x86_64"]="x86_64"
+        )
+
+        for ABI in "${!ABIS[@]}"; do
+          echo "Creating device spec for $ABI..."
+          cat > device-specs/$ABI.json <<EOF
+          {
+            "supportedAbis": ["${ABIS[$ABI]}"],
+            "supportedLocales": ["en"],
+            "screenDensity": 420,
+            "sdkVersion": 21
+          }
+          EOF
+
+          echo "Building APK set for $ABI..."
+          java -jar bundletool.jar build-apks \
+            --bundle=build/app/outputs/bundle/release/app-release.aab \
+            --output=build/app/outputs/flutter-apk/app-$ABI.apks \
+            --device-spec=device-specs/$ABI.json \
+            --ks=$KEYSTORE_FILE \
+            --ks-pass=pass:$STORE_PASSWORD \
+            --ks-key-alias=$KEY_ALIAS \
+            --key-pass=pass:$KEY_PASSWORD \
+            --overwrite
+        done
+
+        echo "Extracting APKs..."
         cd build/app/outputs/flutter-apk
-        
-        # ARM64
-        unzip -q app-arm64-v8a.apks
-        find . -name "*.apk" -path "./arm64-v8a.apk" -o -name "base-arm64_v8a.apk" -o -name "standalone-arm64_v8a.apk" | head -1 | xargs -I {} cp {} app-arm64-v8a-release.apk
-        rm -rf splits_config.* base-* standalone-* arm64-v8a.apk 2>/dev/null || true
-        
-        # ARMv7
-        unzip -q app-armeabi-v7a.apks
-        find . -name "*.apk" -path "./armeabi-v7a.apk" -o -name "base-armeabi_v7a.apk" -o -name "standalone-armeabi_v7a.apk" | head -1 | xargs -I {} cp {} app-armeabi-v7a-release.apk
-        rm -rf splits_config.* base-* standalone-* armeabi-v7a.apk 2>/dev/null || true
-        
-        # x86_64
-        unzip -q app-x86_64.apks
-        find . -name "*.apk" -path "./x86_64.apk" -o -name "base-x86_64.apk" -o -name "standalone-x86_64.apk" | head -1 | xargs -I {} cp {} app-x86_64-release.apk
-        rm -rf splits_config.* base-* standalone-* x86_64.apk 2>/dev/null || true
-        
-        # Clean up APKS files
-        rm -f *.apks
-        
+
+        for ABI in "${!ABIS[@]}"; do
+          unzip -q app-$ABI.apks
+          APK_NAME="app-$ABI-release.apk"
+          FOUND_APK=$(find . -name "*.apk" | grep "$ABI" | head -1)
+
+          if [ -f "$FOUND_APK" ]; then
+            cp "$FOUND_APK" "$APK_NAME"
+            echo "✅ Extracted $APK_NAME"
+          else
+            echo "❌ Could not find APK for $ABI"
+            exit 1
+          fi
+
+          rm -rf splits_config.* *.apk base-* standalone-* 2>/dev/null || true
+          rm -f app-$ABI.apks
+        done
+
         cd ../../../..
-        
-        # List generated APK files
-        echo "Generated APK files:"
-        find build/app/outputs/flutter-apk -name "*.apk" -type f
+        echo "✅ All APKs extracted and signed:"
+        find build/app/outputs/flutter-apk -name "*.apk"
     
     - name: Upload AAB to Google Play Internal Track
       uses: r0adkll/upload-google-play@v1
