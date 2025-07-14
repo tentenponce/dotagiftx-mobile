@@ -129,7 +129,14 @@ jobs:
         echo "Setting up bundletool..."
         
         # Download bundletool
-        wget -q https://github.com/google/bundletool/releases/latest/download/bundletool-all-1.15.6.jar -O bundletool.jar
+        wget https://github.com/google/bundletool/releases/latest/download/bundletool-all-1.15.6.jar -O bundletool.jar
+
+        if [ ! -f "bundletool.jar" ]; then
+          echo "❌ Failed to download bundletool"
+          exit 1
+        else
+          echo "✅ bundletool downloaded successfully"
+        fi
         
         # Create output directory
         mkdir -p build/app/outputs/flutter-apk
@@ -218,6 +225,16 @@ jobs:
         # List generated APK files
         echo "Generated APK files:"
         find build/app/outputs/flutter-apk -name "*.apk" -type f
+    
+    - name: Upload AAB to Google Play Internal Track
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT }}
+        packageName: com.dotagiftx
+        releaseFiles: build/app/outputs/bundle/release/app-release.aab
+        track: internal
+        status: draft
+        whatsNewDirectory: release-notes
 
     - name: Get version from pubspec.yaml
       id: version
