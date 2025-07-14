@@ -302,9 +302,6 @@ jobs:
           ## Release ${{ steps.version.outputs.version }}
           
           **Version:** `${{ steps.version.outputs.version }}` (from pubspec.yaml)
-          **Build Date:** ${{ github.event.workflow_run.updated_at }}
-          **Branch:** ${{ github.event.workflow_run.head_branch }}
-          **Commit:** ${{ github.event.workflow_run.head_sha }}
           
           ### Quality Assurance
           ✅ **Code Quality Check:** [Passed](${{ github.event.workflow_run.html_url }})
