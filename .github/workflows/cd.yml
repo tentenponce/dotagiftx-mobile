@@ -129,7 +129,7 @@ jobs:
         echo "Setting up bundletool..."
         
         # Download bundletool
-        wget https://github.com/google/bundletool/releases/latest/download/bundletool-all-1.15.6.jar -O bundletool.jar
+        wget https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar -O bundletool.jar
 
         if [ ! -f "bundletool.jar" ]; then
           echo "❌ Failed to download bundletool"
