@@ -171,7 +171,7 @@ jobs:
 
           echo "Building APK set for $ABI..."
           java -jar bundletool.jar build-apks \
-            --bundle=app-release.aab \
+            --bundle=build/app/outputs/bundle/release/app-release.aab \
             --output=build/app/outputs/flutter-apk/app-$ABI.apks \
             --device-spec=device-specs/$ABI.json \
             --ks=$KEYSTORE_FILE \
@@ -223,7 +223,7 @@ jobs:
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT }}
         packageName: com.dotagiftx
-        releaseFiles: app-release.aab
+        releaseFiles: build/app/outputs/bundle/release/app-release.aab
         track: internal
         status: draft
         whatsNewDirectory: release-notes
