@@ -6,7 +6,7 @@ Mobile platform for [dotagiftx.com](https://dotagiftx.com/) - Market place for D
 
 ### From Releases
 
-1. Go to the [Releases](https://github.com/your-username/dotagiftx_mobile/releases) section
+1. Go to the [Releases](https://github.com/tentenponce/dotagiftx-mobile/releases) section
 2. Download the appropriate APK for your device architecture:
    - **arm64-v8a**: For most modern Android devices (64-bit ARM)
    - **armeabi-v7a**: For older Android devices (32-bit ARM)
