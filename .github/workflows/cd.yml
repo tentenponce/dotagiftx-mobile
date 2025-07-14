@@ -110,19 +110,19 @@ jobs:
           exit 1
         fi
 
-    - name: Build release AAB
-      run: |
-        echo "Building release AAB with production environment..."
-        flutter build appbundle --release --dart-define-from-file=.env/prod.json
+    # - name: Build release AAB
+    #   run: |
+    #     echo "Building release AAB with production environment..."
+    #     flutter build appbundle --release --dart-define-from-file=.env/prod.json
         
-        # Verify AAB was created
-        if [ -f "build/app/outputs/bundle/release/app-release.aab" ]; then
-          echo "✅ AAB built successfully"
-          ls -la build/app/outputs/bundle/release/app-release.aab
-        else
-          echo "❌ AAB build failed"
-          exit 1
-        fi
+    #     # Verify AAB was created
+    #     if [ -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+    #       echo "✅ AAB built successfully"
+    #       ls -la build/app/outputs/bundle/release/app-release.aab
+    #     else
+    #       echo "❌ AAB build failed"
+    #       exit 1
+    #     fi
 
     - name: Setup bundletool and extract APKs (signed)
       run: |
@@ -171,7 +171,7 @@ jobs:
 
           echo "Building APK set for $ABI..."
           java -jar bundletool.jar build-apks \
-            --bundle=build/app/outputs/bundle/release/app-release.aab \
+            --bundle=app-release.aab \
             --output=build/app/outputs/flutter-apk/app-$ABI.apks \
             --device-spec=device-specs/$ABI.json \
             --ks=$KEYSTORE_FILE \
