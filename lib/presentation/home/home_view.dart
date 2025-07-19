@@ -5,9 +5,9 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_nav_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/login_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,14 +50,9 @@ class _HomeViewState extends StateBase<_HomeView> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            if (index == 3) {
-              // Navigate to RoadmapView instead of changing tab
-              _navigateToRoadmap();
-            } else {
-              setState(() {
-                _currentIndex = index;
-              });
-            }
+            setState(() {
+              _currentIndex = index;
+            });
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: AppColors.darkGrey,
@@ -94,6 +89,7 @@ class _HomeViewState extends StateBase<_HomeView> {
       const HomeNavView(),
       TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
       HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
+      const LoginNavView(),
     ];
   }
 
@@ -105,13 +101,5 @@ class _HomeViewState extends StateBase<_HomeView> {
 
     // Set search query in HomeCubit
     unawaited(context.read<HomeCubit>().searchCatalog(query: searchQuery));
-  }
-
-  void _navigateToRoadmap() {
-    unawaited(
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => const RoadmapView())),
-    );
   }
 }
