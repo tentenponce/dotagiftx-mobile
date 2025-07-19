@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/domain/usecases/get_trending_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/search_catalog_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/heroes_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/login_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/treasures_cubit.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +19,7 @@ import 'home_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<TreasuresCubit>(),
   MockSpec<HeroesCubit>(),
+  MockSpec<LoginCubit>(),
   MockSpec<Logger>(),
   MockSpec<GetTrendingUsecase>(),
   MockSpec<GetNewBuyOrdersUsecase>(),
@@ -29,6 +31,7 @@ void main() {
   group(HomeCubit, () {
     late MockTreasuresCubit mockTreasuresCubit;
     late MockHeroesCubit mockHeroesCubit;
+    late MockLoginCubit mockLoginCubit;
     late MockLogger mockLogger;
     late MockGetTrendingUsecase mockGetTrendingUsecase;
     late MockGetNewBuyOrdersUsecase mockGetNewBuyOrdersUsecase;
@@ -67,6 +70,7 @@ void main() {
     setUp(() {
       mockTreasuresCubit = MockTreasuresCubit();
       mockHeroesCubit = MockHeroesCubit();
+      mockLoginCubit = MockLoginCubit();
       mockLogger = MockLogger();
       mockGetTrendingUsecase = MockGetTrendingUsecase();
       mockGetNewBuyOrdersUsecase = MockGetNewBuyOrdersUsecase();
@@ -85,6 +89,7 @@ void main() {
       return HomeCubit(
         mockTreasuresCubit,
         mockHeroesCubit,
+        mockLoginCubit,
         mockLogger,
         mockGetTrendingUsecase,
         mockGetNewBuyOrdersUsecase,

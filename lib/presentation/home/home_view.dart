@@ -91,6 +91,12 @@ class _HomeViewState extends StateBase<_HomeView> {
       HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
       const LoginNavView(),
     ];
+
+    context.read<HomeCubit>().loginCubit.navigateToHome = () {
+      setState(() {
+        _currentIndex = 0;
+      });
+    };
   }
 
   void _navigateToHomeWithSearch(String searchQuery) {
