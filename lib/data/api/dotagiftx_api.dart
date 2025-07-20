@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
 import 'package:dotagiftx_mobile/data/responses/login_response.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
+import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -39,6 +40,9 @@ abstract interface class DotagiftxApi {
   @GET('/catalogs_trend')
   Future<CatalogResponse> getTrendingCatalogs();
 
-  @GET('auth/steam?{openid}')
-  Future<LoginResponse> loginSteam(@Path('openid') String openid);
+  @GET('users/{steamId}')
+  Future<UserModel> getUser(@Path('steamId') String steamId);
+
+  @GET('auth/steam?{openIdQueryParams}')
+  Future<LoginResponse> loginSteam(@Path('openIdQueryParams') String openid);
 }

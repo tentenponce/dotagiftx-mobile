@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/home/states/login_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/login_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/login_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginNavView extends StatelessWidget {
-  const LoginNavView({super.key});
+class ProfileNotLoginView extends StatelessWidget {
+  const ProfileNotLoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +46,14 @@ class LoginNavView extends StatelessWidget {
                 style: const TextStyle(color: AppColors.warningBlue),
               ),
               const SizedBox(height: 16),
-              BlocBuilder<LoginCubit, LoginState>(
-                bloc: context.read<HomeCubit>().loginCubit,
+              BlocBuilder<ProfileCubit, ProfileState>(
+                bloc: context.read<HomeCubit>().profileCubit,
                 builder: (context, state) {
                   return state.loadingLogin
                       ? const Center(child: CircularProgressIndicator())
                       : SizedBox(
                         width: double.infinity,
+                        height: 72,
                         child: OutlinedButton.icon(
                           onPressed: () {
                             unawaited(
@@ -60,7 +61,7 @@ class LoginNavView extends StatelessWidget {
                                 context,
                                 context
                                     .read<HomeCubit>()
-                                    .loginCubit
+                                    .profileCubit
                                     .getLoginUrl(),
                                 I18n.of(context).loginWebviewTitle,
                               ),
@@ -95,46 +96,6 @@ class LoginNavView extends StatelessWidget {
                 I18n.of(context).loginNavSignInNote,
                 style: const TextStyle(color: AppColors.grey),
               ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.darkGrey,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Icons.warning_amber_outlined,
-                      color: AppColors.warningYellow,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            I18n.of(context).loginNavHowToTitle,
-                            style: const TextStyle(
-                              color: AppColors.warningYellow,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            I18n.of(context).loginNavHowToDescription,
-                            style: const TextStyle(
-                              color: AppColors.warningYellow,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
@@ -159,7 +120,7 @@ class LoginNavView extends StatelessWidget {
     );
 
     if (!StringUtils.isNullOrEmpty(query) && context.mounted) {
-      unawaited(context.read<HomeCubit>().loginCubit.login(query!));
+      unawaited(context.read<HomeCubit>().profileCubit.login(query!));
     }
   }
 }
