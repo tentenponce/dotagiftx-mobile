@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dotagiftx_mobile/data/core/dio/dio_provider.dart';
 import 'package:dotagiftx_mobile/data/requests/refresh_token_request.dart';
+import 'package:dotagiftx_mobile/data/requests/revoke_token_request.dart';
 import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
 import 'package:dotagiftx_mobile/data/responses/login_response.dart';
 import 'package:dotagiftx_mobile/data/responses/refresh_token_response.dart';
@@ -40,4 +41,7 @@ abstract interface class DotagiftxUnauthApi {
   Future<RefreshTokenResponse> refreshToken(
     @Body() RefreshTokenRequest request,
   );
+
+  @POST('auth/revoke')
+  Future<void> revokeToken(@Body() RevokeTokenRequest request);
 }

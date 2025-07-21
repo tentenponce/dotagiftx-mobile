@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/data/core/constants/shared_preferences_keys.dar
 import 'package:dotagiftx_mobile/data/local/shared_preference_storage.dart';
 import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/login_usecase.dart';
+import 'package:dotagiftx_mobile/domain/usecases/logout_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
@@ -20,12 +21,14 @@ class ProfileCubit extends BaseCubit<ProfileState>
   final Logger _logger;
   final EnvironmentVariables _environmentVariables;
   final LoginUsecase _loginUsecase;
+  final LogoutUsecase _logoutUsecase;
   final SharedPreferenceStorage _sharedPreferenceStorage;
 
   ProfileCubit(
     this._logger,
     this._environmentVariables,
     this._loginUsecase,
+    this._logoutUsecase,
     this._sharedPreferenceStorage,
   ) : super(const ProfileState());
 
@@ -59,5 +62,15 @@ class ProfileCubit extends BaseCubit<ProfileState>
     });
 
     emit(state.copyWith(loadingLogin: false));
+  }
+
+  Future<void> logout() async {
+    emit(state.copyWith(loadingLogout: true));
+    await cubitHandler(_logoutUsecase.call, (_) async {
+      emit(state.copyWith(user: null));
+      navigateToHome();
+    });
+
+    emit(state.copyWith(loadingLogout: false));
   }
 }

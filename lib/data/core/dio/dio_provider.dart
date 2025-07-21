@@ -5,17 +5,20 @@ import 'package:dotagiftx_mobile/data/core/dio/dio_auth_interceptor.dart';
 import 'package:dotagiftx_mobile/data/core/dio/dio_error_interceptor.dart';
 import 'package:dotagiftx_mobile/data/core/dio/dio_logging_interceptor.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
+import 'package:dotagiftx_mobile/data/local/shared_preference_storage.dart';
 import 'package:dotagiftx_mobile/domain/usecases/refresh_token_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class AuthDioProviderImpl extends BaseDioProvider implements DioProvider {
+  final SharedPreferenceStorage _sharedPreferenceStorage;
   final KeychainStorage _keychainStorage;
   final RetryUtils _retryUtils;
   final RefreshTokenUsecase _refreshTokenUsecase;
 
   AuthDioProviderImpl(
     super._logger,
+    this._sharedPreferenceStorage,
     this._keychainStorage,
     this._retryUtils,
     this._refreshTokenUsecase,
@@ -29,6 +32,7 @@ class AuthDioProviderImpl extends BaseDioProvider implements DioProvider {
       DioAuthInterceptor(
         _logger,
         dio,
+        _sharedPreferenceStorage,
         _keychainStorage,
         _refreshTokenUsecase,
         _retryUtils,

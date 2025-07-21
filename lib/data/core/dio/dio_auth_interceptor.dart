@@ -3,8 +3,10 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/retry_utils.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/keychain_keys.dart';
+import 'package:dotagiftx_mobile/data/core/constants/shared_preferences_keys.dart';
 import 'package:dotagiftx_mobile/data/core/dio/api_exceptions.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
+import 'package:dotagiftx_mobile/data/local/shared_preference_storage.dart';
 import 'package:dotagiftx_mobile/domain/usecases/refresh_token_usecase.dart';
 
 class DioAuthInterceptor extends Interceptor {
@@ -14,6 +16,7 @@ class DioAuthInterceptor extends Interceptor {
 
   final Logger _logger;
   final Dio _dio;
+  final SharedPreferenceStorage _sharedPreferenceStorage;
   final KeychainStorage _keychainStorage;
   final RefreshTokenUsecase _refreshTokenUsecase;
   final RetryUtils _retryUtils;
@@ -21,6 +24,7 @@ class DioAuthInterceptor extends Interceptor {
   DioAuthInterceptor(
     this._logger,
     this._dio,
+    this._sharedPreferenceStorage,
     this._keychainStorage,
     this._refreshTokenUsecase,
     this._retryUtils,
@@ -109,11 +113,10 @@ class DioAuthInterceptor extends Interceptor {
   }
 
   Future<void> _logout() async {
-    final accessToken = await _keychainStorage.getValue(KeychainKeys.token);
-    // check if token is not yet empty, then simulate logout to refresh app properly
-    if (!StringUtils.isNullOrEmpty(accessToken)) {
-      await _keychainStorage.clearAll();
-    }
+    await Future.wait([
+      _sharedPreferenceStorage.clear(SharedPreferencesKeys.user),
+      _keychainStorage.clearAll(),
+    ]);
   }
 
   /// this is to handle race condition if token rotation usecase is triggered together with an API call

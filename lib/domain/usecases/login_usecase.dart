@@ -30,15 +30,10 @@ class LoginUsecaseImpl implements LoginUsecase {
   @override
   Future<UserModel> call(String openid) async {
     final authResponse = await _dotagiftxUnauthApi.loginSteam(openid);
-    final userResponse = await _dotagiftxApi.getUser();
 
     // consider this to be unawaited if more processes are added, or if
     // one of the process takes a long time to complete
     await Future.wait([
-      _sharedPreferenceStorage.setValue(
-        SharedPreferencesKeys.user,
-        jsonEncode(userResponse.toJson()),
-      ),
       _keychainStorage.add(KeychainKeys.token, authResponse.token),
       _keychainStorage.add(
         KeychainKeys.refreshToken,
@@ -48,6 +43,13 @@ class LoginUsecaseImpl implements LoginUsecase {
       _keychainStorage.add(KeychainKeys.userId, authResponse.userId),
       _keychainStorage.add(KeychainKeys.steamId, authResponse.steamId),
     ]);
+
+    final userResponse = await _dotagiftxApi.getUser();
+
+    await _sharedPreferenceStorage.setValue(
+      SharedPreferencesKeys.user,
+      jsonEncode(userResponse.toJson()),
+    );
 
     return userResponse;
   }
