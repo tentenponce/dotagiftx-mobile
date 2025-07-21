@@ -5,6 +5,9 @@ abstract final class RemoteConfigConstants {
   static const String keyDotagiftxImageBaseUrl = 'dotagiftx_image_base_url';
   static const String keyTreasures = 'treasures';
   static const String keyRoadmap = 'roadmap';
+  static const String keyTokenRotationSeconds = 'token_rotation_seconds';
+
+  static const int defaultTokenRotationSeconds = 270;
 
   static const Iterable<RoadmapModel> defaultRoadmap = [
     RoadmapModel(

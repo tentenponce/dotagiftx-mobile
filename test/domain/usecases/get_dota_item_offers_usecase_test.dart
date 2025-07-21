@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
@@ -10,10 +10,10 @@ import 'package:mockito/mockito.dart';
 
 import 'get_dota_item_offers_usecase_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DotagiftxApi>()])
+@GenerateNiceMocks([MockSpec<DotagiftxAuthApi>()])
 void main() {
   group(GetDotaItemOffersUsecaseImpl, () {
-    late MockDotagiftxApi mockDotagiftxApi;
+    late MockDotagiftxAuthApi mockDotagiftxAuthApi;
     late GetDotaItemOffersUsecaseImpl usecase;
 
     // Test data
@@ -50,8 +50,8 @@ void main() {
     const testItemId = 'test-item-id';
 
     setUp(() {
-      mockDotagiftxApi = MockDotagiftxApi();
-      usecase = GetDotaItemOffersUsecaseImpl(mockDotagiftxApi);
+      mockDotagiftxAuthApi = MockDotagiftxAuthApi();
+      usecase = GetDotaItemOffersUsecaseImpl(mockDotagiftxAuthApi);
     });
 
     group('get', () {
@@ -67,7 +67,7 @@ void main() {
           );
 
           when(
-            mockDotagiftxApi.getMarkets(
+            mockDotagiftxAuthApi.getMarkets(
               testItemId,
               1, // default page
               10, // default limit
@@ -86,7 +86,7 @@ void main() {
           expect(result.$1, equals(expectedOffers));
           expect(result.$2, equals(expectedTotalCount));
           verify(
-            mockDotagiftxApi.getMarkets(
+            mockDotagiftxAuthApi.getMarkets(
               testItemId,
               1,
               10,
@@ -115,7 +115,7 @@ void main() {
           const customSort = ApiConstants.querySortRecent;
 
           when(
-            mockDotagiftxApi.getMarkets(
+            mockDotagiftxAuthApi.getMarkets(
               testItemId,
               customPage,
               customLimit,
@@ -139,7 +139,7 @@ void main() {
           expect(result.$1, equals(expectedOffers));
           expect(result.$2, equals(expectedTotalCount));
           verify(
-            mockDotagiftxApi.getMarkets(
+            mockDotagiftxAuthApi.getMarkets(
               testItemId,
               customPage,
               customLimit,
@@ -163,7 +163,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             1,
             10,
@@ -182,7 +182,7 @@ void main() {
         expect(result.$1, isEmpty);
         expect(result.$2, equals(0));
         verify(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             1,
             10,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/keychain_keys.dart';
 import 'package:dotagiftx_mobile/data/core/constants/shared_preferences_keys.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
@@ -14,11 +15,13 @@ abstract interface class LoginUsecase {
 
 @LazySingleton(as: LoginUsecase)
 class LoginUsecaseImpl implements LoginUsecase {
-  final DotagiftxApi _dotagiftxApi;
+  final DotagiftxUnauthApi _dotagiftxUnauthApi;
+  final DotagiftxAuthApi _dotagiftxApi;
   final KeychainStorage _keychainStorage;
   final SharedPreferenceStorage _sharedPreferenceStorage;
 
   LoginUsecaseImpl(
+    this._dotagiftxUnauthApi,
     this._dotagiftxApi,
     this._keychainStorage,
     this._sharedPreferenceStorage,
@@ -26,8 +29,8 @@ class LoginUsecaseImpl implements LoginUsecase {
 
   @override
   Future<UserModel> call(String openid) async {
-    final response = await _dotagiftxApi.loginSteam(openid);
-    final userResponse = await _dotagiftxApi.getUser(response.steamId);
+    final authResponse = await _dotagiftxUnauthApi.loginSteam(openid);
+    final userResponse = await _dotagiftxApi.getUser();
 
     // consider this to be unawaited if more processes are added, or if
     // one of the process takes a long time to complete
@@ -36,11 +39,14 @@ class LoginUsecaseImpl implements LoginUsecase {
         SharedPreferencesKeys.user,
         jsonEncode(userResponse.toJson()),
       ),
-      _keychainStorage.add(KeychainKeys.token, response.token),
-      _keychainStorage.add(KeychainKeys.refreshToken, response.refreshToken),
-      _keychainStorage.add(KeychainKeys.expiresAt, response.expiresAt),
-      _keychainStorage.add(KeychainKeys.userId, response.userId),
-      _keychainStorage.add(KeychainKeys.steamId, response.steamId),
+      _keychainStorage.add(KeychainKeys.token, authResponse.token),
+      _keychainStorage.add(
+        KeychainKeys.refreshToken,
+        authResponse.refreshToken,
+      ),
+      _keychainStorage.add(KeychainKeys.expiresAt, authResponse.expiresAt),
+      _keychainStorage.add(KeychainKeys.userId, authResponse.userId),
+      _keychainStorage.add(KeychainKeys.steamId, authResponse.steamId),
     ]);
 
     return userResponse;

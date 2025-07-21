@@ -1,21 +1,26 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dotagiftx_mobile/data/core/dio/dio_provider.dart';
+import 'package:dotagiftx_mobile/data/requests/refresh_token_request.dart';
 import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
 import 'package:dotagiftx_mobile/data/responses/login_response.dart';
-import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
+import 'package:dotagiftx_mobile/data/responses/refresh_token_response.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
-import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
-part 'dotagiftx_api.g.dart';
+part 'dotagiftx_unauth_api.g.dart';
 
 @lazySingleton
 @RestApi()
-abstract interface class DotagiftxApi {
+abstract interface class DotagiftxUnauthApi {
   @factoryMethod
-  factory DotagiftxApi(BasicDioProvider dioProvider, @baseUrl String baseUrl) =>
-      _DotagiftxApi(dioProvider.create<DotagiftxApi>(), baseUrl: baseUrl);
+  factory DotagiftxUnauthApi(
+    UnauthDioProviderImpl dioProvider,
+    @baseUrl String baseUrl,
+  ) => _DotagiftxUnauthApi(
+    dioProvider.create<DotagiftxUnauthApi>(),
+    baseUrl: baseUrl,
+  );
 
   @GET('/catalogs')
   Future<CatalogResponse> getCatalogs(
@@ -25,24 +30,14 @@ abstract interface class DotagiftxApi {
     @Query('q') String? search,
   );
 
-  @GET('/markets')
-  Future<MarketListingResponse> getMarkets(
-    @Query('item_id') String itemId,
-    @Query('page') int page,
-    @Query('limit') int limit,
-    @Query('type') int type,
-    @Query('status') int status,
-    @Query('inventory_status') int? inventoryStatus,
-    @Query('sort') String sort,
-    @Query('index') String index,
-  );
-
   @GET('/catalogs_trend')
   Future<CatalogResponse> getTrendingCatalogs();
 
-  @GET('users/{steamId}')
-  Future<UserModel> getUser(@Path('steamId') String steamId);
-
   @GET('auth/steam?{openIdQueryParams}')
   Future<LoginResponse> loginSteam(@Path('openIdQueryParams') String openid);
+
+  @POST('auth/renew')
+  Future<RefreshTokenResponse> refreshToken(
+    @Body() RefreshTokenRequest request,
+  );
 }

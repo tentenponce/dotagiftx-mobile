@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
@@ -10,10 +10,10 @@ import 'package:mockito/mockito.dart';
 
 import 'get_dota_item_orders_usecase_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DotagiftxApi>()])
+@GenerateNiceMocks([MockSpec<DotagiftxAuthApi>()])
 void main() {
   group(GetDotaItemOrdersUsecaseImpl, () {
-    late MockDotagiftxApi mockDotagiftxApi;
+    late MockDotagiftxAuthApi mockDotagiftxAuthApi;
     late GetDotaItemOrdersUsecaseImpl usecase;
 
     const testItemId = 'test-item-id';
@@ -59,8 +59,8 @@ void main() {
     final testBuyOrders = [testBuyOrder1, testBuyOrder2];
 
     setUp(() {
-      mockDotagiftxApi = MockDotagiftxApi();
-      usecase = GetDotaItemOrdersUsecaseImpl(mockDotagiftxApi);
+      mockDotagiftxAuthApi = MockDotagiftxAuthApi();
+      usecase = GetDotaItemOrdersUsecaseImpl(mockDotagiftxAuthApi);
     });
 
     group('get', () {
@@ -72,7 +72,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             testPage,
             testLimit,
@@ -92,7 +92,7 @@ void main() {
         expect(result.$2, equals(testTotalCount));
 
         verify(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             1, // default page
             10, // default limit
@@ -117,7 +117,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             customPage,
             customLimit,
@@ -142,7 +142,7 @@ void main() {
         expect(result.$2, equals(testTotalCount));
 
         verify(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             customPage,
             customLimit,
@@ -163,7 +163,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             testPage,
             testLimit,
@@ -186,7 +186,7 @@ void main() {
       test('should propagate API exceptions', () async {
         // Arrange
         when(
-          mockDotagiftxApi.getMarkets(
+          mockDotagiftxAuthApi.getMarkets(
             testItemId,
             testPage,
             testLimit,

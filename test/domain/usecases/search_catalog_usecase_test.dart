@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
@@ -9,10 +9,10 @@ import 'package:mockito/mockito.dart';
 
 import 'search_catalog_usecase_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DotagiftxApi>()])
+@GenerateNiceMocks([MockSpec<DotagiftxUnauthApi>()])
 void main() {
   group(SearchCatalogUsecaseImpl, () {
-    late MockDotagiftxApi mockDotagiftxApi;
+    late MockDotagiftxUnauthApi mockDotagiftxUnauthApi;
     late SearchCatalogUsecaseImpl usecase;
 
     // Test data
@@ -35,8 +35,8 @@ void main() {
     );
 
     setUp(() {
-      mockDotagiftxApi = MockDotagiftxApi();
-      usecase = SearchCatalogUsecaseImpl(mockDotagiftxApi);
+      mockDotagiftxUnauthApi = MockDotagiftxUnauthApi();
+      usecase = SearchCatalogUsecaseImpl(mockDotagiftxUnauthApi);
     });
 
     group('search', () {
@@ -51,7 +51,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortPopular,
             10, // default limit
             1, // default page
@@ -66,7 +66,7 @@ void main() {
         expect(result.$1, equals(expectedItems));
         expect(result.$2, equals(expectedTotalCount));
         verify(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortPopular,
             10,
             1,
@@ -88,7 +88,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortPopular,
             customLimit,
             customPage,
@@ -107,7 +107,7 @@ void main() {
         expect(result.$1, equals(expectedItems));
         expect(result.$2, equals(expectedTotalCount));
         verify(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortPopular,
             customLimit,
             customPage,
