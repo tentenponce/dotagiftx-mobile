@@ -7,7 +7,6 @@ part 'profile_state.freezed.dart';
 abstract class ProfileState with _$ProfileState {
   const factory ProfileState({
     @Default(false) bool loadingLogin,
-    @Default('') String loginUrl,
     @Default(null) UserModel? user,
   }) = _ProfileState;
 }

@@ -38,6 +38,7 @@ class ProfileCubit extends BaseCubit<ProfileState>
 
   @override
   Future<void> init() async {
+    // consider being reactive, setup a publisher in shared preferences every save of any key
     final user = await _sharedPreferenceStorage.getValue<String>(
       SharedPreferencesKeys.user,
     );

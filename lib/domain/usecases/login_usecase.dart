@@ -29,6 +29,8 @@ class LoginUsecaseImpl implements LoginUsecase {
     final response = await _dotagiftxApi.loginSteam(openid);
     final userResponse = await _dotagiftxApi.getUser(response.steamId);
 
+    // consider this to be unawaited if more processes are added, or if
+    // one of the process takes a long time to complete
     await Future.wait([
       _sharedPreferenceStorage.setValue(
         SharedPreferencesKeys.user,
