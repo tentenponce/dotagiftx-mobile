@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
-import 'package:dotagiftx_mobile/data/core/constants/shared_preferences_keys.dart';
-import 'package:dotagiftx_mobile/data/local/shared_preference_storage.dart';
-import 'package:dotagiftx_mobile/domain/models/user_model.dart';
+import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/domain/usecases/login_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/logout_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -22,14 +18,14 @@ class ProfileCubit extends BaseCubit<ProfileState>
   final EnvironmentVariables _environmentVariables;
   final LoginUsecase _loginUsecase;
   final LogoutUsecase _logoutUsecase;
-  final SharedPreferenceStorage _sharedPreferenceStorage;
+  final ListenLocalStorage _listenLocalStorage;
 
   ProfileCubit(
     this._logger,
     this._environmentVariables,
     this._loginUsecase,
     this._logoutUsecase,
-    this._sharedPreferenceStorage,
+    this._listenLocalStorage,
   ) : super(const ProfileState());
 
   @override
@@ -41,17 +37,9 @@ class ProfileCubit extends BaseCubit<ProfileState>
 
   @override
   Future<void> init() async {
-    // consider being reactive, setup a publisher in shared preferences every save of any key
-    final user = await _sharedPreferenceStorage.getValue<String>(
-      SharedPreferencesKeys.user,
-    );
-    if (user != null) {
-      emit(
-        state.copyWith(
-          user: UserModel.fromJson(jsonDecode(user) as Map<String, dynamic>),
-        ),
-      );
-    }
+    _listenLocalStorage.listenUser().listen((user) {
+      emit(state.copyWith(user: user));
+    });
   }
 
   Future<void> login(String openid) async {
