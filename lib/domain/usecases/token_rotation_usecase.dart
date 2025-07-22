@@ -42,12 +42,7 @@ class TokenRotationUsecaseImpl implements TokenRotationUsecase {
     try {
       await _refreshTokenUsecase.refresh();
     } catch (e) {
-      if (e is UnauthorizedException) {
-        _logger.log(LogLevel.debug, 'logging out...');
-        await _logout();
-      } else {
-        _logger.log(LogLevel.error, 'error refreshing token: $e', e);
-      }
+      await _handleRefreshTokenError(e);
     }
 
     Timer.periodic(Duration(seconds: tokenRotationSeconds), (_) async {
@@ -60,14 +55,18 @@ class TokenRotationUsecaseImpl implements TokenRotationUsecase {
           },
         );
       } catch (e) {
-        if (e is UnauthorizedException) {
-          _logger.log(LogLevel.debug, 'logging out...');
-          await _logout();
-        } else {
-          _logger.log(LogLevel.error, 'error refreshing token: $e', e);
-        }
+        await _handleRefreshTokenError(e);
       }
     });
+  }
+
+  Future<void> _handleRefreshTokenError(Object e) async {
+    if (e is UnauthorizedException) {
+      _logger.log(LogLevel.debug, 'logging out...');
+      await _logout();
+    } else {
+      _logger.log(LogLevel.error, 'error refreshing token: $e', e);
+    }
   }
 
   Future<void> _logout() async {
