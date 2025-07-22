@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
@@ -9,10 +9,10 @@ import 'package:mockito/mockito.dart';
 
 import 'get_new_buy_orders_usecase_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DotagiftxApi>()])
+@GenerateNiceMocks([MockSpec<DotagiftxUnauthApi>()])
 void main() {
   group(GetNewBuyOrdersUsecaseImpl, () {
-    late MockDotagiftxApi mockDotagiftxApi;
+    late MockDotagiftxUnauthApi mockDotagiftxUnauthApi;
     late GetNewBuyOrdersUsecaseImpl usecase;
 
     // Test data
@@ -35,8 +35,8 @@ void main() {
     );
 
     setUp(() {
-      mockDotagiftxApi = MockDotagiftxApi();
-      usecase = GetNewBuyOrdersUsecaseImpl(mockDotagiftxApi);
+      mockDotagiftxUnauthApi = MockDotagiftxUnauthApi();
+      usecase = GetNewBuyOrdersUsecaseImpl(mockDotagiftxUnauthApi);
     });
 
     group('get', () {
@@ -49,7 +49,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortRecentBid,
             5, // default limit
             1, // default page
@@ -63,7 +63,7 @@ void main() {
         // Assert
         expect(result, equals(expectedItems));
         verify(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortRecentBid,
             5,
             1,
@@ -83,7 +83,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortRecentBid,
             customLimit,
             customPage,
@@ -97,7 +97,7 @@ void main() {
         // Assert
         expect(result, equals(expectedItems));
         verify(
-          mockDotagiftxApi.getCatalogs(
+          mockDotagiftxUnauthApi.getCatalogs(
             ApiConstants.querySortRecentBid,
             customLimit,
             customPage,

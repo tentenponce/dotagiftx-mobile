@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_trending_usecase.dart';
@@ -8,10 +8,10 @@ import 'package:mockito/mockito.dart';
 
 import 'get_trending_usecase_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DotagiftxApi>()])
+@GenerateNiceMocks([MockSpec<DotagiftxUnauthApi>()])
 void main() {
   group(GetTrendingUsecaseImpl, () {
-    late MockDotagiftxApi mockDotagiftxApi;
+    late MockDotagiftxUnauthApi mockDotagiftxUnauthApi;
     late GetTrendingUsecaseImpl usecase;
 
     // Test data
@@ -34,8 +34,8 @@ void main() {
     );
 
     setUp(() {
-      mockDotagiftxApi = MockDotagiftxApi();
-      usecase = GetTrendingUsecaseImpl(mockDotagiftxApi);
+      mockDotagiftxUnauthApi = MockDotagiftxUnauthApi();
+      usecase = GetTrendingUsecaseImpl(mockDotagiftxUnauthApi);
     });
 
     group('get', () {
@@ -48,7 +48,7 @@ void main() {
         );
 
         when(
-          mockDotagiftxApi.getTrendingCatalogs(),
+          mockDotagiftxUnauthApi.getTrendingCatalogs(),
         ).thenAnswer((_) async => expectedResponse);
 
         // Act
@@ -56,7 +56,7 @@ void main() {
 
         // Assert
         expect(result, equals(expectedItems));
-        verify(mockDotagiftxApi.getTrendingCatalogs()).called(1);
+        verify(mockDotagiftxUnauthApi.getTrendingCatalogs()).called(1);
       });
     });
   });

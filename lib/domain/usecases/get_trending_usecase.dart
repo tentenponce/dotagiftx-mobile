@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,13 +8,13 @@ abstract interface class GetTrendingUsecase {
 
 @LazySingleton(as: GetTrendingUsecase)
 class GetTrendingUsecaseImpl implements GetTrendingUsecase {
-  final DotagiftxApi _dotagiftxApi;
+  final DotagiftxUnauthApi _dotagiftxUnauthApi;
 
-  GetTrendingUsecaseImpl(this._dotagiftxApi);
+  GetTrendingUsecaseImpl(this._dotagiftxUnauthApi);
 
   @override
   Future<Iterable<DotaItemModel>> get() async {
-    final response = await _dotagiftxApi.getTrendingCatalogs();
+    final response = await _dotagiftxUnauthApi.getTrendingCatalogs();
 
     return response.data;
   }

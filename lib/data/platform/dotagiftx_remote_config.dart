@@ -18,6 +18,8 @@ abstract interface class DotagiftxRemoteConfig {
 
   Future<Iterable<RoadmapModel>> getRoadmap();
 
+  Future<int> getTokenRotationSeconds();
+
   Future<Iterable<TreasureModel>> getTreasures();
 }
 
@@ -69,6 +71,17 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
     }
 
     return RemoteConfigConstants.defaultRoadmap;
+  }
+
+  @override
+  Future<int> getTokenRotationSeconds() async {
+    final tokenRotationSeconds = await _appRemoteConfig.tryGetData<int>(
+      RemoteConfigConstants.keyTokenRotationSeconds,
+    );
+
+    return (tokenRotationSeconds ?? 0) != 0
+        ? tokenRotationSeconds!
+        : RemoteConfigConstants.defaultTokenRotationSeconds;
   }
 
   @override

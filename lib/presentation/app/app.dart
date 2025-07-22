@@ -1,3 +1,5 @@
+import 'package:dotagiftx_mobile/presentation/app/viewmodels/app_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/home/home_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -7,11 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class App extends StatelessWidget {
+class App extends StatelessWidget with ViewCubitMixin<AppCubit> {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildView(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       minTextAdapt: true,

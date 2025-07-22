@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_nav_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/profile_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,41 +51,49 @@ class _HomeViewState extends StateBase<_HomeView> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            if (index == 3) {
-              // Navigate to RoadmapView instead of changing tab
-              _navigateToRoadmap();
-            } else {
-              setState(() {
-                _currentIndex = index;
-              });
-            }
+        child: BlocBuilder<ProfileCubit, ProfileState>(
+          bloc: context.read<HomeCubit>().profileCubit,
+          buildWhen: (previous, current) => previous.user != current.user,
+          builder: (context, state) {
+            return BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: AppColors.darkGrey,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: AppColors.grey,
+              elevation: 0,
+              items: [
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.home),
+                  label: I18n.of(context).homeHome,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.diamond_rounded),
+                  label: I18n.of(context).homeTreasures,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.groups),
+                  label: I18n.of(context).homeHeroes,
+                ),
+                BottomNavigationBarItem(
+                  icon:
+                      !StringUtils.isNullOrEmpty(state.user?.avatar)
+                          ? DotagiftxImageView(
+                            imageUrl: state.user!.avatar!,
+                            width: 24,
+                            height: 24,
+                          )
+                          : const Icon(Icons.account_circle),
+                  label: I18n.of(context).homeProfile,
+                ),
+              ],
+            );
           },
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: AppColors.darkGrey,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: AppColors.grey,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.home),
-              label: I18n.of(context).homeHome,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.diamond_rounded),
-              label: I18n.of(context).homeTreasures,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.groups),
-              label: I18n.of(context).homeHeroes,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.account_circle),
-              label: I18n.of(context).homeProfile,
-            ),
-          ],
         ),
       ),
     );
@@ -94,7 +106,14 @@ class _HomeViewState extends StateBase<_HomeView> {
       const HomeNavView(),
       TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
       HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
+      const ProfileNavView(),
     ];
+
+    context.read<HomeCubit>().profileCubit.navigateToHome = () {
+      setState(() {
+        _currentIndex = 0;
+      });
+    };
   }
 
   void _navigateToHomeWithSearch(String searchQuery) {
@@ -105,13 +124,5 @@ class _HomeViewState extends StateBase<_HomeView> {
 
     // Set search query in HomeCubit
     unawaited(context.read<HomeCubit>().searchCatalog(query: searchQuery));
-  }
-
-  void _navigateToRoadmap() {
-    unawaited(
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => const RoadmapView())),
-    );
   }
 }

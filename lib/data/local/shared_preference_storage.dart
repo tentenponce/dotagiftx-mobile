@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
@@ -8,15 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract interface class SharedPreferenceStorage {
   Future<bool> clear(String key);
 
-  Future<bool> clearAll();
-
-  Future<void> clearAllExcept(Set<String> keys);
-
   Future<Iterable<String>> getKeysWithPrefix(String prefix);
 
   Future<T?> getValue<T>(String key);
 
   Future<Iterable<T>> getValues<T>(String key);
+
+  Stream<(String, Object?)> listen(String key);
 
   Future<bool> setValue(String key, Object value);
 }
@@ -25,6 +24,9 @@ abstract interface class SharedPreferenceStorage {
 class SharedPreferenceStorageImpl implements SharedPreferenceStorage {
   final Logger _logger;
   SharedPreferences? _prefs;
+
+  final StreamController<(String, Object?)> _streamController =
+      StreamController<(String, Object?)>.broadcast();
 
   SharedPreferenceStorageImpl(this._logger) {
     _logger.logFor(this);
@@ -41,24 +43,13 @@ class SharedPreferenceStorageImpl implements SharedPreferenceStorage {
   Future<bool> clear(String key) async {
     assert(!StringUtils.isNullOrEmpty(key), 'Key cannot be null or empty');
 
-    return (await prefs).remove(key);
-  }
+    final result = await (await prefs).remove(key);
 
-  @override
-  Future<bool> clearAll() async {
-    final didClear = await (await prefs).clear();
-
-    return didClear;
-  }
-
-  @override
-  Future<void> clearAllExcept(Set<String> keys) async {
-    final allKeys = (await prefs).getKeys();
-    final keysToRemove = allKeys.where((key) => !keys.contains(key));
-
-    for (final key in keysToRemove) {
-      await clear(key);
+    if (result) {
+      _streamController.add((key, null));
     }
+
+    return result;
   }
 
   @override
@@ -92,26 +83,39 @@ class SharedPreferenceStorageImpl implements SharedPreferenceStorage {
   }
 
   @override
+  Stream<(String, Object?)> listen(String key) {
+    return _streamController.stream.where((event) => event.$1 == key);
+  }
+
+  @override
   Future<bool> setValue(String key, Object value) async {
     assert(!StringUtils.isNullOrEmpty(key), 'Key cannot be null or empty');
 
+    var result = false;
+
     if (value is String) {
-      return (await prefs).setString(key, value);
+      result = await (await prefs).setString(key, value);
     } else if (value is int) {
-      return (await prefs).setInt(key, value);
+      result = await (await prefs).setInt(key, value);
     } else if (value is double) {
-      return (await prefs).setDouble(key, value);
+      result = await (await prefs).setDouble(key, value);
     } else if (value is bool) {
-      return (await prefs).setBool(key, value);
+      result = await (await prefs).setBool(key, value);
     } else if (value is List<String>) {
-      return (await prefs).setStringList(key, value);
+      result = await (await prefs).setStringList(key, value);
     } else {
       _logger.log(
         LogLevel.warning,
         '${value.runtimeType} not supported, implicitly saving as string',
       );
 
-      return (await prefs).setString(key, value.toString());
+      result = await (await prefs).setString(key, value.toString());
     }
+
+    if (result) {
+      _streamController.add((key, value));
+    }
+
+    return result;
   }
 }
