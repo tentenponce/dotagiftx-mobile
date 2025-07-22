@@ -26,22 +26,21 @@ class LogoutUsecaseImpl implements LogoutUsecase {
 
   @override
   Future<void> call() async {
+    final refreshToken = await _keychainStorage.getValue(
+      KeychainKeys.refreshToken,
+    );
+
     // no need to wait, as simply deleting info from storage is enough
-    unawaited(_revokeToken());
+    unawaited(
+      _dotagiftxUnauthApi.revokeToken(
+        RevokeTokenRequest(refreshToken: refreshToken ?? ''),
+      ),
+    );
 
     // clear user from storage and all keychain related keys
     await Future.wait([
       _sharedPreferenceStorage.clear(SharedPreferencesKeys.user),
       _keychainStorage.clearAll(),
     ]);
-  }
-
-  Future<void> _revokeToken() async {
-    final refreshToken = await _keychainStorage.getValue(
-      KeychainKeys.refreshToken,
-    );
-    await _dotagiftxUnauthApi.revokeToken(
-      RevokeTokenRequest(refreshToken: refreshToken ?? ''),
-    );
   }
 }
