@@ -17,25 +17,11 @@ class ListenLocalStorageImpl implements ListenLocalStorage {
 
   ListenLocalStorageImpl(this._sharedPreferenceStorage);
 
-  Future<UserModel?> getUserFromCache() async {
-    final userAsString = await _sharedPreferenceStorage.getValue<String>(
-      SharedPreferencesKeys.user,
-    );
-
-    if (!StringUtils.isNullOrEmpty(userAsString)) {
-      return UserModel.fromJson(
-        jsonDecode(userAsString!) as Map<String, dynamic>,
-      );
-    }
-
-    return null;
-  }
-
   @override
   Stream<UserModel?> listenUser() {
     return StreamGroup.merge([
       // ignore: discarded_futures
-      Stream.fromFuture(getUserFromCache()),
+      Stream.fromFuture(_getUserFromCache()),
       _sharedPreferenceStorage.listen(SharedPreferencesKeys.user).map((event) {
         final user = event.$2;
 
@@ -48,5 +34,19 @@ class ListenLocalStorageImpl implements ListenLocalStorage {
         return null;
       }),
     ]);
+  }
+
+  Future<UserModel?> _getUserFromCache() async {
+    final userAsString = await _sharedPreferenceStorage.getValue<String>(
+      SharedPreferencesKeys.user,
+    );
+
+    if (!StringUtils.isNullOrEmpty(userAsString)) {
+      return UserModel.fromJson(
+        jsonDecode(userAsString!) as Map<String, dynamic>,
+      );
+    }
+
+    return null;
   }
 }
