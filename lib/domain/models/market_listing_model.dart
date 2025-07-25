@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -13,6 +14,7 @@ class MarketListingModel extends Equatable {
   final String? createdAt;
   final int? inventoryStatus;
   final SteamUserModel? user;
+  final DotaItemModel? item;
   final bool? resell;
 
   const MarketListingModel({
@@ -22,6 +24,7 @@ class MarketListingModel extends Equatable {
     this.price,
     this.createdAt,
     this.resell,
+    this.item,
   });
 
   factory MarketListingModel.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +38,7 @@ class MarketListingModel extends Equatable {
     inventoryStatus,
     user,
     resell,
+    item,
   ];
 
   Map<String, dynamic> toJson() => _$MarketListingModelToJson(this);

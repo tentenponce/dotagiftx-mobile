@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 
 class MarketFilterButtonView extends StatelessWidget {
   final String label;
-  final String sort;
-  final String currentSort;
+  final String filter;
+  final String currentFilter;
   final VoidCallback onTap;
 
   const MarketFilterButtonView({
     required this.label,
-    required this.sort,
-    required this.currentSort,
+    required this.filter,
+    required this.currentFilter,
     required this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = currentSort == sort;
+    final isSelected = currentFilter == filter;
 
     return ElevatedButton(
       onPressed: onTap,

@@ -32,6 +32,16 @@ abstract interface class DotagiftxAuthApi {
     @Query('index') String index,
   );
 
+  @GET('/my/markets')
+  Future<MarketListingResponse> getMyMarkets(
+    @Query('page') int page,
+    @Query('limit') int limit,
+    @Query('type') int type,
+    @Query('status') int? status,
+    @Query('sort') String sort,
+    @Query('index') String index,
+  );
+
   @GET('my/profile')
   Future<UserModel> getUser();
 }
