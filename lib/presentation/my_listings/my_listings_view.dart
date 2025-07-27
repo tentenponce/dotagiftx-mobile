@@ -39,9 +39,9 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
-        title: const Text(
-          'My Listings',
-          style: TextStyle(
+        title: Text(
+          I18n.of(context).myListingsTitle,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
