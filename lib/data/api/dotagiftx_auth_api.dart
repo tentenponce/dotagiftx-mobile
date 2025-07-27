@@ -40,6 +40,7 @@ abstract interface class DotagiftxAuthApi {
     @Query('status') int? status,
     @Query('sort') String sort,
     @Query('index') String index,
+    @Query('q') String? query,
   );
 
   @GET('my/profile')

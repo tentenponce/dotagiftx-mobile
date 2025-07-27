@@ -84,6 +84,7 @@
     "roadmapItemViewCompleted": "Completed",
     "roadmapItemViewSuccessVote": "Thanks for your vote!",
     "myListingsTitle": "My Listings",
+    "myListingsSearchHint": "Search for an item",
     "myListingsActiveButton": "Active Listings",
     "myListingsReservedButton": "Reserved",
     "myListingsNoActiveListings": "No active listings",

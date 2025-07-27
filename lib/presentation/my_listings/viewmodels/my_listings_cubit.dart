@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_listings_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
@@ -11,14 +12,19 @@ import 'package:injectable/injectable.dart';
 class MyListingsCubit extends BaseCubit<MyListingsState>
     with CubitErrorMixin<MyListingsState> {
   static const int _pageLimit = 20;
-  final Logger _logger;
 
   int _currentPage = 1;
+  String _searchQuery = '';
 
+  final Logger _logger;
+  final DebouncerUtils _debouncerUtils;
   final GetMyListingsUsecase _getMyListingsUsecase;
 
-  MyListingsCubit(this._logger, this._getMyListingsUsecase)
-    : super(const MyListingsState());
+  MyListingsCubit(
+    this._logger,
+    this._getMyListingsUsecase,
+    this._debouncerUtils,
+  ) : super(const MyListingsState());
 
   @override
   Logger get logger => _logger;
@@ -44,6 +50,7 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
         limit: _pageLimit,
         page: 1,
         status: state.status,
+        searchQuery: _searchQuery,
       ),
       (response) async {
         final (listings, totalCount) = response;
@@ -61,6 +68,7 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
 
   @override
   Future<void> init() async {
+    _debouncerUtils.milliseconds = 500;
     await getMyListings();
   }
 
@@ -84,6 +92,7 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
         limit: _pageLimit,
         page: nextPage,
         status: state.status,
+        searchQuery: _searchQuery,
       ),
       (response) async {
         final (newListings, totalCount) = response;
@@ -106,5 +115,18 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
 
   Future<void> refreshListings() async {
     await getMyListings();
+  }
+
+  Future<void> searchListings(String query) async {
+    // Reset pagination state for new searches
+    if (query != _searchQuery) {
+      _currentPage = 1;
+    }
+
+    _searchQuery = query;
+
+    _debouncerUtils.run(() async {
+      await getMyListings();
+    });
   }
 }

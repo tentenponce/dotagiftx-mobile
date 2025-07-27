@@ -8,6 +8,7 @@ abstract interface class GetMyListingsUsecase {
     required int limit,
     required int page,
     int? status,
+    String? searchQuery,
   });
 }
 
@@ -22,6 +23,7 @@ class GetMyListingsUsecaseImpl implements GetMyListingsUsecase {
     required int page,
     required int limit,
     int? status = ApiConstants.queryMarketStatusReserved,
+    String? searchQuery,
   }) async {
     final response = await _dotagiftxApi.getMyMarkets(
       page,
@@ -30,6 +32,7 @@ class GetMyListingsUsecaseImpl implements GetMyListingsUsecase {
       status,
       ApiConstants.querySortUpdatedAtDesc,
       ApiConstants.queryIndexItemId,
+      searchQuery,
     );
 
     return (response.data, response.totalCount);

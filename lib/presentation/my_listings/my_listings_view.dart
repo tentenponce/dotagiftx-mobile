@@ -33,6 +33,9 @@ class _MyListingsViewContent extends StatefulWidget {
 
 class _MyListingsViewContentState extends State<_MyListingsViewContent> {
   final _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
+  bool _showClearButton = false;
+  bool _isScrolled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,59 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
         bottom: true,
         child: Column(
           children: [
+            // Search Field
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                controller: _searchController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: I18n.of(context).myListingsSearchHint,
+                  hintStyle: const TextStyle(color: AppColors.grey),
+                  prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+                  suffixIcon:
+                      _showClearButton
+                          ? IconButton(
+                            icon: const Icon(
+                              Icons.clear,
+                              color: AppColors.grey,
+                            ),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _showClearButton = false;
+                              });
+                              unawaited(
+                                context.read<MyListingsCubit>().searchListings(
+                                  '',
+                                ),
+                              );
+                            },
+                          )
+                          : null,
+                  filled: true,
+                  fillColor: AppColors.darkGrey,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _showClearButton = value.isNotEmpty;
+                  });
+                  unawaited(
+                    context.read<MyListingsCubit>().searchListings(value),
+                  );
+                },
+              ),
+            ),
+
+            // Filter Buttons
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               width: double.infinity,
@@ -101,13 +157,38 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
             ),
 
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await context.read<MyListingsCubit>().refreshListings();
-                },
-                child: BlocBuilder<MyListingsCubit, MyListingsState>(
-                  builder: _buildBody,
-                ),
+              child: Stack(
+                children: [
+                  RefreshIndicator(
+                    onRefresh: () async {
+                      await context.read<MyListingsCubit>().refreshListings();
+                    },
+                    child: BlocBuilder<MyListingsCubit, MyListingsState>(
+                      builder: _buildBody,
+                    ),
+                  ),
+                  // Top scroll shadow
+                  if (_isScrolled)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 20,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColors.black.withValues(alpha: 0.8),
+                              AppColors.black.withValues(alpha: 0.4),
+                              AppColors.black.withValues(alpha: 0.0),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
@@ -119,6 +200,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -132,10 +214,12 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     if (state.isLoading) {
       return Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: List.generate(
-            5, // Show 5 shimmer cards
-            (index) => const ShimmerListingItemView(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: List.generate(
+              5, // Show 5 shimmer cards
+              (index) => const ShimmerListingItemView(),
+            ),
           ),
         ),
       );
@@ -210,6 +294,16 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
   }
 
   void _onScroll() {
+    FocusScope.of(context).unfocus();
+
+    final isScrolled =
+        _scrollController.hasClients && _scrollController.offset > 0;
+    if (isScrolled != _isScrolled) {
+      setState(() {
+        _isScrolled = isScrolled;
+      });
+    }
+
     if (_scrollController.hasClients &&
         _scrollController.offset >=
             _scrollController.position.maxScrollExtent - 200) {
