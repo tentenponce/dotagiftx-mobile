@@ -13,6 +13,8 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   static const int _pageLimit = 20;
   final Logger _logger;
 
+  int _currentPage = 1;
+
   final GetMyListingsUsecase _getMyListingsUsecase;
 
   MyListingsCubit(this._logger, this._getMyListingsUsecase)
@@ -21,20 +23,21 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   @override
   Logger get logger => _logger;
 
-  @override
-  Future<void> init() async {
-    await loadListings();
+  void filterBy(int status) {
+    if (state.status == status) {
+      return;
+    }
+
+    emit(state.copyWith(status: status));
+    unawaited(getMyListings());
   }
 
-  Future<void> loadListings({int? status}) async {
-    emit(
-      state.copyWith(
-        currentPage: 1,
-        listings: [],
-        loadingListings: true,
-        status: status ?? state.status,
-      ),
-    );
+  Future<void> getMyListings() async {
+    if (state.isLoading) {
+      return;
+    }
+
+    emit(state.copyWith(isLoading: true));
 
     await cubitHandler(
       () => _getMyListingsUsecase.get(
@@ -45,21 +48,24 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
       (response) async {
         final (listings, totalCount) = response;
 
+        _currentPage = 1;
+
         emit(
-          state.copyWith(
-            listings: listings,
-            totalListingsCount: totalCount,
-            currentPage: 1,
-          ),
+          state.copyWith(listings: listings, totalListingsCount: totalCount),
         );
       },
     );
 
-    emit(state.copyWith(loadingListings: false));
+    emit(state.copyWith(isLoading: false));
+  }
+
+  @override
+  Future<void> init() async {
+    await getMyListings();
   }
 
   Future<void> loadMoreListings() async {
-    if (state.loadingMoreListings || state.loadingListings) {
+    if (state.isLoadingMore) {
       return;
     }
 
@@ -69,31 +75,36 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
       return;
     }
 
-    emit(state.copyWith(loadingMoreListings: true));
+    emit(state.copyWith(isLoadingMore: true));
 
-    final nextPage = state.currentPage + 1;
+    final nextPage = _currentPage + 1;
 
     await cubitHandler(
-      () => _getMyListingsUsecase.get(limit: _pageLimit, page: nextPage),
+      () => _getMyListingsUsecase.get(
+        limit: _pageLimit,
+        page: nextPage,
+        status: state.status,
+      ),
       (response) async {
         final (newListings, totalCount) = response;
 
         final combinedListings = [...state.listings, ...newListings];
 
+        _currentPage = nextPage;
+
         emit(
           state.copyWith(
             listings: combinedListings,
             totalListingsCount: totalCount,
-            currentPage: nextPage,
           ),
         );
       },
     );
 
-    emit(state.copyWith(loadingMoreListings: false));
+    emit(state.copyWith(isLoadingMore: false));
   }
 
   Future<void> refreshListings() async {
-    await loadListings();
+    await getMyListings();
   }
 }

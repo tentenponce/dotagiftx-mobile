@@ -7,11 +7,10 @@ part 'my_listings_state.freezed.dart';
 @freezed
 abstract class MyListingsState with _$MyListingsState {
   const factory MyListingsState({
-    @Default(false) bool loadingListings,
-    @Default(false) bool loadingMoreListings,
+    @Default(false) bool isLoading,
+    @Default(false) bool isLoadingMore,
     @Default([]) List<MarketListingModel> listings,
     @Default(0) int totalListingsCount,
-    @Default(1) int currentPage,
     @Default(ApiConstants.queryMarketStatusLive) int status,
   }) = _MyListingsState;
 }

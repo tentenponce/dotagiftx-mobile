@@ -42,7 +42,7 @@ void main() {
       ).thenAnswer((_) async => (mockListings, mockTotalCount));
 
       // Act
-      await cubit.loadListings();
+      await cubit.getMyListings();
 
       // Assert
       expect(cubit.state.listings, equals(mockListings));
@@ -60,7 +60,7 @@ void main() {
       ).thenAnswer((_) async => (const <MarketListingModel>[], 0));
 
       // Act
-      final future = cubit.loadListings();
+      final future = cubit.getMyListings();
 
       // Assert loading state
       expect(cubit.state.loadingListings, isTrue);

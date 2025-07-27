@@ -73,10 +73,8 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                         filter: ApiConstants.queryMarketStatusLive.toString(),
                         currentFilter: state.status.toString(),
                         onTap: () {
-                          unawaited(
-                            context.read<MyListingsCubit>().loadListings(
-                              status: ApiConstants.queryMarketStatusLive,
-                            ),
+                          context.read<MyListingsCubit>().filterBy(
+                            ApiConstants.queryMarketStatusLive,
                           );
                         },
                       );
@@ -90,10 +88,8 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                             ApiConstants.queryMarketStatusReserved.toString(),
                         currentFilter: state.status.toString(),
                         onTap: () {
-                          unawaited(
-                            context.read<MyListingsCubit>().loadListings(
-                              status: ApiConstants.queryMarketStatusReserved,
-                            ),
+                          context.read<MyListingsCubit>().filterBy(
+                            ApiConstants.queryMarketStatusReserved,
                           );
                         },
                       );
@@ -132,7 +128,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
   }
 
   Widget _buildBody(BuildContext context, MyListingsState state) {
-    if (state.loadingListings && state.listings.isEmpty) {
+    if (state.isLoading && state.listings.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -144,7 +140,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
       );
     }
 
-    if (state.listings.isEmpty && !state.loadingListings) {
+    if (state.listings.isEmpty && !state.isLoading) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -177,7 +173,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     // Calculate total items: listing + loading more shimmer items + bottom padding
     final remainingListings = state.totalListingsCount - state.listings.length;
     final maxShimmerItems =
-        state.loadingMoreListings ? min(remainingListings, 10) : 0;
+        state.isLoadingMore ? min(remainingListings, 10) : 0;
     final itemCount =
         state.listings.length + maxShimmerItems + 1; // +1 for bottom padding
 
@@ -194,7 +190,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
         }
 
         // Check if this is a loading more shimmer item
-        if (state.loadingMoreListings && index >= state.listings.length) {
+        if (state.isLoadingMore && index >= state.listings.length) {
           final shimmerIndex = index - state.listings.length;
           if (shimmerIndex < maxShimmerItems) {
             return const ShimmerListingItemView();
