@@ -44,10 +44,11 @@ Mobile platform for [dotagiftx.com](https://dotagiftx.com/) - Market place for D
    ```json
    {
      "baseUrl": "your-api-base-url",
+     "loginRedirectUrl": "login-redirect-url-for-steam-redirect"
      "firebaseApiKey": "your-firebase-api-key",
      "firebaseAppId": "your-firebase-app-id",
      "firebaseProjectId": "your-firebase-project-id",
-     "firebaseStorageBucket": "your-firebase-storage-bucket"
+     "firebaseStorageBucket": "your-firebase-storage-bucket",
    }
    ```
 
