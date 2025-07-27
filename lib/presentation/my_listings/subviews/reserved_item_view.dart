@@ -5,12 +5,13 @@ import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dar
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/item_verification_icon_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dart';
+import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class MyListingItemView extends StatelessWidget {
+class ReservedItemView extends StatelessWidget {
   final MarketListingModel listing;
 
-  const MyListingItemView({required this.listing, super.key});
+  const ReservedItemView({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,8 @@ class MyListingItemView extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              listing.item?.name ?? 'Unknown Item',
+                              listing.item?.name ??
+                                  I18n.of(context).reservedItemViewUnknownItem,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -83,9 +85,11 @@ class MyListingItemView extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      if (listing.createdAt != null)
+                      if (listing.updatedAt != null)
                         Text(
-                          'Listed ${DateFormatUtils.formatDateAgo(listing.createdAt!)}',
+                          I18n.of(context).reservedItemViewReservedDate(
+                            DateFormatUtils.formatDateAgo(listing.updatedAt!),
+                          ),
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 12,

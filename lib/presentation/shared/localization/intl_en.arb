@@ -100,5 +100,9 @@
     "itemVerificationIconPrivateTitleTooltip": "Private",
     "itemVerificationIconPrivateDescriptionTooltip": "User's inventory is private.",
     "itemVerificationIconErrorTitleTooltip": "Error",
-    "itemVerificationIconErrorDescriptionTooltip": "Error processing verification."
+    "itemVerificationIconErrorDescriptionTooltip": "Error processing verification.",
+    "myActiveListingItemViewUnknownItem": "Unknown Item",
+    "myActiveListingItemViewListedDate": "Listed {date}",
+    "reservedItemViewUnknownItem": "Unknown Item",
+    "reservedItemViewReservedDate": "Reserved {date}"
 }

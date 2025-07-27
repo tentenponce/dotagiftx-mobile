@@ -12,6 +12,7 @@ class MarketListingModel extends Equatable {
   final String id;
   final double? price;
   final String? createdAt;
+  final String? updatedAt;
   final int? inventoryStatus;
   final SteamUserModel? user;
   final DotaItemModel? item;
@@ -23,6 +24,7 @@ class MarketListingModel extends Equatable {
     required this.user,
     this.price,
     this.createdAt,
+    this.updatedAt,
     this.resell,
     this.item,
   });
@@ -35,6 +37,7 @@ class MarketListingModel extends Equatable {
     id,
     price,
     createdAt,
+    updatedAt,
     inventoryStatus,
     user,
     resell,
