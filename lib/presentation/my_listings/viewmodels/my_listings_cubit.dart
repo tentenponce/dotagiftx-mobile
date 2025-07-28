@@ -71,7 +71,7 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   @override
   Future<void> init() async {
     _debouncerUtils.milliseconds = 500;
-    await getMyListings();
+    unawaited(getMyListings());
   }
 
   Future<void> loadMoreListings() async {
