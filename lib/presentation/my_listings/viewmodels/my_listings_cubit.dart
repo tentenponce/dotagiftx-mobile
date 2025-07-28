@@ -17,9 +17,9 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   String _searchQuery = '';
 
   final Logger _logger;
+
   final DebouncerUtils _debouncerUtils;
   final GetMyListingsUsecase _getMyListingsUsecase;
-
   MyListingsCubit(
     this._logger,
     this._getMyListingsUsecase,
@@ -28,6 +28,8 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
 
   @override
   Logger get logger => _logger;
+
+  String get searchQuery => _searchQuery;
 
   void filterBy(int status) {
     if (state.status == status) {

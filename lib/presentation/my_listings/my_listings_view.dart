@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
@@ -226,6 +227,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     }
 
     if (state.listings.isEmpty && !state.isLoading) {
+      final searchQuery = context.read<MyListingsCubit>().searchQuery;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -234,7 +236,11 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
             const SizedBox(height: 16),
             Text(
               state.status == ApiConstants.queryMarketStatusLive
-                  ? I18n.of(context).myListingsNoActiveListings
+                  ? !StringUtils.isNullOrEmpty(searchQuery)
+                      ? I18n.of(context).myListingsNoSearchActiveListingsTitle
+                      : I18n.of(context).myListingsNoActiveListings
+                  : !StringUtils.isNullOrEmpty(searchQuery)
+                  ? I18n.of(context).myListingsNoSearchReservedListingsTitle
                   : I18n.of(context).myListingsNoReservedListings,
               style: const TextStyle(
                 color: AppColors.grey,
@@ -245,7 +251,15 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
             const SizedBox(height: 8),
             Text(
               state.status == ApiConstants.queryMarketStatusLive
-                  ? I18n.of(context).myListingsNoActiveListingsDescription
+                  ? !StringUtils.isNullOrEmpty(searchQuery)
+                      ? I18n.of(
+                        context,
+                      ).myListingsNoSearchActiveListingsDescription
+                      : I18n.of(context).myListingsNoActiveListingsDescription
+                  : !StringUtils.isNullOrEmpty(searchQuery)
+                  ? I18n.of(
+                    context,
+                  ).myListingsNoSearchReservedListingsDescription
                   : I18n.of(context).myListingsNoReservedListingsDescription,
               style: const TextStyle(color: AppColors.grey, fontSize: 14),
               textAlign: TextAlign.center,
