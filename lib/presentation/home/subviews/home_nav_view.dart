@@ -176,6 +176,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                             onRefresh:
                                 () async => context.read<HomeCubit>().init(),
                             child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
                               controller: _scrollController,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,

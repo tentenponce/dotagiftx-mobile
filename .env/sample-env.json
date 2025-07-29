@@ -1,5 +1,6 @@
 {
     "baseUrl": "https://dotagiftx-base-url-here.com/",
+    "loginRedirectUrl": "login redirect URL here",
     "appName": "dotagiftx",
     "firebaseApiKey": "firebaseApiKey",
     "firebaseAppId": "firebaseAppId",

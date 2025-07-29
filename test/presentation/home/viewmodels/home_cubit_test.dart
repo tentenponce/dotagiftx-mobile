@@ -203,6 +203,26 @@ void main() {
           expect(homeCubit.state.loadingSearchResults, isFalse);
         });
       });
+
+      test('should set search query property when search is called', () async {
+        final homeCubit = createUnitToTest();
+
+        await homeCubit.searchCatalog(query: 'test query');
+
+        expect(homeCubit.currentSearchQuery, equals('test query'));
+      });
+
+      test(
+        'should set search query property when search is called with empty query',
+        () async {
+          final homeCubit = createUnitToTest();
+
+          await homeCubit.searchCatalog(query: 'test query');
+          await homeCubit.searchCatalog(query: '');
+
+          expect(homeCubit.currentSearchQuery, equals(''));
+        },
+      );
     });
 
     group('loadMoreSearchResults', () {

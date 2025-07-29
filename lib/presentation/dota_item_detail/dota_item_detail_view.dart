@@ -419,6 +419,14 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
             !state.isLoadingMore) {
           unawaited(dotaItemDetailCubit.offersListCubit.loadMoreOffers());
         }
+      } else if (_tabController.index == 1) {
+        // Only load more buy orders if we're on the Buy Orders tab
+        final dotaItemDetailCubit = context.read<DotaItemDetailCubit>();
+        final state = dotaItemDetailCubit.buyOrdersListCubit.state;
+        if (state.totalBuyOrdersCount > state.buyOrders.length &&
+            !state.isLoadingMore) {
+          unawaited(dotaItemDetailCubit.buyOrdersListCubit.loadMoreBuyOrders());
+        }
       }
     }
   }

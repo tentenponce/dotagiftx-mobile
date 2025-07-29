@@ -27,7 +27,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   final SearchCatalogUsecase _searchCatalogUsecase;
   final DebouncerUtils _debouncerUtils;
 
-  String currentSearchQuery = '';
+  String _currentSearchQuery = '';
   int _currentSearchPage = 1;
 
   HomeCubit(
@@ -42,6 +42,8 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     this._debouncerUtils,
   ) : super(const HomeState());
 
+  String get currentSearchQuery => _currentSearchQuery;
+
   @override
   Logger get logger => _logger;
 
@@ -54,7 +56,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   }
 
   Future<void> loadMoreSearchResults() async {
-    if (state.loadingMoreSearchResults || currentSearchQuery.isEmpty) {
+    if (state.loadingMoreSearchResults || _currentSearchQuery.isEmpty) {
       return;
     }
 
@@ -70,7 +72,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
 
     await cubitHandler(
       () => _searchCatalogUsecase.search(
-        query: currentSearchQuery,
+        query: _currentSearchQuery,
         page: nextPage,
       ),
       (response) async {
@@ -94,7 +96,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
 
   Future<void> searchCatalog({required String query}) async {
     if (query.isEmpty) {
-      currentSearchQuery = query;
+      _currentSearchQuery = query;
       _debouncerUtils.cancel();
       _currentSearchPage = 1;
       emit(
@@ -108,12 +110,12 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     }
 
     // Reset pagination state for new searches
-    if (query != currentSearchQuery) {
+    if (query != _currentSearchQuery) {
       _currentSearchPage = 1;
       emit(state.copyWith(searchResults: [], totalSearchResultsCount: 0));
     }
 
-    currentSearchQuery = query;
+    _currentSearchQuery = query;
     emit(state.copyWith(loadingSearchResults: true));
     _debouncerUtils.run(() async {
       await cubitHandler(

@@ -1,8 +1,8 @@
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
@@ -34,34 +34,35 @@ class MarketListingFilterButtonsView extends StatelessWidget {
       buildWhen: (previous, current) => previous.sort != current.sort,
       bloc: context.read<DotaItemDetailCubit>().buyOrdersListCubit,
       builder: (context, state) {
-        return Row(
+        return Wrap(
+          spacing: 8,
+          alignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.start,
           children: [
             MarketFilterButtonView(
               label: I18n.of(context).marketListingFilterHighestPrice,
-              sort: ApiConstants.querySortHighest,
-              currentSort: state.sort,
+              filter: ApiConstants.querySortHighest,
+              currentFilter: state.sort,
               onTap: () {
                 context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
                   ApiConstants.querySortHighest,
                 );
               },
             ),
-            const SizedBox(width: 8),
             MarketFilterButtonView(
               label: I18n.of(context).marketListingFilterRecent,
-              sort: ApiConstants.querySortRecent,
-              currentSort: state.sort,
+              filter: ApiConstants.querySortRecent,
+              currentFilter: state.sort,
               onTap: () {
                 context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
                   ApiConstants.querySortRecent,
                 );
               },
             ),
-            const SizedBox(width: 8),
             MarketFilterButtonView(
               label: I18n.of(context).marketListingFilterTopBuyers,
-              sort: ApiConstants.querySortBest,
-              currentSort: state.sort,
+              filter: ApiConstants.querySortBest,
+              currentFilter: state.sort,
               onTap: () {
                 context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
                   ApiConstants.querySortBest,
@@ -83,8 +84,8 @@ class MarketListingFilterButtonsView extends StatelessWidget {
           children: [
             MarketFilterButtonView(
               label: I18n.of(context).marketListingFilterLowestPrice,
-              sort: ApiConstants.querySortLowest,
-              currentSort: state.sort,
+              filter: ApiConstants.querySortLowest,
+              currentFilter: state.sort,
               onTap: () {
                 context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
                   ApiConstants.querySortLowest,
@@ -94,8 +95,8 @@ class MarketListingFilterButtonsView extends StatelessWidget {
             const SizedBox(width: 8),
             MarketFilterButtonView(
               label: I18n.of(context).marketListingFilterRecent,
-              sort: ApiConstants.querySortRecent,
-              currentSort: state.sort,
+              filter: ApiConstants.querySortRecent,
+              currentFilter: state.sort,
               onTap: () {
                 context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
                   ApiConstants.querySortRecent,
@@ -105,8 +106,8 @@ class MarketListingFilterButtonsView extends StatelessWidget {
             const SizedBox(width: 8),
             MarketFilterButtonView(
               label: I18n.of(context).marketListingFilterTopSellers,
-              sort: ApiConstants.querySortBest,
-              currentSort: state.sort,
+              filter: ApiConstants.querySortBest,
+              currentFilter: state.sort,
               onTap: () {
                 context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
                   ApiConstants.querySortBest,

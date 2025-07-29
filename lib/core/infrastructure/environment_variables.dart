@@ -6,6 +6,7 @@ abstract interface class EnvironmentVariables {
   String get firebaseAppId;
   String get firebaseProjectId;
   String get firebaseStorageBucket;
+  String get loginRedirectUrl;
 }
 
 @LazySingleton(as: EnvironmentVariables)
@@ -26,4 +27,8 @@ class EnvironmentVariablesImpl implements EnvironmentVariables {
   @override
   String get firebaseStorageBucket =>
       const String.fromEnvironment('firebaseStorageBucket');
+
+  @override
+  String get loginRedirectUrl =>
+      const String.fromEnvironment('loginRedirectUrl');
 }

@@ -7,7 +7,9 @@ import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart'
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -76,7 +78,7 @@ class ProfileLoggedInView extends StatelessWidget {
               const SizedBox(height: 16),
               // User Name
               Text(
-                user.name ?? 'Unknown User',
+                user.name ?? I18n.of(context).profileNavUnknownUser,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -111,6 +113,69 @@ class ProfileLoggedInView extends StatelessWidget {
                 _buildStatsText(context),
                 style: const TextStyle(color: AppColors.grey, fontSize: 14),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 72,
+                child: OutlinedButton.icon(
+                  icon: const Icon(CupertinoIcons.square_list, size: 24),
+                  onPressed: () {
+                    unawaited(
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyListingsView(),
+                        ),
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.dirtyWhite,
+                    side: const BorderSide(color: AppColors.dirtyWhite),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  label: Text(
+                    I18n.of(context).profileLoggedInMyListingsButton,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 72,
+                child: OutlinedButton.icon(
+                  onPressed: () {},
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.dirtyWhite,
+                    side: const BorderSide(color: AppColors.dirtyWhite),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: const Icon(CupertinoIcons.cube_box, size: 24),
+                  label: Text(
+                    I18n.of(context).profileLoggedInMyOrdersButton,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

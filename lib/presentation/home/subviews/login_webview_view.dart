@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
-import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -20,6 +21,8 @@ class LoginWebviewView extends StatefulWidget {
 
 class _LoginWebviewViewState extends State<LoginWebviewView> {
   final WebViewController _controller = WebViewController();
+  final EnvironmentVariables _environmentVariables =
+      getIt<EnvironmentVariables>();
   bool _isLoading = true;
 
   @override
@@ -126,7 +129,7 @@ class _LoginWebviewViewState extends State<LoginWebviewView> {
         onNavigationRequest: (NavigationRequest request) {
           final query = Uri.parse(request.url).query;
 
-          if (request.url.startsWith(ApiConstants.redirectUrl) &&
+          if (request.url.startsWith(_environmentVariables.loginRedirectUrl) &&
               !StringUtils.isNullOrEmpty(query)) {
             Navigator.of(context).pop(query);
             return NavigationDecision.prevent;

@@ -18,7 +18,8 @@
         "type": "pickString",
         "description": "Select env file",
         "options": [
-          ".env/prod.json"
+          ".env/prod.json",
+          ".env/dev.json"
         ],
         "default": ".env/dev.json"
       }
