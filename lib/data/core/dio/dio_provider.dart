@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/core/utils/package_info_utils.dart';
 import 'package:dotagiftx_mobile/core/utils/retry_utils.dart';
 import 'package:dotagiftx_mobile/data/core/dio/dio_auth_interceptor.dart';
 import 'package:dotagiftx_mobile/data/core/dio/dio_error_interceptor.dart';
@@ -18,6 +20,8 @@ class AuthDioProviderImpl extends BaseDioProvider implements DioProvider {
 
   AuthDioProviderImpl(
     super._logger,
+    super._environmentVariables,
+    super._packageInfoUtils,
     this._sharedPreferenceStorage,
     this._keychainStorage,
     this._retryUtils,
@@ -47,8 +51,14 @@ abstract class BaseDioProvider {
   static const _timeout = Duration(seconds: 30);
 
   final Logger _logger;
+  final EnvironmentVariables _environmentVariables;
+  final PackageInfoUtils _packageInfoUtils;
 
-  BaseDioProvider(this._logger);
+  BaseDioProvider(
+    this._logger,
+    this._environmentVariables,
+    this._packageInfoUtils,
+  );
 
   Dio create<T>() {
     _logger.logFor<T>();
@@ -62,7 +72,7 @@ abstract class BaseDioProvider {
     );
     dio.interceptors.addAll([
       DioErrorInterceptor(),
-      DioLoggingInterceptor(_logger),
+      DioLoggingInterceptor(_logger, _environmentVariables, _packageInfoUtils),
     ]);
 
     return dio;
@@ -75,5 +85,9 @@ abstract interface class DioProvider {
 
 @injectable
 class UnauthDioProviderImpl extends BaseDioProvider implements DioProvider {
-  UnauthDioProviderImpl(super._logger);
+  UnauthDioProviderImpl(
+    super._logger,
+    super._environmentVariables,
+    super._packageInfoUtils,
+  );
 }

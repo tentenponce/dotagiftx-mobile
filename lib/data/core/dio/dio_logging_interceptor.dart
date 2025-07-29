@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/core/utils/package_info_utils.dart';
 import 'package:flutter/foundation.dart';
 
 class DioLoggingInterceptor extends Interceptor {
@@ -16,8 +18,14 @@ class DioLoggingInterceptor extends Interceptor {
   static const maxLengthMaskedValue = 5;
 
   final Logger _logger;
+  final EnvironmentVariables _environmentVariables;
+  final PackageInfoUtils _packageInfoUtils;
 
-  DioLoggingInterceptor(this._logger);
+  DioLoggingInterceptor(
+    this._logger,
+    this._environmentVariables,
+    this._packageInfoUtils,
+  );
 
   @override
   Future<void> onError(
@@ -42,8 +50,12 @@ class DioLoggingInterceptor extends Interceptor {
   ) async {
     final tag = '[REQ#${shortHash(options)}]';
 
+    final appName = _environmentVariables.appName;
+    final appVersion = await _packageInfoUtils.fetchVersion();
+    final buildNumber = await _packageInfoUtils.fetchBuildNumber();
+
     options.headers.addEntries([
-      const MapEntry('App-Name', 'Dotagiftx-mobile'),
+      MapEntry('User-Agent', '$appName/$appVersion ($buildNumber)'),
     ]);
 
     final reqUri = options.uri;
