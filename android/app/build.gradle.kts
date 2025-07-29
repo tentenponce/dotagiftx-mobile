@@ -32,9 +32,16 @@ if (keystorePropertiesFile.exists()) {
 
 val dartDefines = getDartDefines()
 
+if (!dartDefines["googleServicesJson"].isNullOrBlank()) {
+    val encoded = dartDefines["googleServicesJson"]!!
+    val decoded = String(Base64.getDecoder().decode(encoded))
+    val googleServicesJsonFile = File("app/google-services.json")
+    googleServicesJsonFile.writeText(decoded)
+}
+
 android {
     namespace = "com.dotagiftx"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -47,9 +54,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.dotagiftx"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        applicationId = dartDefines["appId"] ?: error("Missing appId in env")
+        minSdk = 26
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["appName"] = dartDefines["appName"] ?: error("Missing appName in env")

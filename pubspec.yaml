@@ -34,6 +34,7 @@ dependencies:
   injectable: ^2.5.0
   intl: ^0.19.0
   json_annotation: ^4.9.0
+  package_info_plus: ^8.3.0
   retrofit: ^4.5.0
   rxdart: ^0.28.0
   shared_preferences: ^2.5.3
