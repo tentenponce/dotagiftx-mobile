@@ -24,6 +24,20 @@ void main() {
     late MockGetMyListingsUsecase mockGetMyListingsUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
 
+    const testMarketListing1 = MarketListingModel(
+      id: '1',
+      price: 10.0,
+      inventoryStatus: 1,
+      user: null,
+    );
+
+    const testMarketListing2 = MarketListingModel(
+      id: '2',
+      price: 20.0,
+      inventoryStatus: 1,
+      user: null,
+    );
+
     setUp(() async {
       mockLogger = MockLogger();
       mockGetMyListingsUsecase = MockGetMyListingsUsecase();
@@ -105,40 +119,124 @@ void main() {
       },
     );
 
-    test(
-      'should return early from loadMoreListings when isLoadingMore is true',
-      () async {
+    group('refreshListings', () {
+      test('should get listings with page 1 on successful refresh', () async {
         // Arrange
-        final unit = createUnitToTest();
-
-        // Act
-        unawaited(unit.loadMoreListings());
-        unawaited(unit.loadMoreListings());
-        unawaited(unit.loadMoreListings());
-
-        // Assert - no calls should be made since we're already loading more
-        verify(
+        when(
           mockGetMyListingsUsecase.get(
             limit: anyNamed('limit'),
             page: anyNamed('page'),
             status: anyNamed('status'),
             searchQuery: anyNamed('searchQuery'),
           ),
-        ).called(1);
-      },
-    );
+        ).thenAnswer((_) async => ([testMarketListing1], 30));
 
-    test(
-      'should return early from loadMoreListings when no more results',
-      () async {
+        // Act
+        final unit = createUnitToTest();
+
+        await Future<void>.delayed(Duration.zero);
+
+        await unit.refreshListings();
+
+        // Assert
+        verify(
+          mockGetMyListingsUsecase.get(
+            limit: 20,
+            page: 1,
+            status: ApiConstants.queryMarketStatusLive,
+            searchQuery: '',
+          ),
+        ).called(2);
+      });
+    });
+
+    group('loadMoreListings', () {
+      test('should return early when already loading more results', () async {
         // Arrange
-        const testMarketListing1 = MarketListingModel(
-          id: '1',
-          price: 10.0,
-          inventoryStatus: 1,
-          user: null,
+        when(
+          mockGetMyListingsUsecase.get(
+            limit: anyNamed('limit'),
+            page: anyNamed('page'),
+            status: anyNamed('status'),
+            searchQuery: anyNamed('searchQuery'),
+          ),
+        ).thenAnswer(
+          (_) => Future.delayed(
+            const Duration(milliseconds: 10),
+            () => ([testMarketListing1], 30),
+          ),
         );
 
+        fakeAsync((async) {
+          final homeCubit = createUnitToTest();
+          async.elapse(const Duration(milliseconds: 10));
+
+          homeCubit.searchListings('test query');
+          async.elapse(const Duration(milliseconds: 500));
+
+          // Act
+          homeCubit.loadMoreListings();
+          // try loading here again, and it should not call search because it is still loading
+          homeCubit.loadMoreListings();
+
+          // exaggerate the mock elapsed time to make sure the call is finished
+          async.elapse(const Duration(milliseconds: 500));
+
+          // Assert
+          verify(
+            mockGetMyListingsUsecase.get(
+              limit: 20,
+              page: 2,
+              status: ApiConstants.queryMarketStatusLive,
+              searchQuery: 'test query',
+            ),
+          ).called(1);
+        });
+      });
+
+      test('should return early when current search query is empty', () async {
+        // Arrange
+        when(
+          mockGetMyListingsUsecase.get(
+            limit: anyNamed('limit'),
+            page: anyNamed('page'),
+            status: anyNamed('status'),
+            searchQuery: anyNamed('searchQuery'),
+          ),
+        ).thenAnswer(
+          (_) => Future.delayed(
+            const Duration(milliseconds: 10),
+            () => ([testMarketListing1], 30),
+          ),
+        );
+
+        final homeCubit = createUnitToTest();
+
+        fakeAsync((async) {
+          homeCubit.searchListings('test query');
+          async.elapse(const Duration(milliseconds: 10));
+
+          // Act
+          homeCubit.searchListings(''); // reset query to empty
+          homeCubit.loadMoreListings();
+
+          // exaggerate the mock elapsed time to make sure the call is finished
+          async.elapse(const Duration(milliseconds: 500));
+
+          // Assert
+          verifyNever(
+            mockGetMyListingsUsecase.get(
+              limit: 20,
+              page: 2,
+              status: ApiConstants.queryMarketStatusLive,
+              searchQuery: '',
+            ),
+          );
+        });
+      });
+
+      test('should return early when no more results available', () async {
+        // Arrange
         when(
           mockGetMyListingsUsecase.get(
             limit: anyNamed('limit'),
@@ -148,36 +246,75 @@ void main() {
           ),
         ).thenAnswer((_) async => ([testMarketListing1], 1));
 
-        fakeAsync((async) {
-          final unit = createUnitToTest();
-          async.elapse(const Duration(milliseconds: 1));
+        final homeCubit = createUnitToTest();
 
-          unit.searchListings('test query');
-          async.elapse(const Duration(milliseconds: 500));
+        await Future<void>.delayed(Duration.zero);
 
-          // Act
-          unit.loadMoreListings();
-          async.elapse(const Duration(milliseconds: 1));
+        await homeCubit.searchListings('test query');
 
-          // Assert
-          verify(
+        // Act
+        await homeCubit.loadMoreListings();
+
+        // Assert
+        verify(
+          mockGetMyListingsUsecase.get(
+            limit: 20,
+            page: 1,
+            status: ApiConstants.queryMarketStatusLive,
+            searchQuery: 'test query',
+          ),
+        ).called(1);
+        verifyNever(
+          mockGetMyListingsUsecase.get(
+            limit: 20,
+            page: 2,
+            status: ApiConstants.queryMarketStatusLive,
+            searchQuery: 'test query',
+          ),
+        );
+      });
+
+      test(
+        'should load more results and combine with existing results',
+        () async {
+          // Arrange
+          when(
             mockGetMyListingsUsecase.get(
-              searchQuery: 'test query',
+              limit: 20,
               page: 1,
-              limit: 20,
               status: ApiConstants.queryMarketStatusLive,
-            ),
-          ).called(1);
-          verifyNever(
-            mockGetMyListingsUsecase.get(
               searchQuery: 'test query',
-              page: 2,
-              limit: 20,
-              status: ApiConstants.queryMarketStatusLive,
             ),
-          );
-        });
-      },
-    );
+          ).thenAnswer((_) async => ([testMarketListing1], 10));
+
+          when(
+            mockGetMyListingsUsecase.get(
+              limit: 20,
+              page: 2,
+              status: ApiConstants.queryMarketStatusLive,
+              searchQuery: 'test query',
+            ),
+          ).thenAnswer((_) async => ([testMarketListing2], 10));
+
+          fakeAsync((async) {
+            final homeCubit = createUnitToTest();
+            async.elapse(const Duration(milliseconds: 10));
+
+            homeCubit.searchListings('test query');
+            async.elapse(const Duration(milliseconds: 500));
+
+            // Act
+            homeCubit.loadMoreListings();
+            async.elapse(const Duration(milliseconds: 500));
+
+            // Assert
+            expect(
+              homeCubit.state.listings,
+              equals([testMarketListing1, testMarketListing2]),
+            );
+          });
+        },
+      );
+    });
   });
 }
