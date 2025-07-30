@@ -8,6 +8,7 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -155,7 +156,16 @@ class ProfileLoggedInView extends StatelessWidget {
                 width: double.infinity,
                 height: 72,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    unawaited(
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyOrdersView(),
+                        ),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.dirtyWhite,
                     side: const BorderSide(color: AppColors.dirtyWhite),
