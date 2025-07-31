@@ -7,7 +7,6 @@ abstract interface class GetMyOrdersUsecase {
   Future<(List<MarketListingModel>, int)> get({
     required int limit,
     required int page,
-    int? status,
     String? searchQuery,
   });
 }
@@ -22,14 +21,13 @@ class GetMyOrdersUsecaseImpl implements GetMyOrdersUsecase {
   Future<(List<MarketListingModel>, int)> get({
     required int page,
     required int limit,
-    int? status = ApiConstants.queryMarketStatusLive,
     String? searchQuery,
   }) async {
     final response = await _dotagiftxApi.getMyMarkets(
       page,
       limit,
       ApiConstants.queryMarketBid,
-      status,
+      ApiConstants.queryMarketStatusLive,
       ApiConstants.querySortUpdatedAtDesc,
       ApiConstants.queryIndexItemId,
       searchQuery,

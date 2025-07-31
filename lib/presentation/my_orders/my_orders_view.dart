@@ -2,12 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
-import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/states/my_orders_state.dart';
-import 'package:dotagiftx_mobile/presentation/my_orders/subviews/completed_order_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/my_active_order_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/shimmer_order_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/viewmodels/my_orders_cubit.dart';
@@ -112,46 +109,6 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
               ),
             ),
 
-            // Filter Buttons
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              width: double.infinity,
-              child: Wrap(
-                spacing: 8,
-                children: [
-                  BlocBuilder<MyOrdersCubit, MyOrdersState>(
-                    builder: (context, state) {
-                      return MarketFilterButtonView(
-                        label: I18n.of(context).myOrdersActiveButton,
-                        filter: ApiConstants.queryMarketStatusLive.toString(),
-                        currentFilter: state.status.toString(),
-                        onTap: () {
-                          context.read<MyOrdersCubit>().filterBy(
-                            ApiConstants.queryMarketStatusLive,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  BlocBuilder<MyOrdersCubit, MyOrdersState>(
-                    builder: (context, state) {
-                      return MarketFilterButtonView(
-                        label: I18n.of(context).myOrdersReservedButton,
-                        filter:
-                            ApiConstants.queryMarketStatusReserved.toString(),
-                        currentFilter: state.status.toString(),
-                        onTap: () {
-                          context.read<MyOrdersCubit>().filterBy(
-                            ApiConstants.queryMarketStatusReserved,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-
             Expanded(
               child: Stack(
                 children: [
@@ -223,40 +180,52 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
 
     if (state.orders.isEmpty && !state.isLoading) {
       final searchQuery = context.read<MyOrdersCubit>().searchQuery;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.inbox_outlined, size: 64, color: AppColors.grey),
-            const SizedBox(height: 16),
-            Text(
-              state.status == ApiConstants.queryMarketStatusLive
-                  ? !StringUtils.isNullOrEmpty(searchQuery)
-                      ? I18n.of(context).myOrdersNoSearchActiveOrdersTitle
-                      : I18n.of(context).myOrdersNoActiveOrders
-                  : !StringUtils.isNullOrEmpty(searchQuery)
-                  ? I18n.of(context).myOrdersNoSearchReservedOrdersTitle
-                  : I18n.of(context).myOrdersNoReservedOrders,
-              style: const TextStyle(
-                color: AppColors.grey,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.inbox_outlined,
+                      size: 64,
+                      color: AppColors.grey,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      !StringUtils.isNullOrEmpty(searchQuery)
+                          ? I18n.of(context).myOrdersNoSearchActiveOrdersTitle
+                          : I18n.of(context).myOrdersNoActiveOrders,
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      !StringUtils.isNullOrEmpty(searchQuery)
+                          ? I18n.of(
+                            context,
+                          ).myOrdersNoSearchActiveOrdersDescription
+                          : I18n.of(context).myOrdersNoActiveOrdersDescription,
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              state.status == ApiConstants.queryMarketStatusLive
-                  ? !StringUtils.isNullOrEmpty(searchQuery)
-                      ? I18n.of(context).myOrdersNoSearchActiveOrdersDescription
-                      : I18n.of(context).myOrdersNoActiveOrdersDescription
-                  : !StringUtils.isNullOrEmpty(searchQuery)
-                  ? I18n.of(context).myOrdersNoSearchReservedOrdersDescription
-                  : I18n.of(context).myOrdersNoReservedOrdersDescription,
-              style: const TextStyle(color: AppColors.grey, fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+          );
+        },
       );
     }
 
@@ -276,11 +245,7 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
         if (index < state.orders.length) {
           final order = state.orders[index];
 
-          if (state.status == ApiConstants.queryMarketStatusLive) {
-            return MyActiveOrderItemView(order: order);
-          } else {
-            return CompletedOrderItemView(order: order);
-          }
+          return MyActiveOrderItemView(order: order);
         }
 
         // Check if this is a loading more shimmer item

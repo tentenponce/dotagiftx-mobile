@@ -228,44 +228,69 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
 
     if (state.listings.isEmpty && !state.isLoading) {
       final searchQuery = context.read<MyListingsCubit>().searchQuery;
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.inbox_outlined, size: 64, color: AppColors.grey),
-            const SizedBox(height: 16),
-            Text(
-              state.status == ApiConstants.queryMarketStatusLive
-                  ? !StringUtils.isNullOrEmpty(searchQuery)
-                      ? I18n.of(context).myListingsNoSearchActiveListingsTitle
-                      : I18n.of(context).myListingsNoActiveListings
-                  : !StringUtils.isNullOrEmpty(searchQuery)
-                  ? I18n.of(context).myListingsNoSearchReservedListingsTitle
-                  : I18n.of(context).myListingsNoReservedListings,
-              style: const TextStyle(
-                color: AppColors.grey,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.inbox_outlined,
+                      size: 64,
+                      color: AppColors.grey,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      state.status == ApiConstants.queryMarketStatusLive
+                          ? !StringUtils.isNullOrEmpty(searchQuery)
+                              ? I18n.of(
+                                context,
+                              ).myListingsNoSearchActiveListingsTitle
+                              : I18n.of(context).myListingsNoActiveListings
+                          : !StringUtils.isNullOrEmpty(searchQuery)
+                          ? I18n.of(
+                            context,
+                          ).myListingsNoSearchReservedListingsTitle
+                          : I18n.of(context).myListingsNoReservedListings,
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      state.status == ApiConstants.queryMarketStatusLive
+                          ? !StringUtils.isNullOrEmpty(searchQuery)
+                              ? I18n.of(
+                                context,
+                              ).myListingsNoSearchActiveListingsDescription
+                              : I18n.of(
+                                context,
+                              ).myListingsNoActiveListingsDescription
+                          : !StringUtils.isNullOrEmpty(searchQuery)
+                          ? I18n.of(
+                            context,
+                          ).myListingsNoSearchReservedListingsDescription
+                          : I18n.of(
+                            context,
+                          ).myListingsNoReservedListingsDescription,
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              state.status == ApiConstants.queryMarketStatusLive
-                  ? !StringUtils.isNullOrEmpty(searchQuery)
-                      ? I18n.of(
-                        context,
-                      ).myListingsNoSearchActiveListingsDescription
-                      : I18n.of(context).myListingsNoActiveListingsDescription
-                  : !StringUtils.isNullOrEmpty(searchQuery)
-                  ? I18n.of(
-                    context,
-                  ).myListingsNoSearchReservedListingsDescription
-                  : I18n.of(context).myListingsNoReservedListingsDescription,
-              style: const TextStyle(color: AppColors.grey, fontSize: 14),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+          );
+        },
       );
     }
 
