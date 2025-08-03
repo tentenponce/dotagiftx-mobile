@@ -3,38 +3,35 @@ import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:injectable/injectable.dart';
 
-abstract interface class GetDotaItemOffersUsecase {
+abstract interface class GetMyDeliveredListingsUsecase {
   Future<(List<MarketListingModel>, int)> get({
-    required String itemId,
-    int limit,
-    int page,
-    String sort,
+    required int limit,
+    required int page,
+    String? searchQuery,
   });
 }
 
-@LazySingleton(as: GetDotaItemOffersUsecase)
-class GetDotaItemOffersUsecaseImpl implements GetDotaItemOffersUsecase {
+@LazySingleton(as: GetMyDeliveredListingsUsecase)
+class GetMyDeliveredListingsUsecaseImpl
+    implements GetMyDeliveredListingsUsecase {
   final DotagiftxAuthApi _dotagiftxApi;
 
-  GetDotaItemOffersUsecaseImpl(this._dotagiftxApi);
+  GetMyDeliveredListingsUsecaseImpl(this._dotagiftxApi);
 
   @override
   Future<(List<MarketListingModel>, int)> get({
-    required String itemId,
-    int limit = 10,
-    int page = 1,
-    String sort = ApiConstants.querySortLowest,
+    required int limit,
+    required int page,
+    String? searchQuery,
   }) async {
-    final response = await _dotagiftxApi.getMarkets(
-      itemId,
+    final response = await _dotagiftxApi.getMyMarkets(
       page,
       limit,
       ApiConstants.queryMarketAsk,
-      ApiConstants.queryMarketStatusLive,
-      ApiConstants.queryInventoryStatusVerified,
-      sort,
+      ApiConstants.queryMarketStatusSold,
+      ApiConstants.querySortUpdatedAtDesc,
       ApiConstants.queryIndexItemId,
-      null,
+      searchQuery,
     );
 
     return (response.data, response.totalCount);

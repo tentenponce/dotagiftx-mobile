@@ -81,6 +81,7 @@ void main() {
             null,
             ApiConstants.querySortHighest,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).thenAnswer((_) async => mockResponse);
 
@@ -101,6 +102,7 @@ void main() {
             null,
             ApiConstants.querySortHighest, // default sort
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).called(1);
       });
@@ -126,6 +128,7 @@ void main() {
             null,
             customSort,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).thenAnswer((_) async => mockResponse);
 
@@ -151,6 +154,7 @@ void main() {
             null,
             customSort,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).called(1);
       });
@@ -172,6 +176,7 @@ void main() {
             null,
             testSort,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).thenAnswer((_) async => mockResponse);
 
@@ -195,6 +200,7 @@ void main() {
             null,
             testSort,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).thenThrow(Exception('API Error'));
 

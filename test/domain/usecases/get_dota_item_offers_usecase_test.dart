@@ -76,6 +76,7 @@ void main() {
               ApiConstants.queryInventoryStatusVerified,
               ApiConstants.querySortLowest, // default sort
               ApiConstants.queryIndexItemId,
+              null,
             ),
           ).thenAnswer((_) async => expectedResponse);
 
@@ -95,6 +96,7 @@ void main() {
               ApiConstants.queryInventoryStatusVerified,
               ApiConstants.querySortLowest,
               ApiConstants.queryIndexItemId,
+              null,
             ),
           ).called(1);
         },
@@ -124,6 +126,7 @@ void main() {
               ApiConstants.queryInventoryStatusVerified,
               customSort,
               ApiConstants.queryIndexItemId,
+              null,
             ),
           ).thenAnswer((_) async => expectedResponse);
 
@@ -148,6 +151,7 @@ void main() {
               ApiConstants.queryInventoryStatusVerified,
               customSort,
               ApiConstants.queryIndexItemId,
+              null,
             ),
           ).called(1);
         },
@@ -172,6 +176,7 @@ void main() {
             ApiConstants.queryInventoryStatusVerified,
             ApiConstants.querySortLowest,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).thenAnswer((_) async => expectedResponse);
 
@@ -191,6 +196,7 @@ void main() {
             ApiConstants.queryInventoryStatusVerified,
             ApiConstants.querySortLowest,
             ApiConstants.queryIndexItemId,
+            null,
           ),
         ).called(1);
       });

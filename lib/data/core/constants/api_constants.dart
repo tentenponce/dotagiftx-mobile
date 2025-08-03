@@ -16,6 +16,8 @@ abstract final class ApiConstants {
 
   static const int queryMarketStatusLive = 200;
   static const int queryMarketStatusReserved = 300;
+  static const int queryMarketStatusSold = 400; // delivered
+  static const int queryMarketStatusCompleted = 410; // completed
 
   static const int queryInventoryStatusVerified = 200;
 }
