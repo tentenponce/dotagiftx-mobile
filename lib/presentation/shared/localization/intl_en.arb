@@ -25,6 +25,7 @@
     "profileNavUnknownUser": "Unknown User",
     "profileLoggedInMyListingsButton": "My Listings",
     "profileLoggedInMyOrdersButton": "My Orders",
+    "profileLoggedInTransactionHistoryButton": "Transaction History",
     "profileLoggedInTitle": "Profile",
     "profileLoggedInLogoutButton": "Logout",
     "profileLoggedInLogoutConfirmTitle": "Logout",
@@ -120,5 +121,10 @@
     "myActiveListingItemViewUnknownItem": "Unknown Item",
     "myActiveListingItemViewListedDate": "Listed {date}",
     "reservedItemViewUnknownItem": "Unknown Item",
-    "reservedItemViewReservedDate": "Reserved {date}"
+    "reservedItemViewReservedDate": "Reserved {date}",
+    "transactionHistoryTitle": "Transaction History",
+    "transactionHistoryAllButton": "All",
+    "transactionHistoryDeliveredButton": "Delivered",
+    "transactionHistoryToReceiveButton": "To Receive",
+    "transactionHistoryCompletedButton": "Completed"
 }

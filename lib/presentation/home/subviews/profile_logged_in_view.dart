@@ -10,6 +10,7 @@ import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/transaction_history_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -180,6 +181,42 @@ class ProfileLoggedInView extends StatelessWidget {
                   icon: const Icon(CupertinoIcons.cube_box, size: 24),
                   label: Text(
                     I18n.of(context).profileLoggedInMyOrdersButton,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 72,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    unawaited(
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TransactionHistoryView(),
+                        ),
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.dirtyWhite,
+                    side: const BorderSide(color: AppColors.dirtyWhite),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: const Icon(CupertinoIcons.time, size: 24),
+                  label: Text(
+                    I18n.of(context).profileLoggedInTransactionHistoryButton,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
