@@ -15,6 +15,7 @@ class MarketListingModel extends Equatable {
   final String? updatedAt;
   final int? status;
   final int? inventoryStatus;
+  final int? type;
   final SteamUserModel? user;
   final DotaItemModel? item;
   final bool? resell;
@@ -25,6 +26,7 @@ class MarketListingModel extends Equatable {
     required this.id,
     this.status,
     this.inventoryStatus,
+    this.type,
     this.user,
     this.price,
     this.createdAt,
@@ -46,6 +48,7 @@ class MarketListingModel extends Equatable {
     updatedAt,
     status,
     inventoryStatus,
+    type,
     user,
     resell,
     item,

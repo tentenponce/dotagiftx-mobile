@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/my_active_listing_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/my_active_order_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/reserved_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -358,19 +359,28 @@ class _TransactionHistoryViewContentState
 
           switch (state.filter) {
             case TransactionHistoryFilter.all:
-              switch (listing.status) {
-                case ApiConstants.queryMarketStatusLive:
-                  return MyActiveListingItemView(listing: listing);
-                case ApiConstants.queryMarketStatusReserved:
-                  return ReservedItemView(listing: listing);
-                case ApiConstants.queryMarketStatusSold:
-                  return DeliveredItemView(listing: listing);
-                case ApiConstants.queryMarketStatusCompleted:
-                  return CompletedItemView(listing: listing);
-                case ApiConstants.queryMarketStatusCancelled:
-                  return CancelledItemView(listing: listing);
-                default:
-                  return const SizedBox();
+              if (listing.status == ApiConstants.queryMarketStatusLive &&
+                  listing.type == ApiConstants.queryMarketAsk) {
+                return MyActiveListingItemView(listing: listing);
+              } else if (listing.status == ApiConstants.queryMarketStatusLive &&
+                  listing.type == ApiConstants.queryMarketBid) {
+                return MyActiveOrderItemView(order: listing);
+              } else if (listing.status ==
+                  ApiConstants.queryMarketStatusReserved) {
+                return ReservedItemView(listing: listing);
+              } else if (listing.status == ApiConstants.queryMarketStatusSold) {
+                return DeliveredItemView(listing: listing);
+              } else if (listing.status ==
+                  ApiConstants.queryMarketStatusCompleted) {
+                return CompletedItemView(listing: listing);
+              } else if (listing.status ==
+                  ApiConstants.queryMarketStatusOrderRemoved) {
+                return CompletedItemView(listing: listing);
+              } else if (listing.status ==
+                  ApiConstants.queryMarketStatusCancelled) {
+                return CancelledItemView(listing: listing);
+              } else {
+                return const SizedBox();
               }
             case TransactionHistoryFilter.delivered:
               return DeliveredItemView(listing: listing);

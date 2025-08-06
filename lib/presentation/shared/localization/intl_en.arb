@@ -106,6 +106,7 @@
     "myOrdersNoReservedOrdersDescription": "Your reserved market orders will appear here",
     "myOrdersNoSearchActiveOrdersTitle": "No search results",
     "myOrdersNoSearchActiveOrdersDescription": "No active orders found for your search query",
+    "myActiveOrderItemViewOrderedDate": "Ordered",
     "itemVerificationIconPendingTitleTooltip": "Pending",
     "itemVerificationIconPendingDescriptionTooltip": "Posted {createdAt} and processing for verification.",
     "itemVerificationIconResellTitleTooltip": "Item Resell",

@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
@@ -89,7 +90,7 @@ class MyActiveListingItemView extends StatelessWidget {
                       const SizedBox(height: 4),
 
                       // Listed date
-                      if (listing.createdAt != null)
+                      if (!StringUtils.isNullOrEmpty(listing.createdAt))
                         Wrap(
                           spacing: 4,
                           children: [
