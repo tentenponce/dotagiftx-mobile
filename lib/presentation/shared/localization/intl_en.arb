@@ -119,7 +119,7 @@
     "itemVerificationIconErrorTitleTooltip": "Error",
     "itemVerificationIconErrorDescriptionTooltip": "Error processing verification.",
     "myActiveListingItemViewUnknownItem": "Unknown Item",
-    "myActiveListingItemViewListedDate": "Listed {date}",
+    "myActiveListingItemViewListedDate": "Listed",
     "reservedItemViewUnknownItem": "Unknown Item",
     "reservedItemViewReservedDate": "Reserved {date}",
     "transactionHistoryTitle": "Transaction History",

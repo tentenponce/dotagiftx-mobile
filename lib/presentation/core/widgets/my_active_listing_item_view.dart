@@ -87,15 +87,29 @@ class MyActiveListingItemView extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
+
+                      // Listed date
                       if (listing.createdAt != null)
-                        Text(
-                          I18n.of(context).myActiveListingItemViewListedDate(
-                            DateFormatUtils.formatDateAgo(listing.createdAt!),
-                          ),
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 12,
-                          ),
+                        Wrap(
+                          spacing: 4,
+                          children: [
+                            Text(
+                              I18n.of(
+                                context,
+                              ).myActiveListingItemViewListedDate,
+                              style: const TextStyle(
+                                color: AppColors.lightGreen,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              DateFormatUtils.formatDateAgo(listing.createdAt!),
+                              style: const TextStyle(
+                                color: AppColors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
                     ],
                   ),
