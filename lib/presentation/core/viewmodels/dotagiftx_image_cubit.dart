@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
@@ -10,9 +11,13 @@ import 'package:injectable/injectable.dart';
 class DotagiftxImageCubit extends BaseCubit<String> with CubitErrorMixin {
   final Logger _logger;
   final DotagiftxRemoteConfig _dotagiftxRemoteConfig;
+  final EnvironmentVariables _environmentVariables;
 
-  DotagiftxImageCubit(this._logger, this._dotagiftxRemoteConfig)
-    : super(RemoteConfigConstants.defaultDotagiftxImageBaseUrl);
+  DotagiftxImageCubit(
+    this._logger,
+    this._dotagiftxRemoteConfig,
+    this._environmentVariables,
+  ) : super(RemoteConfigConstants.defaultDotagiftxImageEndpoint);
 
   @override
   Logger get logger => _logger;
@@ -25,12 +30,13 @@ class DotagiftxImageCubit extends BaseCubit<String> with CubitErrorMixin {
         emit(
           !StringUtils.isNullOrEmpty(dotagiftxImageBaseUrl)
               ? dotagiftxImageBaseUrl
-              : RemoteConfigConstants.defaultDotagiftxImageBaseUrl,
+              : '${_environmentVariables.baseUrl}${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
         );
       },
       onError:
-          (error) async =>
-              emit(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+          (error) async => emit(
+            '${_environmentVariables.baseUrl}${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+          ),
     );
   }
 }

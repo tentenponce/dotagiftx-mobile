@@ -10,6 +10,8 @@ import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/states/transaction_history_state.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/shimmer_history_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/to_receive_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/viewmodels/transaction_history_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -255,7 +257,7 @@ class _TransactionHistoryViewContentState
           child: Column(
             children: List.generate(
               5, // Show 5 shimmer cards
-              (index) => const ShimmerListingItemView(),
+              (index) => const ShimmerHistoryItemView(),
             ),
           ),
         ),
@@ -350,10 +352,15 @@ class _TransactionHistoryViewContentState
         if (index < state.transactions.length) {
           final listing = state.transactions[index];
 
-          if (state.filter == TransactionHistoryFilter.all) {
-            return MyActiveListingItemView(listing: listing);
-          } else {
-            return ReservedItemView(listing: listing);
+          switch (state.filter) {
+            case TransactionHistoryFilter.all:
+              return MyActiveListingItemView(listing: listing);
+            case TransactionHistoryFilter.delivered:
+              return ReservedItemView(listing: listing);
+            case TransactionHistoryFilter.toReceive:
+              return ToReceiveItemView(listing: listing);
+            case TransactionHistoryFilter.completed:
+              return ToReceiveItemView(listing: listing);
           }
         }
 

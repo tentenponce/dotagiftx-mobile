@@ -126,5 +126,8 @@
     "transactionHistoryAllButton": "All",
     "transactionHistoryDeliveredButton": "Delivered",
     "transactionHistoryToReceiveButton": "To Receive",
-    "transactionHistoryCompletedButton": "Completed"
+    "transactionHistoryCompletedButton": "Completed",
+    "toReceiveItemViewReserved": "Reserved",
+    "toReceiveItemViewReservedFrom": "from",
+    "toReceiveItemViewUnknown": "Unknown"
 }

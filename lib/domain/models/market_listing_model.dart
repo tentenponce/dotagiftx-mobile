@@ -17,6 +17,7 @@ class MarketListingModel extends Equatable {
   final SteamUserModel? user;
   final DotaItemModel? item;
   final bool? resell;
+  final String? notes;
 
   const MarketListingModel({
     required this.id,
@@ -27,6 +28,7 @@ class MarketListingModel extends Equatable {
     this.updatedAt,
     this.resell,
     this.item,
+    this.notes,
   });
 
   factory MarketListingModel.fromJson(Map<String, dynamic> json) =>
@@ -42,6 +44,7 @@ class MarketListingModel extends Equatable {
     user,
     resell,
     item,
+    notes,
   ];
 
   Map<String, dynamic> toJson() => _$MarketListingModelToJson(this);

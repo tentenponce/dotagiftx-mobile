@@ -44,8 +44,7 @@ abstract final class RemoteConfigConstants {
     ),
   ];
 
-  static const String defaultDotagiftxImageBaseUrl =
-      'https://api.dotagiftx.com/images/';
+  static const String defaultDotagiftxImageEndpoint = 'images/';
 
   static const String defaultMiddlemanUrl = 'https://dotagiftx.com/middleman';
   static const Iterable<TreasureModel> defaultTreasures = [

@@ -69,7 +69,7 @@ void main() {
             ).called(1);
             expect(
               imageUrlCubit.state,
-              equals(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+              equals(RemoteConfigConstants.defaultDotagiftxImageEndpoint),
             );
           });
         },
@@ -93,7 +93,7 @@ void main() {
           ).called(1);
           expect(
             imageUrlCubit.state,
-            equals(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+            equals(RemoteConfigConstants.defaultDotagiftxImageEndpoint),
           );
         });
       });
@@ -118,7 +118,7 @@ void main() {
           ).called(1);
           expect(
             imageUrlCubit.state,
-            equals(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+            equals(RemoteConfigConstants.defaultDotagiftxImageEndpoint),
           );
         });
       });
