@@ -138,5 +138,6 @@
     "historyReservedItemViewBuyerProfile": "View Buyer Profile",
     "cancelledItemViewCancelled": "Cancelled",
     "cancelledItemViewViewBuyerProfile": "View Buyer Profile",
-    "orderRemovedItemViewOrderRemoved": "Order Removed"
+    "orderRemovedItemViewOrderRemoved": "Order Removed",
+    "unknownHistoryItemViewUnknown": "Unknown Status"
 }

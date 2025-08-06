@@ -108,6 +108,18 @@ class MyActiveOrderItemView extends StatelessWidget {
                             ),
                           ],
                         ),
+
+                      const SizedBox(height: 4),
+                      // notes
+                      if (!StringUtils.isNullOrEmpty(order.notes))
+                        Text(
+                          order.notes!,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                     ],
                   ),
                 ),

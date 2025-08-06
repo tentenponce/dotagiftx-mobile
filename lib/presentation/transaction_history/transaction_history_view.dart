@@ -18,6 +18,7 @@ import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/deliv
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/order_removed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/shimmer_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/to_receive_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/unknown_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/viewmodels/transaction_history_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -381,7 +382,7 @@ class _TransactionHistoryViewContentState
                   ApiConstants.queryMarketStatusCancelled) {
                 return CancelledItemView(listing: listing);
               } else {
-                return const SizedBox();
+                return UnknownHistoryItemView(listing: listing);
               }
             case TransactionHistoryFilter.delivered:
               return DeliveredItemView(listing: listing);
