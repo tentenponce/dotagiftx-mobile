@@ -129,5 +129,7 @@
     "transactionHistoryCompletedButton": "Completed",
     "toReceiveItemViewReserved": "Reserved",
     "toReceiveItemViewReservedFrom": "from",
-    "toReceiveItemViewUnknown": "Unknown"
+    "toReceiveItemViewUnknown": "Unknown",
+    "completedItemViewCompleted": "Order Completed",
+    "completedItemViewViewSellerProfile": "View Seller Profile"
 }

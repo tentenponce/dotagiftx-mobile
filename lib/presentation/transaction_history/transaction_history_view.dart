@@ -10,6 +10,7 @@ import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/states/transaction_history_state.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/completed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/shimmer_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/to_receive_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/viewmodels/transaction_history_cubit.dart';
@@ -360,7 +361,7 @@ class _TransactionHistoryViewContentState
             case TransactionHistoryFilter.toReceive:
               return ToReceiveItemView(listing: listing);
             case TransactionHistoryFilter.completed:
-              return ToReceiveItemView(listing: listing);
+              return CompletedItemView(listing: listing);
           }
         }
 

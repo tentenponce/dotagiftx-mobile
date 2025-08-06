@@ -235,6 +235,10 @@ abstract final class RemoteConfigConstants {
 
   static String defaultSteamInventoryUrl(String steamId) =>
       'https://steamcommunity.com/profiles/$steamId/inventory/';
+
+  static String defaultSteamProfileUrl(String steamId) =>
+      'https://steamcommunity.com/profiles/$steamId/';
+
   static String defaultSteamRepUrl(String steamId) =>
       'https://steamrep.com/search?q=$steamId';
 
