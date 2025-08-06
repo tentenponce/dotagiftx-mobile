@@ -6,11 +6,11 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_item_view.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/states/transaction_history_state.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/completed_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/delivered_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/shimmer_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/to_receive_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/viewmodels/transaction_history_cubit.dart';
@@ -357,7 +357,7 @@ class _TransactionHistoryViewContentState
             case TransactionHistoryFilter.all:
               return MyActiveListingItemView(listing: listing);
             case TransactionHistoryFilter.delivered:
-              return ReservedItemView(listing: listing);
+              return DeliveredItemView(listing: listing);
             case TransactionHistoryFilter.toReceive:
               return ToReceiveItemView(listing: listing);
             case TransactionHistoryFilter.completed:

@@ -14,4 +14,5 @@ abstract final class AppColors {
   static const Color warningYellow = Color.fromRGBO(255, 226, 183, 1);
   static const Color dirtyWhite = Color.fromRGBO(238, 238, 238, 1);
   static const Color purple = Color.fromRGBO(238, 130, 238, 1);
+  static const Color aqua = Color.fromRGBO(0, 255, 255, 1);
 }
