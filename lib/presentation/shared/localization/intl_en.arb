@@ -134,5 +134,7 @@
     "completedItemViewViewSellerProfile": "View Seller Profile",
     "deliveredItemViewDelivered": "Delivered",
     "deliveredItemViewViewBuyerProfile": "View Buyer Profile",
-    "historyReservedItemViewBuyerProfile": "View Buyer Profile"
+    "historyReservedItemViewBuyerProfile": "View Buyer Profile",
+    "cancelledItemViewCancelled": "Cancelled",
+    "cancelledItemViewViewBuyerProfile": "View Buyer Profile"
 }

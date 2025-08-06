@@ -11,6 +11,7 @@ import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_lis
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/states/transaction_history_state.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/cancelled_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/completed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/delivered_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/shimmer_history_item_view.dart';
@@ -150,12 +151,12 @@ class _TransactionHistoryViewContentState
                     builder: (context, state) {
                       return MarketFilterButtonView(
                         label:
-                            I18n.of(context).transactionHistoryDeliveredButton,
-                        filter: TransactionHistoryFilter.delivered.toString(),
+                            I18n.of(context).transactionHistoryToReceiveButton,
+                        filter: TransactionHistoryFilter.toReceive.toString(),
                         currentFilter: state.filter.toString(),
                         onTap: () {
                           context.read<TransactionHistoryCubit>().filterBy(
-                            TransactionHistoryFilter.delivered,
+                            TransactionHistoryFilter.toReceive,
                           );
                         },
                       );
@@ -165,12 +166,12 @@ class _TransactionHistoryViewContentState
                     builder: (context, state) {
                       return MarketFilterButtonView(
                         label:
-                            I18n.of(context).transactionHistoryToReceiveButton,
-                        filter: TransactionHistoryFilter.toReceive.toString(),
+                            I18n.of(context).transactionHistoryDeliveredButton,
+                        filter: TransactionHistoryFilter.delivered.toString(),
                         currentFilter: state.filter.toString(),
                         onTap: () {
                           context.read<TransactionHistoryCubit>().filterBy(
-                            TransactionHistoryFilter.toReceive,
+                            TransactionHistoryFilter.delivered,
                           );
                         },
                       );
@@ -358,14 +359,18 @@ class _TransactionHistoryViewContentState
           switch (state.filter) {
             case TransactionHistoryFilter.all:
               switch (listing.status) {
+                case ApiConstants.queryMarketStatusLive:
+                  return MyActiveListingItemView(listing: listing);
                 case ApiConstants.queryMarketStatusReserved:
                   return ReservedItemView(listing: listing);
                 case ApiConstants.queryMarketStatusSold:
                   return DeliveredItemView(listing: listing);
                 case ApiConstants.queryMarketStatusCompleted:
                   return CompletedItemView(listing: listing);
+                case ApiConstants.queryMarketStatusCancelled:
+                  return CancelledItemView(listing: listing);
                 default:
-                  return MyActiveListingItemView(listing: listing);
+                  return const SizedBox();
               }
             case TransactionHistoryFilter.delivered:
               return DeliveredItemView(listing: listing);
