@@ -117,115 +117,61 @@ class ProfileLoggedInView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 72,
-                child: OutlinedButton.icon(
-                  icon: const Icon(CupertinoIcons.square_list, size: 24),
-                  onPressed: () {
-                    unawaited(
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyListingsView(),
-                        ),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.dirtyWhite,
-                    side: const BorderSide(color: AppColors.dirtyWhite),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  label: Text(
-                    I18n.of(context).profileLoggedInMyListingsButton,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              _buildButton(
+                context,
+                I18n.of(context).profileLoggedInMyListingsButton,
+                CupertinoIcons.square_list,
+                const MyListingsView(),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 72,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    unawaited(
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyOrdersView(),
-                        ),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.dirtyWhite,
-                    side: const BorderSide(color: AppColors.dirtyWhite),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(CupertinoIcons.cube_box, size: 24),
-                  label: Text(
-                    I18n.of(context).profileLoggedInMyOrdersButton,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              _buildButton(
+                context,
+                I18n.of(context).profileLoggedInMyOrdersButton,
+                CupertinoIcons.cube_box,
+                const MyOrdersView(),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 72,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    unawaited(
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const TransactionHistoryView(),
-                        ),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.dirtyWhite,
-                    side: const BorderSide(color: AppColors.dirtyWhite),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(CupertinoIcons.time, size: 24),
-                  label: Text(
-                    I18n.of(context).profileLoggedInTransactionHistoryButton,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              _buildButton(
+                context,
+                I18n.of(context).profileLoggedInTransactionHistoryButton,
+                CupertinoIcons.time,
+                const TransactionHistoryView(),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Widget page,
+  ) {
+    return SizedBox(
+      width: double.infinity,
+      height: 72,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          unawaited(
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => page),
+            ),
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.dirtyWhite,
+          side: const BorderSide(color: AppColors.dirtyWhite),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        icon: Icon(icon, size: 24),
+        label: Text(
+          label,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
       ),
     );
