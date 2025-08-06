@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/reserved_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -355,7 +357,16 @@ class _TransactionHistoryViewContentState
 
           switch (state.filter) {
             case TransactionHistoryFilter.all:
-              return MyActiveListingItemView(listing: listing);
+              switch (listing.status) {
+                case ApiConstants.queryMarketStatusReserved:
+                  return ReservedItemView(listing: listing);
+                case ApiConstants.queryMarketStatusSold:
+                  return DeliveredItemView(listing: listing);
+                case ApiConstants.queryMarketStatusCompleted:
+                  return CompletedItemView(listing: listing);
+                default:
+                  return MyActiveListingItemView(listing: listing);
+              }
             case TransactionHistoryFilter.delivered:
               return DeliveredItemView(listing: listing);
             case TransactionHistoryFilter.toReceive:

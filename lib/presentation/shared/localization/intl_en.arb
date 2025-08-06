@@ -130,8 +130,9 @@
     "toReceiveItemViewReserved": "Reserved",
     "toReceiveItemViewReservedFrom": "from",
     "toReceiveItemViewUnknown": "Unknown",
-    "completedItemViewCompleted": "Order Completed",
+    "completedItemViewCompleted": "Buy Order Completed",
     "completedItemViewViewSellerProfile": "View Seller Profile",
     "deliveredItemViewDelivered": "Delivered",
-    "deliveredItemViewViewBuyerProfile": "View Buyer Profile"
+    "deliveredItemViewViewBuyerProfile": "View Buyer Profile",
+    "historyReservedItemViewBuyerProfile": "View Buyer Profile"
 }

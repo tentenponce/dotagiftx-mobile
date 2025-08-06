@@ -13,6 +13,7 @@ class MarketListingModel extends Equatable {
   final double? price;
   final String? createdAt;
   final String? updatedAt;
+  final int? status;
   final int? inventoryStatus;
   final SteamUserModel? user;
   final DotaItemModel? item;
@@ -22,8 +23,9 @@ class MarketListingModel extends Equatable {
 
   const MarketListingModel({
     required this.id,
-    required this.inventoryStatus,
-    required this.user,
+    this.status,
+    this.inventoryStatus,
+    this.user,
     this.price,
     this.createdAt,
     this.updatedAt,
@@ -42,6 +44,7 @@ class MarketListingModel extends Equatable {
     price,
     createdAt,
     updatedAt,
+    status,
     inventoryStatus,
     user,
     resell,
