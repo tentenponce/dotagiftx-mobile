@@ -131,11 +131,12 @@
     "toReceiveItemViewReserved": "Reserved",
     "toReceiveItemViewReservedFrom": "from",
     "toReceiveItemViewUnknown": "Unknown",
-    "completedItemViewCompleted": "Buy Order Completed",
+    "completedItemViewCompleted": "Order Completed",
     "completedItemViewViewSellerProfile": "View Seller Profile",
     "deliveredItemViewDelivered": "Delivered",
     "deliveredItemViewViewBuyerProfile": "View Buyer Profile",
     "historyReservedItemViewBuyerProfile": "View Buyer Profile",
     "cancelledItemViewCancelled": "Cancelled",
-    "cancelledItemViewViewBuyerProfile": "View Buyer Profile"
+    "cancelledItemViewViewBuyerProfile": "View Buyer Profile",
+    "orderRemovedItemViewOrderRemoved": "Order Removed"
 }

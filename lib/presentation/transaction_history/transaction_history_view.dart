@@ -15,6 +15,7 @@ import 'package:dotagiftx_mobile/presentation/transaction_history/states/transac
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/cancelled_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/completed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/delivered_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/order_removed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/shimmer_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/to_receive_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/viewmodels/transaction_history_cubit.dart';
@@ -375,7 +376,7 @@ class _TransactionHistoryViewContentState
                 return CompletedItemView(listing: listing);
               } else if (listing.status ==
                   ApiConstants.queryMarketStatusOrderRemoved) {
-                return CompletedItemView(listing: listing);
+                return OrderRemovedItemView(listing: listing);
               } else if (listing.status ==
                   ApiConstants.queryMarketStatusCancelled) {
                 return CancelledItemView(listing: listing);
