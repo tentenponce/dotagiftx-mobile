@@ -9,7 +9,6 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_
 import 'package:dotagiftx_mobile/presentation/core/widgets/my_active_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/my_active_order_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/reserved_item_view.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/states/transaction_history_state.dart';
 import 'package:dotagiftx_mobile/presentation/transaction_history/subviews/cancelled_item_view.dart';
@@ -397,7 +396,7 @@ class _TransactionHistoryViewContentState
         if (state.isLoadingMore && index >= state.transactions.length) {
           final shimmerIndex = index - state.transactions.length;
           if (shimmerIndex < maxShimmerItems) {
-            return const ShimmerListingItemView();
+            return const ShimmerHistoryItemView();
           }
         }
 

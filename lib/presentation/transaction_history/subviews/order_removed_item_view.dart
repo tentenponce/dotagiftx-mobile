@@ -7,7 +7,6 @@ import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
-import 'package:dotagiftx_mobile/presentation/core/widgets/item_verification_icon_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -51,31 +50,16 @@ class OrderRemovedItemView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  listing.item?.name ??
-                                      I18n.of(
-                                        context,
-                                      ).reservedItemViewUnknownItem,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              ItemVerificationIconView(
-                                status: listing.inventoryStatus,
-                                isResell: listing.resell,
-                                name: listing.user?.name,
-                                createdAt: listing.createdAt,
-                              ),
-                            ],
+                          Text(
+                            listing.item?.name ??
+                                I18n.of(context).reservedItemViewUnknownItem,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
                           Row(
