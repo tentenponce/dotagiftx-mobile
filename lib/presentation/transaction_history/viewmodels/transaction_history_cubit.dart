@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_all_my_listings_history_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_completed_orders_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_delivered_listings_usecase.dart';
-import 'package:dotagiftx_mobile/domain/usecases/get_my_markets_history_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_to_receive_orders_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
@@ -23,14 +23,14 @@ class TransactionHistoryCubit extends BaseCubit<TransactionHistoryState>
   final Logger _logger;
 
   final DebouncerUtils _debouncerUtils;
-  final GetMyMarketsHistoryUsecase _getMyMarketsHistoryUsecase;
+  final GetAllMyListingsHistoryUsecase _getAllMyListingsHistoryUsecase;
   final GetToReceiveOrdersUsecase _getToReceiveOrdersUsecase;
   final GetMyDeliveredListingsUsecase _getMyDeliveredListingsUsecase;
   final GetMyCompletedOrdersUsecase _getMyCompletedOrdersUsecase;
 
   TransactionHistoryCubit(
     this._logger,
-    this._getMyMarketsHistoryUsecase,
+    this._getAllMyListingsHistoryUsecase,
     this._getToReceiveOrdersUsecase,
     this._getMyDeliveredListingsUsecase,
     this._getMyCompletedOrdersUsecase,
@@ -137,7 +137,7 @@ class TransactionHistoryCubit extends BaseCubit<TransactionHistoryState>
   }) async {
     switch (state.filter) {
       case TransactionHistoryFilter.all:
-        return _getMyMarketsHistoryUsecase.get(
+        return _getAllMyListingsHistoryUsecase.get(
           limit: _pageLimit,
           page: page,
           searchQuery: _searchQuery,

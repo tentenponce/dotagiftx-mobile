@@ -3,7 +3,7 @@ import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:injectable/injectable.dart';
 
-abstract interface class GetMyMarketsHistoryUsecase {
+abstract interface class GetAllMyListingsHistoryUsecase {
   Future<(List<MarketListingModel>, int)> get({
     required int limit,
     required int page,
@@ -11,11 +11,12 @@ abstract interface class GetMyMarketsHistoryUsecase {
   });
 }
 
-@LazySingleton(as: GetMyMarketsHistoryUsecase)
-class GetMyMarketsHistoryUsecaseImpl implements GetMyMarketsHistoryUsecase {
+@LazySingleton(as: GetAllMyListingsHistoryUsecase)
+class GetAllMyListingsHistoryUsecaseImpl
+    implements GetAllMyListingsHistoryUsecase {
   final DotagiftxAuthApi _dotagiftxApi;
 
-  GetMyMarketsHistoryUsecaseImpl(this._dotagiftxApi);
+  GetAllMyListingsHistoryUsecaseImpl(this._dotagiftxApi);
 
   @override
   Future<(List<MarketListingModel>, int)> get({
@@ -26,7 +27,7 @@ class GetMyMarketsHistoryUsecaseImpl implements GetMyMarketsHistoryUsecase {
     final response = await _dotagiftxApi.getMyMarkets(
       page,
       limit,
-      null,
+      ApiConstants.queryMarketAsk,
       null,
       ApiConstants.querySortUpdatedAtDesc,
       null,

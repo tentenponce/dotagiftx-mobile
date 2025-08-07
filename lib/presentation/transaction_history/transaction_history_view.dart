@@ -81,7 +81,7 @@ class _TransactionHistoryViewContentState
                 controller: _searchController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: I18n.of(context).myListingsSearchHint,
+                  hintText: I18n.of(context).transactionHistorySearchHint,
                   hintStyle: const TextStyle(color: AppColors.grey),
                   prefixIcon: const Icon(Icons.search, color: AppColors.grey),
                   suffixIcon:
@@ -289,17 +289,11 @@ class _TransactionHistoryViewContentState
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      state.filter == TransactionHistoryFilter.all
-                          ? !StringUtils.isNullOrEmpty(searchQuery)
-                              ? I18n.of(
-                                context,
-                              ).myListingsNoSearchActiveListingsTitle
-                              : I18n.of(context).myListingsNoActiveListings
-                          : !StringUtils.isNullOrEmpty(searchQuery)
+                      !StringUtils.isNullOrEmpty(searchQuery)
                           ? I18n.of(
                             context,
-                          ).myListingsNoSearchReservedListingsTitle
-                          : I18n.of(context).myListingsNoReservedListings,
+                          ).transactionHistoryNoSearchResultsTitle
+                          : I18n.of(context).transactionHistoryNoHistoryTitle,
                       style: const TextStyle(
                         color: AppColors.grey,
                         fontSize: 18,
@@ -308,21 +302,13 @@ class _TransactionHistoryViewContentState
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      state.filter == TransactionHistoryFilter.all
-                          ? !StringUtils.isNullOrEmpty(searchQuery)
-                              ? I18n.of(
-                                context,
-                              ).myListingsNoSearchActiveListingsDescription
-                              : I18n.of(
-                                context,
-                              ).myListingsNoActiveListingsDescription
-                          : !StringUtils.isNullOrEmpty(searchQuery)
+                      !StringUtils.isNullOrEmpty(searchQuery)
                           ? I18n.of(
                             context,
-                          ).myListingsNoSearchReservedListingsDescription
+                          ).transactionHistoryNoSearchResultsDescription
                           : I18n.of(
                             context,
-                          ).myListingsNoReservedListingsDescription,
+                          ).transactionHistoryNoHistoryDescription,
                       style: const TextStyle(
                         color: AppColors.grey,
                         fontSize: 14,
@@ -338,11 +324,10 @@ class _TransactionHistoryViewContentState
       );
     }
 
-    // Calculate total items: listing + loading more shimmer items + bottom padding
-    final remainingListings =
+    // Calculate total items: history + loading more shimmer items + bottom padding
+    final remainingHistory =
         state.totalTransactionsCount - state.transactions.length;
-    final maxShimmerItems =
-        state.isLoadingMore ? min(remainingListings, 10) : 0;
+    final maxShimmerItems = state.isLoadingMore ? min(remainingHistory, 10) : 0;
     final itemCount =
         state.transactions.length +
         maxShimmerItems +
@@ -354,41 +339,41 @@ class _TransactionHistoryViewContentState
       padding: const EdgeInsets.all(16),
       itemCount: itemCount,
       itemBuilder: (context, index) {
-        // Listings
+        // History
         if (index < state.transactions.length) {
-          final listing = state.transactions[index];
+          final history = state.transactions[index];
 
           switch (state.filter) {
             case TransactionHistoryFilter.all:
-              if (listing.status == ApiConstants.queryMarketStatusLive &&
-                  listing.type == ApiConstants.queryMarketAsk) {
-                return MyActiveListingItemView(listing: listing);
-              } else if (listing.status == ApiConstants.queryMarketStatusLive &&
-                  listing.type == ApiConstants.queryMarketBid) {
-                return MyActiveOrderItemView(order: listing);
-              } else if (listing.status ==
+              if (history.status == ApiConstants.queryMarketStatusLive &&
+                  history.type == ApiConstants.queryMarketAsk) {
+                return MyActiveListingItemView(listing: history);
+              } else if (history.status == ApiConstants.queryMarketStatusLive &&
+                  history.type == ApiConstants.queryMarketBid) {
+                return MyActiveOrderItemView(order: history);
+              } else if (history.status ==
                   ApiConstants.queryMarketStatusReserved) {
-                return ReservedItemView(listing: listing);
-              } else if (listing.status == ApiConstants.queryMarketStatusSold) {
-                return DeliveredItemView(listing: listing);
-              } else if (listing.status ==
+                return ReservedItemView(listing: history);
+              } else if (history.status == ApiConstants.queryMarketStatusSold) {
+                return DeliveredItemView(listing: history);
+              } else if (history.status ==
                   ApiConstants.queryMarketStatusCompleted) {
-                return CompletedItemView(listing: listing);
-              } else if (listing.status ==
+                return CompletedItemView(listing: history);
+              } else if (history.status ==
                   ApiConstants.queryMarketStatusOrderRemoved) {
-                return OrderRemovedItemView(listing: listing);
-              } else if (listing.status ==
+                return OrderRemovedItemView(listing: history);
+              } else if (history.status ==
                   ApiConstants.queryMarketStatusCancelled) {
-                return CancelledItemView(listing: listing);
+                return CancelledItemView(listing: history);
               } else {
-                return UnknownHistoryItemView(listing: listing);
+                return UnknownHistoryItemView(listing: history);
               }
             case TransactionHistoryFilter.delivered:
-              return DeliveredItemView(listing: listing);
+              return DeliveredItemView(listing: history);
             case TransactionHistoryFilter.toReceive:
-              return ToReceiveItemView(listing: listing);
+              return ToReceiveItemView(listing: history);
             case TransactionHistoryFilter.completed:
-              return CompletedItemView(listing: listing);
+              return CompletedItemView(listing: history);
           }
         }
 
