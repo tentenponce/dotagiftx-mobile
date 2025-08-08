@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/data/core/constants/keychain_keys.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
@@ -55,7 +56,7 @@ void main() {
             1,
             5,
             ApiConstants.queryMarketBid,
-            ApiConstants.queryMarketStatusLive,
+            null,
             ApiConstants.querySortUpdatedAtDesc,
             ApiConstants.queryIndexItemId,
             null,
@@ -72,7 +73,7 @@ void main() {
             1,
             5,
             ApiConstants.queryMarketBid,
-            ApiConstants.queryMarketStatusLive,
+            null,
             ApiConstants.querySortUpdatedAtDesc,
             ApiConstants.queryIndexItemId,
             null,
@@ -84,6 +85,7 @@ void main() {
         // Arrange
         const customLimit = 10;
         const customPage = 2;
+        const customStatus = ApiConstants.queryMarketStatusCompleted;
         const customSearchQuery = 'test';
         const expectedItems = [testMarketListing1];
         const expectedResponse = MarketListingResponse(
@@ -96,7 +98,7 @@ void main() {
             customPage,
             customLimit,
             ApiConstants.queryMarketBid,
-            ApiConstants.queryMarketStatusLive,
+            customStatus,
             ApiConstants.querySortUpdatedAtDesc,
             ApiConstants.queryIndexItemId,
             customSearchQuery,
@@ -107,6 +109,7 @@ void main() {
         final result = await usecase.get(
           limit: customLimit,
           page: customPage,
+          status: customStatus,
           searchQuery: customSearchQuery,
         );
 
@@ -117,13 +120,78 @@ void main() {
             customPage,
             customLimit,
             ApiConstants.queryMarketBid,
-            ApiConstants.queryMarketStatusLive,
+            customStatus,
             ApiConstants.querySortUpdatedAtDesc,
             ApiConstants.queryIndexItemId,
             customSearchQuery,
           ),
         ).called(1);
       });
+
+      test(
+        'should call getMarkets when status is queryMarketStatusReserved',
+        () async {
+          // Arrange
+          const expectedItems = [testMarketListing1];
+          const expectedResponse = MarketListingResponse(
+            data: expectedItems,
+            totalCount: 1,
+          );
+
+          when(
+            mockKeychainStorage.getValue(KeychainKeys.steamId),
+          ).thenAnswer((_) async => '123');
+          when(
+            mockDotagiftxAuthApi.getMarkets(
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+            ),
+          ).thenAnswer((_) async => expectedResponse);
+
+          // Act
+          final result = await usecase.get(
+            limit: 5,
+            page: 1,
+            status: ApiConstants.queryMarketStatusReserved,
+            searchQuery: '',
+          );
+
+          // Assert
+          expect(result, equals((expectedItems, 1)));
+          verify(
+            mockDotagiftxAuthApi.getMarkets(
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+            ),
+          ).called(1);
+
+          verifyNever(
+            mockDotagiftxAuthApi.getMyMarkets(
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+              any,
+            ),
+          );
+        },
+      );
     });
   });
 }

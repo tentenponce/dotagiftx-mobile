@@ -103,6 +103,23 @@ void main() {
       expect(unit.searchQuery, equals('test query'));
     });
 
+    test(
+      'should update status when filterBy is called with different status',
+      () {
+        // Arrange
+        final unit = createUnitToTest();
+
+        // Act
+        unit.filterBy(ApiConstants.queryMarketStatusCompleted);
+
+        // Assert
+        expect(
+          unit.state.status,
+          equals(ApiConstants.queryMarketStatusCompleted),
+        );
+      },
+    );
+
     group('refreshOrders', () {
       test('should get orders with page 1 on successful refresh', () async {
         // Arrange
@@ -134,7 +151,7 @@ void main() {
       });
     });
 
-    group('loadMoreListings', () {
+    group('loadMoreOrders', () {
       test('should return early when already loading more results', () async {
         // Arrange
         when(

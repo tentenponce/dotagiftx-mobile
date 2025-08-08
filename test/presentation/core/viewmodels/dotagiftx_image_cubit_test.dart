@@ -23,12 +23,15 @@ void main() {
 
     // Test data
     const testImageBaseUrl = 'https://test.example.com/images/';
+    const testBaseUrl = 'https://test.example.com';
     const emptyImageBaseUrl = '';
 
     setUp(() {
       mockLogger = MockLogger();
       mockDotagiftxRemoteConfig = MockDotagiftxRemoteConfig();
       mockEnvironmentVariables = MockEnvironmentVariables();
+
+      when(mockEnvironmentVariables.baseUrl).thenReturn(testBaseUrl);
     });
 
     DotagiftxImageCubit createUnitToTest() {
@@ -80,7 +83,9 @@ void main() {
             ).called(1);
             expect(
               imageUrlCubit.state,
-              equals(RemoteConfigConstants.defaultDotagiftxImageEndpoint),
+              equals(
+                '$testBaseUrl${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+              ),
             );
           });
         },
@@ -104,7 +109,9 @@ void main() {
           ).called(1);
           expect(
             imageUrlCubit.state,
-            equals(RemoteConfigConstants.defaultDotagiftxImageEndpoint),
+            equals(
+              '$testBaseUrl${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+            ),
           );
         });
       });
@@ -129,7 +136,9 @@ void main() {
           ).called(1);
           expect(
             imageUrlCubit.state,
-            equals(RemoteConfigConstants.defaultDotagiftxImageEndpoint),
+            equals(
+              '$testBaseUrl${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+            ),
           );
         });
       });

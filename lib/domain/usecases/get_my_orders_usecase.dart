@@ -10,7 +10,7 @@ abstract interface class GetMyOrdersUsecase {
   Future<(List<MarketListingModel>, int)> get({
     required int limit,
     required int page,
-    required int status,
+    int? status,
     String? searchQuery,
   });
 }
@@ -26,7 +26,7 @@ class GetMyOrdersUsecaseImpl implements GetMyOrdersUsecase {
   Future<(List<MarketListingModel>, int)> get({
     required int page,
     required int limit,
-    required int status,
+    int? status,
     String? searchQuery,
   }) async {
     MarketListingResponse? response;

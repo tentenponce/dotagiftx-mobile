@@ -22,7 +22,7 @@ class GetMyListingsUsecaseImpl implements GetMyListingsUsecase {
   Future<(List<MarketListingModel>, int)> get({
     required int page,
     required int limit,
-    int? status = ApiConstants.queryMarketStatusReserved,
+    int? status,
     String? searchQuery,
   }) async {
     final response = await _dotagiftxApi.getMyMarkets(
