@@ -209,7 +209,7 @@ void main() {
 
         await homeCubit.searchCatalog(query: 'test query');
 
-        expect(homeCubit.currentSearchQuery, equals('test query'));
+        expect(homeCubit.state.currentSearchQuery, equals('test query'));
       });
 
       test(
@@ -220,7 +220,7 @@ void main() {
           await homeCubit.searchCatalog(query: 'test query');
           await homeCubit.searchCatalog(query: '');
 
-          expect(homeCubit.currentSearchQuery, equals(''));
+          expect(homeCubit.state.currentSearchQuery, equals(''));
         },
       );
     });

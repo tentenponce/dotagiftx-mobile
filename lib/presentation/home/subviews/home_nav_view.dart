@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
@@ -61,6 +62,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
             child: BlocBuilder<HomeCubit, HomeState>(
               builder: (context, state) {
                 if (state.searchResults.isNotEmpty ||
+                    !StringUtils.isNullOrEmpty(state.currentSearchQuery) ||
                     state.loadingSearchResults) {
                   return SearchResultsListView(
                     searchResults: state.searchResults,
@@ -242,7 +244,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    _searchController.text = context.read<HomeCubit>().currentSearchQuery;
+    _searchController.text = context.read<HomeCubit>().state.currentSearchQuery;
   }
 
   Widget _buildSectionHeader(String title) {
