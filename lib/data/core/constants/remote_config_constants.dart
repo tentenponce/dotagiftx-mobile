@@ -14,8 +14,8 @@ abstract final class RemoteConfigConstants {
       id: 'initial_login',
       title: 'Initial Login',
       description: 'Allows you to manage your listings and orders',
-      isCompleted: false,
-      isActive: true,
+      isCompleted: true,
+      isActive: false,
       isVoted: false,
     ),
     RoadmapModel(
