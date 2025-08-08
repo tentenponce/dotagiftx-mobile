@@ -70,47 +70,87 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
             // Search Field
             Container(
               padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: _searchController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: I18n.of(context).myOrdersSearchHint,
-                  hintStyle: const TextStyle(color: AppColors.grey),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-                  suffixIcon:
-                      _showClearButton
-                          ? IconButton(
-                            icon: const Icon(
-                              Icons.clear,
-                              color: AppColors.grey,
-                            ),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _showClearButton = false;
-                              });
-                              unawaited(
-                                context.read<MyOrdersCubit>().searchOrders(''),
-                              );
-                            },
-                          )
-                          : null,
-                  filled: true,
-                  fillColor: AppColors.darkGrey,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _showClearButton = value.isNotEmpty;
-                  });
-                  unawaited(context.read<MyOrdersCubit>().searchOrders(value));
+              child: BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                buildWhen:
+                    (previous, current) => previous.status != current.status,
+                builder: (context, state) {
+                  final isDisabled =
+                      state.status == ApiConstants.queryMarketStatusReserved;
+
+                  return TextField(
+                    enabled: !isDisabled,
+                    controller: _searchController,
+                    style: TextStyle(
+                      color:
+                          isDisabled
+                              ? AppColors.grey.withValues(alpha: 0.5)
+                              : Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: I18n.of(context).myOrdersSearchHint,
+                      hintStyle: TextStyle(
+                        color:
+                            isDisabled
+                                ? AppColors.grey.withValues(alpha: 0.3)
+                                : AppColors.grey,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color:
+                            isDisabled
+                                ? AppColors.grey.withValues(alpha: 0.3)
+                                : AppColors.grey,
+                      ),
+                      suffixIcon:
+                          _showClearButton && !isDisabled
+                              ? IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: AppColors.grey,
+                                ),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {
+                                    _showClearButton = false;
+                                  });
+                                  unawaited(
+                                    context.read<MyOrdersCubit>().searchOrders(
+                                      '',
+                                    ),
+                                  );
+                                },
+                              )
+                              : null,
+                      filled: true,
+                      fillColor:
+                          isDisabled
+                              ? AppColors.darkGrey.withValues(alpha: 0.5)
+                              : AppColors.darkGrey,
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: AppColors.grey.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _showClearButton = value.isNotEmpty;
+                      });
+                      unawaited(
+                        context.read<MyOrdersCubit>().searchOrders(value),
+                      );
+                    },
+                  );
                 },
               ),
             ),
