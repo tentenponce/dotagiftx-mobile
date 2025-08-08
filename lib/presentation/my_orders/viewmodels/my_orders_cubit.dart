@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_orders_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
@@ -17,16 +18,30 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
   String _searchQuery = '';
 
   final Logger _logger;
-
-  final DebouncerUtils _debouncerUtils;
   final GetMyOrdersUsecase _getMyOrdersUsecase;
-  MyOrdersCubit(this._logger, this._getMyOrdersUsecase, this._debouncerUtils)
-    : super(const MyOrdersState());
+  final GetMarketSummaryUsecase _getMarketSummaryUsecase;
+  final DebouncerUtils _debouncerUtils;
+
+  MyOrdersCubit(
+    this._logger,
+    this._getMyOrdersUsecase,
+    this._getMarketSummaryUsecase,
+    this._debouncerUtils,
+  ) : super(const MyOrdersState());
 
   @override
   Logger get logger => _logger;
 
   String get searchQuery => _searchQuery;
+
+  void filterBy(int status) {
+    if (state.status == status) {
+      return;
+    }
+
+    emit(state.copyWith(status: status));
+    unawaited(getMyOrders());
+  }
 
   Future<void> getMyOrders() async {
     if (state.isLoading) {
@@ -39,6 +54,7 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
       () => _getMyOrdersUsecase.get(
         limit: _pageLimit,
         page: 1,
+        status: state.status,
         searchQuery: _searchQuery,
       ),
       (response) async {
@@ -57,6 +73,7 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
   Future<void> init() async {
     _debouncerUtils.milliseconds = 500;
     unawaited(getMyOrders());
+    unawaited(_getMarketSummary());
   }
 
   Future<void> loadMoreOrders() async {
@@ -78,6 +95,7 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
       () => _getMyOrdersUsecase.get(
         limit: _pageLimit,
         page: nextPage,
+        status: state.status,
         searchQuery: _searchQuery,
       ),
       (response) async {
@@ -97,7 +115,8 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
   }
 
   Future<void> refreshOrders() async {
-    await getMyOrders();
+    unawaited(getMyOrders());
+    unawaited(_getMarketSummary());
   }
 
   Future<void> searchOrders(String query) async {
@@ -111,5 +130,16 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
     _debouncerUtils.run(() async {
       await getMyOrders();
     });
+  }
+
+  Future<void> _getMarketSummary() async {
+    await cubitHandler(
+      _getMarketSummaryUsecase.get,
+      (response) async => emit(state.copyWith(marketSummary: response)),
+      onError: (e, st) async {
+        emit(state.copyWith(marketSummary: null));
+        _logger.log(LogLevel.error, 'Error getting market summary', e, st);
+      },
+    );
   }
 }

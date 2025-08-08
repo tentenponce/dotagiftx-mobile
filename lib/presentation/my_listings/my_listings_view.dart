@@ -6,7 +6,10 @@ import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/unknown_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/states/my_listings_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/cancelled_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/delivered_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
@@ -125,9 +128,15 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                 spacing: 8,
                 children: [
                   BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsActiveButton,
+                        label: I18n.of(context).myListingsActiveButton(
+                          state.marketSummary?.activeListings ?? 0,
+                        ),
                         filter: ApiConstants.queryMarketStatusLive.toString(),
                         currentFilter: state.status.toString(),
                         onTap: () {
@@ -139,15 +148,58 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                     },
                   ),
                   BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsReservedButton,
+                        label: I18n.of(context).myListingsReservedButton(
+                          state.marketSummary?.reservedListings ?? 0,
+                        ),
                         filter:
                             ApiConstants.queryMarketStatusReserved.toString(),
                         currentFilter: state.status.toString(),
                         onTap: () {
                           context.read<MyListingsCubit>().filterBy(
                             ApiConstants.queryMarketStatusReserved,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
+                    builder: (context, state) {
+                      return MarketFilterButtonView(
+                        label: I18n.of(context).myListingsDeliveredButton(
+                          state.marketSummary?.deliveredListings ?? 0,
+                        ),
+                        filter: ApiConstants.queryMarketStatusSold.toString(),
+                        currentFilter: state.status.toString(),
+                        onTap: () {
+                          context.read<MyListingsCubit>().filterBy(
+                            ApiConstants.queryMarketStatusSold,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.status != current.status,
+                    builder: (context, state) {
+                      return MarketFilterButtonView(
+                        label: I18n.of(context).myListingsHistoryButton,
+                        filter: ApiConstants.queryMarketStatusAll.toString(),
+                        currentFilter: state.status.toString(),
+                        onTap: () {
+                          context.read<MyListingsCubit>().filterBy(
+                            ApiConstants.queryMarketStatusAll,
                           );
                         },
                       );
@@ -245,17 +297,9 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      state.status == ApiConstants.queryMarketStatusLive
-                          ? !StringUtils.isNullOrEmpty(searchQuery)
-                              ? I18n.of(
-                                context,
-                              ).myListingsNoSearchActiveListingsTitle
-                              : I18n.of(context).myListingsNoActiveListings
-                          : !StringUtils.isNullOrEmpty(searchQuery)
-                          ? I18n.of(
-                            context,
-                          ).myListingsNoSearchReservedListingsTitle
-                          : I18n.of(context).myListingsNoReservedListings,
+                      !StringUtils.isNullOrEmpty(searchQuery)
+                          ? I18n.of(context).myListingsNoSearchListingsTitle
+                          : I18n.of(context).myListingsNoActiveListings,
                       style: const TextStyle(
                         color: AppColors.grey,
                         fontSize: 18,
@@ -264,21 +308,13 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      state.status == ApiConstants.queryMarketStatusLive
-                          ? !StringUtils.isNullOrEmpty(searchQuery)
-                              ? I18n.of(
-                                context,
-                              ).myListingsNoSearchActiveListingsDescription
-                              : I18n.of(
-                                context,
-                              ).myListingsNoActiveListingsDescription
-                          : !StringUtils.isNullOrEmpty(searchQuery)
+                      !StringUtils.isNullOrEmpty(searchQuery)
                           ? I18n.of(
                             context,
-                          ).myListingsNoSearchReservedListingsDescription
+                          ).myListingsNoSearchListingsDescription
                           : I18n.of(
                             context,
-                          ).myListingsNoReservedListingsDescription,
+                          ).myListingsNoActiveListingsDescription,
                       style: const TextStyle(
                         color: AppColors.grey,
                         fontSize: 14,
@@ -313,8 +349,23 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
 
           if (state.status == ApiConstants.queryMarketStatusLive) {
             return MyActiveListingItemView(listing: listing);
-          } else {
+          } else if (state.status == ApiConstants.queryMarketStatusReserved) {
             return ReservedItemView(listing: listing);
+          } else if (state.status == ApiConstants.queryMarketStatusSold) {
+            return DeliveredItemView(listing: listing);
+          } else if (state.status == ApiConstants.queryMarketStatusAll) {
+            switch (listing.status) {
+              case ApiConstants.queryMarketStatusLive:
+                return MyActiveListingItemView(listing: listing);
+              case ApiConstants.queryMarketStatusReserved:
+                return ReservedItemView(listing: listing);
+              case ApiConstants.queryMarketStatusSold:
+                return DeliveredItemView(listing: listing);
+              case ApiConstants.queryMarketStatusCancelled:
+                return CancelledItemView(listing: listing);
+              default:
+                return UnknownHistoryItemView(listing: listing);
+            }
           }
         }
 

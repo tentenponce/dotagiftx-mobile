@@ -22,24 +22,25 @@ abstract interface class DotagiftxAuthApi {
 
   @GET('/markets')
   Future<MarketListingResponse> getMarkets(
-    @Query('item_id') String itemId,
+    @Query('item_id') String? itemId,
     @Query('page') int page,
     @Query('limit') int limit,
     @Query('type') int type,
     @Query('status') int status,
     @Query('inventory_status') int? inventoryStatus,
     @Query('sort') String sort,
-    @Query('index') String index,
+    @Query('index') String? index,
+    @Query('partner_steam_id') String? partnerSteamId,
   );
 
   @GET('/my/markets')
   Future<MarketListingResponse> getMyMarkets(
     @Query('page') int page,
     @Query('limit') int limit,
-    @Query('type') int type,
+    @Query('type') int? type,
     @Query('status') int? status,
     @Query('sort') String sort,
-    @Query('index') String index,
+    @Query('index') String? index,
     @Query('q') String? query,
   );
 

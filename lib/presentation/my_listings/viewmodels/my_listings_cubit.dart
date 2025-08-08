@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_listings_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
@@ -20,9 +21,12 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
 
   final DebouncerUtils _debouncerUtils;
   final GetMyListingsUsecase _getMyListingsUsecase;
+  final GetMarketSummaryUsecase _getMarketSummaryUsecase;
+
   MyListingsCubit(
     this._logger,
     this._getMyListingsUsecase,
+    this._getMarketSummaryUsecase,
     this._debouncerUtils,
   ) : super(const MyListingsState());
 
@@ -72,6 +76,7 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   Future<void> init() async {
     _debouncerUtils.milliseconds = 500;
     unawaited(getMyListings());
+    unawaited(_getMarketSummary());
   }
 
   Future<void> loadMoreListings() async {
@@ -116,7 +121,8 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   }
 
   Future<void> refreshListings() async {
-    await getMyListings();
+    unawaited(getMyListings());
+    unawaited(_getMarketSummary());
   }
 
   Future<void> searchListings(String query) async {
@@ -130,5 +136,16 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
     _debouncerUtils.run(() async {
       await getMyListings();
     });
+  }
+
+  Future<void> _getMarketSummary() async {
+    await cubitHandler(
+      _getMarketSummaryUsecase.get,
+      (response) async => emit(state.copyWith(marketSummary: response)),
+      onError: (e, st) async {
+        emit(state.copyWith(marketSummary: null));
+        _logger.log(LogLevel.error, 'Error getting market summary', e, st);
+      },
+    );
   }
 }

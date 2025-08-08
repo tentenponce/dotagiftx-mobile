@@ -2,11 +2,17 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/unknown_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/states/my_orders_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/subviews/completed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/my_active_order_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/subviews/order_removed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/shimmer_order_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/subviews/to_receive_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/viewmodels/my_orders_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -64,48 +70,174 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
             // Search Field
             Container(
               padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: _searchController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: I18n.of(context).myOrdersSearchHint,
-                  hintStyle: const TextStyle(color: AppColors.grey),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-                  suffixIcon:
-                      _showClearButton
-                          ? IconButton(
-                            icon: const Icon(
-                              Icons.clear,
-                              color: AppColors.grey,
-                            ),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _showClearButton = false;
-                              });
-                              unawaited(
-                                context.read<MyOrdersCubit>().searchOrders(''),
-                              );
-                            },
-                          )
-                          : null,
-                  filled: true,
-                  fillColor: AppColors.darkGrey,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _showClearButton = value.isNotEmpty;
-                  });
-                  unawaited(context.read<MyOrdersCubit>().searchOrders(value));
+              child: BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                buildWhen:
+                    (previous, current) => previous.status != current.status,
+                builder: (context, state) {
+                  final isDisabled =
+                      state.status == ApiConstants.queryMarketStatusReserved;
+
+                  return TextField(
+                    enabled: !isDisabled,
+                    controller: _searchController,
+                    style: TextStyle(
+                      color:
+                          isDisabled
+                              ? AppColors.grey.withValues(alpha: 0.5)
+                              : Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: I18n.of(context).myOrdersSearchHint,
+                      hintStyle: TextStyle(
+                        color:
+                            isDisabled
+                                ? AppColors.grey.withValues(alpha: 0.3)
+                                : AppColors.grey,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color:
+                            isDisabled
+                                ? AppColors.grey.withValues(alpha: 0.3)
+                                : AppColors.grey,
+                      ),
+                      suffixIcon:
+                          _showClearButton && !isDisabled
+                              ? IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: AppColors.grey,
+                                ),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {
+                                    _showClearButton = false;
+                                  });
+                                  unawaited(
+                                    context.read<MyOrdersCubit>().searchOrders(
+                                      '',
+                                    ),
+                                  );
+                                },
+                              )
+                              : null,
+                      filled: true,
+                      fillColor:
+                          isDisabled
+                              ? AppColors.darkGrey.withValues(alpha: 0.5)
+                              : AppColors.darkGrey,
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: AppColors.grey.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _showClearButton = value.isNotEmpty;
+                      });
+                      unawaited(
+                        context.read<MyOrdersCubit>().searchOrders(value),
+                      );
+                    },
+                  );
                 },
+              ),
+            ),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              width: double.infinity,
+              child: Wrap(
+                spacing: 8,
+                children: [
+                  BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.status != current.status,
+                    builder: (context, state) {
+                      return MarketFilterButtonView(
+                        label: I18n.of(context).myOrdersActiveButton,
+                        filter: ApiConstants.queryMarketStatusLive.toString(),
+                        currentFilter: state.status.toString(),
+                        onTap: () {
+                          context.read<MyOrdersCubit>().filterBy(
+                            ApiConstants.queryMarketStatusLive,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
+                    builder: (context, state) {
+                      return MarketFilterButtonView(
+                        label: I18n.of(context).myOrdersToReceiveButton(
+                          state.marketSummary?.toReceiveOrders ?? 0,
+                        ),
+                        filter:
+                            ApiConstants.queryMarketStatusReserved.toString(),
+                        currentFilter: state.status.toString(),
+                        onTap: () {
+                          context.read<MyOrdersCubit>().filterBy(
+                            ApiConstants.queryMarketStatusReserved,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
+                    builder: (context, state) {
+                      return MarketFilterButtonView(
+                        label: I18n.of(context).myOrdersCompletedButton(
+                          state.marketSummary?.completedOrders ?? 0,
+                        ),
+                        filter:
+                            ApiConstants.queryMarketStatusCompleted.toString(),
+                        currentFilter: state.status.toString(),
+                        onTap: () {
+                          context.read<MyOrdersCubit>().filterBy(
+                            ApiConstants.queryMarketStatusCompleted,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.status != current.status,
+                    builder: (context, state) {
+                      return MarketFilterButtonView(
+                        label: I18n.of(context).myOrdersHistoryButton,
+                        filter: ApiConstants.queryMarketStatusAll.toString(),
+                        currentFilter: state.status.toString(),
+                        onTap: () {
+                          context.read<MyOrdersCubit>().filterBy(
+                            ApiConstants.queryMarketStatusAll,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
 
@@ -245,7 +377,26 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
         if (index < state.orders.length) {
           final order = state.orders[index];
 
-          return MyActiveOrderItemView(order: order);
+          if (state.status == ApiConstants.queryMarketStatusLive) {
+            return MyActiveOrderItemView(order: order);
+          } else if (state.status == ApiConstants.queryMarketStatusReserved) {
+            return ToReceiveItemView(listing: order);
+          } else if (state.status == ApiConstants.queryMarketStatusCompleted) {
+            return CompletedItemView(listing: order);
+          } else if (state.status == ApiConstants.queryMarketStatusAll) {
+            switch (order.status) {
+              case ApiConstants.queryMarketStatusLive:
+                return MyActiveOrderItemView(order: order);
+              case ApiConstants.queryMarketStatusReserved:
+                return ToReceiveItemView(listing: order);
+              case ApiConstants.queryMarketStatusCompleted:
+                return CompletedItemView(listing: order);
+              case ApiConstants.queryMarketStatusOrderRemoved:
+                return OrderRemovedItemView(listing: order);
+              default:
+                return UnknownHistoryItemView(listing: order);
+            }
+          }
         }
 
         // Check if this is a loading more shimmer item

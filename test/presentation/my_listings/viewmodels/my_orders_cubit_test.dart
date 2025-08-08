@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_orders_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/viewmodels/my_orders_cubit.dart';
 import 'package:fake_async/fake_async.dart';
@@ -15,12 +17,14 @@ import 'my_orders_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<Logger>(),
   MockSpec<GetMyOrdersUsecase>(),
+  MockSpec<GetMarketSummaryUsecase>(),
   MockSpec<DebouncerUtils>(),
 ])
 void main() {
   group(MyOrdersCubit, () {
     late MockLogger mockLogger;
     late MockGetMyOrdersUsecase mockGetMyOrdersUsecase;
+    late MockGetMarketSummaryUsecase mockGetMarketSummaryUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
 
     const testMarketListing1 = MarketListingModel(
@@ -40,6 +44,7 @@ void main() {
     setUp(() async {
       mockLogger = MockLogger();
       mockGetMyOrdersUsecase = MockGetMyOrdersUsecase();
+      mockGetMarketSummaryUsecase = MockGetMarketSummaryUsecase();
       mockDebouncerUtils = MockDebouncerUtils();
 
       // Setup basic mocks
@@ -54,6 +59,7 @@ void main() {
         mockGetMyOrdersUsecase.get(
           limit: anyNamed('limit'),
           page: anyNamed('page'),
+          status: anyNamed('status'),
           searchQuery: anyNamed('searchQuery'),
         ),
       ).thenAnswer((_) async => (const <MarketListingModel>[], 0));
@@ -63,6 +69,7 @@ void main() {
       return MyOrdersCubit(
         mockLogger,
         mockGetMyOrdersUsecase,
+        mockGetMarketSummaryUsecase,
         mockDebouncerUtils,
       );
     }
@@ -76,9 +83,12 @@ void main() {
         mockGetMyOrdersUsecase.get(
           limit: anyNamed('limit'),
           page: anyNamed('page'),
+          status: anyNamed('status'),
           searchQuery: anyNamed('searchQuery'),
         ),
       ).called(1);
+
+      verify(mockGetMarketSummaryUsecase.get()).called(1);
     });
 
     test('should set debouncer milliseconds during init', () async {
@@ -100,13 +110,67 @@ void main() {
       expect(unit.searchQuery, equals('test query'));
     });
 
-    group('refreshListings', () {
-      test('should get listings with page 1 on successful refresh', () async {
+    test(
+      'should update status when filterBy is called with different status',
+      () {
+        // Arrange
+        final unit = createUnitToTest();
+
+        // Act
+        unit.filterBy(ApiConstants.queryMarketStatusCompleted);
+
+        // Assert
+        expect(
+          unit.state.status,
+          equals(ApiConstants.queryMarketStatusCompleted),
+        );
+      },
+    );
+
+    group('getMarketSummary', () {
+      test('should show null market summary when error occurs', () async {
+        // Arrange
+        when(mockGetMarketSummaryUsecase.get()).thenThrow(Exception('test'));
+
+        // Act
+        final unit = createUnitToTest();
+
+        await Future<void>.delayed(Duration.zero);
+
+        // Assert
+        expect(unit.state.marketSummary, isNull);
+        verify(
+          mockLogger.log(
+            LogLevel.error,
+            'Error getting market summary',
+            any,
+            any,
+          ),
+        ).called(1);
+      });
+    });
+
+    group('refreshOrders', () {
+      test('should get market summary', () async {
+        // Arrange
+        final unit = createUnitToTest();
+
+        reset(mockGetMarketSummaryUsecase);
+
+        // Act
+        await unit.refreshOrders();
+
+        // Assert
+        verify(mockGetMarketSummaryUsecase.get()).called(1);
+      });
+
+      test('should get orders with page 1 on successful refresh', () async {
         // Arrange
         when(
           mockGetMyOrdersUsecase.get(
             limit: anyNamed('limit'),
             page: anyNamed('page'),
+            status: anyNamed('status'),
             searchQuery: anyNamed('searchQuery'),
           ),
         ).thenAnswer((_) async => ([testMarketListing1], 30));
@@ -120,18 +184,24 @@ void main() {
 
         // Assert
         verify(
-          mockGetMyOrdersUsecase.get(limit: 20, page: 1, searchQuery: ''),
+          mockGetMyOrdersUsecase.get(
+            limit: 20,
+            page: 1,
+            status: ApiConstants.queryMarketStatusLive,
+            searchQuery: '',
+          ),
         ).called(2);
       });
     });
 
-    group('loadMoreListings', () {
+    group('loadMoreOrders', () {
       test('should return early when already loading more results', () async {
         // Arrange
         when(
           mockGetMyOrdersUsecase.get(
             limit: anyNamed('limit'),
             page: anyNamed('page'),
+            status: anyNamed('status'),
             searchQuery: anyNamed('searchQuery'),
           ),
         ).thenAnswer(
@@ -161,6 +231,7 @@ void main() {
             mockGetMyOrdersUsecase.get(
               limit: 20,
               page: 2,
+              status: ApiConstants.queryMarketStatusLive,
               searchQuery: 'test query',
             ),
           ).called(1);
@@ -173,6 +244,7 @@ void main() {
           mockGetMyOrdersUsecase.get(
             limit: anyNamed('limit'),
             page: anyNamed('page'),
+            status: anyNamed('status'),
             searchQuery: anyNamed('searchQuery'),
           ),
         ).thenAnswer(
@@ -197,7 +269,12 @@ void main() {
 
           // Assert
           verifyNever(
-            mockGetMyOrdersUsecase.get(limit: 20, page: 2, searchQuery: ''),
+            mockGetMyOrdersUsecase.get(
+              limit: 20,
+              page: 2,
+              status: ApiConstants.queryMarketStatusLive,
+              searchQuery: '',
+            ),
           );
         });
       });
@@ -208,6 +285,7 @@ void main() {
           mockGetMyOrdersUsecase.get(
             limit: anyNamed('limit'),
             page: anyNamed('page'),
+            status: anyNamed('status'),
             searchQuery: anyNamed('searchQuery'),
           ),
         ).thenAnswer((_) async => ([testMarketListing1], 1));
@@ -226,6 +304,7 @@ void main() {
           mockGetMyOrdersUsecase.get(
             limit: 20,
             page: 1,
+            status: ApiConstants.queryMarketStatusLive,
             searchQuery: 'test query',
           ),
         ).called(1);
@@ -233,6 +312,7 @@ void main() {
           mockGetMyOrdersUsecase.get(
             limit: 20,
             page: 2,
+            status: ApiConstants.queryMarketStatusLive,
             searchQuery: 'test query',
           ),
         );
@@ -246,6 +326,7 @@ void main() {
             mockGetMyOrdersUsecase.get(
               limit: 20,
               page: 1,
+              status: ApiConstants.queryMarketStatusLive,
               searchQuery: 'test query',
             ),
           ).thenAnswer((_) async => ([testMarketListing1], 10));
@@ -254,6 +335,7 @@ void main() {
             mockGetMyOrdersUsecase.get(
               limit: 20,
               page: 2,
+              status: ApiConstants.queryMarketStatusLive,
               searchQuery: 'test query',
             ),
           ).thenAnswer((_) async => ([testMarketListing2], 10));

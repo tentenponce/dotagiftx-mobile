@@ -34,6 +34,7 @@ class GetDotaItemOffersUsecaseImpl implements GetDotaItemOffersUsecase {
       ApiConstants.queryInventoryStatusVerified,
       sort,
       ApiConstants.queryIndexItemId,
+      null,
     );
 
     return (response.data, response.totalCount);

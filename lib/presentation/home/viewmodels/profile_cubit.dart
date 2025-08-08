@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_user_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/login_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/logout_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -18,6 +21,7 @@ class ProfileCubit extends BaseCubit<ProfileState>
   final EnvironmentVariables _environmentVariables;
   final LoginUsecase _loginUsecase;
   final LogoutUsecase _logoutUsecase;
+  final GetUserUsecase _getUserUsecase;
   final ListenLocalStorage _listenLocalStorage;
 
   ProfileCubit(
@@ -25,6 +29,7 @@ class ProfileCubit extends BaseCubit<ProfileState>
     this._environmentVariables,
     this._loginUsecase,
     this._logoutUsecase,
+    this._getUserUsecase,
     this._listenLocalStorage,
   ) : super(const ProfileState());
 
@@ -40,6 +45,14 @@ class ProfileCubit extends BaseCubit<ProfileState>
     _listenLocalStorage.listenUser().listen((user) {
       emit(state.copyWith(user: user));
     });
+  }
+
+  void initProfileLoggedInView() {
+    unawaited(
+      cubitHandler(_getUserUsecase.call, (user) async {
+        emit(state.copyWith(user: user));
+      }),
+    );
   }
 
   Future<void> login(String openid) async {

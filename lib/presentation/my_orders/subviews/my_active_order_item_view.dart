@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
@@ -87,14 +88,36 @@ class MyActiveOrderItemView extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      if (order.createdAt != null)
+                      if (!StringUtils.isNullOrEmpty(order.createdAt))
+                        Wrap(
+                          spacing: 4,
+                          children: [
+                            Text(
+                              I18n.of(context).myActiveOrderItemViewOrderedDate,
+                              style: const TextStyle(
+                                color: AppColors.lightGreen,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              DateFormatUtils.formatDateAgo(order.createdAt!),
+                              style: const TextStyle(
+                                color: AppColors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                      const SizedBox(height: 4),
+                      // notes
+                      if (!StringUtils.isNullOrEmpty(order.notes))
                         Text(
-                          I18n.of(context).marketBuyOrderCardOrderedDate(
-                            DateFormatUtils.formatDateAgo(order.createdAt!),
-                          ),
+                          order.notes!,
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 12,
+                            fontStyle: FontStyle.italic,
                           ),
                         ),
                     ],

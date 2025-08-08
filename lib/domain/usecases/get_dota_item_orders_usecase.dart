@@ -34,6 +34,7 @@ class GetDotaItemOrdersUsecaseImpl implements GetDotaItemOrdersUsecase {
       null,
       sort,
       ApiConstants.queryIndexItemId,
+      null,
     );
 
     return (response.data, response.totalCount);

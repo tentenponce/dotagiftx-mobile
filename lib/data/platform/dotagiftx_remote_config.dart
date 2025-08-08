@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/platform/app_remote_config/app_remote_config.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
@@ -27,8 +28,13 @@ abstract interface class DotagiftxRemoteConfig {
 class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
   final Logger _logger;
   final AppRemoteConfig _appRemoteConfig;
+  final EnvironmentVariables _environmentVariables;
 
-  DotagiftxRemoteConfigImpl(this._logger, this._appRemoteConfig);
+  DotagiftxRemoteConfigImpl(
+    this._logger,
+    this._appRemoteConfig,
+    this._environmentVariables,
+  );
 
   @override
   Future<String> getDotagiftxImageBaseUrl() async {
@@ -37,7 +43,7 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
     );
 
     return dotagiftxImageBaseUrl ??
-        RemoteConfigConstants.defaultDotagiftxImageBaseUrl;
+        '${_environmentVariables.baseUrl}${RemoteConfigConstants.defaultDotagiftxImageEndpoint}';
   }
 
   @override

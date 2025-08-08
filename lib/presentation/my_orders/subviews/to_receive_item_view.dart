@@ -9,10 +9,9 @@ import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dar
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class MyActiveListingItemView extends StatelessWidget {
+class ToReceiveItemView extends StatelessWidget {
   final MarketListingModel listing;
-
-  const MyActiveListingItemView({required this.listing, super.key});
+  const ToReceiveItemView({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +50,7 @@ class MyActiveListingItemView extends StatelessWidget {
                           Flexible(
                             child: Text(
                               listing.item?.name ??
-                                  I18n.of(
-                                    context,
-                                  ).myActiveListingItemViewUnknownItem,
+                                  I18n.of(context).reservedItemViewUnknownItem,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -88,29 +85,62 @@ class MyActiveListingItemView extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            I18n.of(context).toReceiveItemViewReserved,
+                            style: const TextStyle(
+                              color: AppColors.purple,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            I18n.of(context).toReceiveItemViewReservedFrom,
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          DotagiftxImageView(
+                            imageUrl: listing.user?.avatar ?? '',
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            listing.user?.name ??
+                                I18n.of(context).toReceiveItemViewUnknown,
+                            style: const TextStyle(
+                              color: AppColors.dirtyWhite,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            DateFormatUtils.formatDateAgo(
+                              listing.updatedAt ?? '',
+                            ),
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
 
-                      // Listed date
-                      if (!StringUtils.isNullOrEmpty(listing.createdAt))
-                        Wrap(
-                          spacing: 4,
-                          children: [
-                            Text(
-                              I18n.of(
-                                context,
-                              ).myActiveListingItemViewListedDate,
-                              style: const TextStyle(
-                                color: AppColors.lightGreen,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              DateFormatUtils.formatDateAgo(listing.createdAt!),
-                              style: const TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                      // notes
+                      if (!StringUtils.isNullOrEmpty(listing.notes))
+                        Text(
+                          listing.notes!,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                     ],
                   ),

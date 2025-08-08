@@ -14,11 +14,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileLoggedInView extends StatelessWidget {
+class ProfileLoggedInView extends StatefulWidget {
   final UserModel user;
 
   const ProfileLoggedInView({required this.user, super.key});
 
+  @override
+  State<ProfileLoggedInView> createState() => _ProfileLoggedInViewState();
+}
+
+class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +64,9 @@ class ProfileLoggedInView extends StatelessWidget {
             children: [
               DotagiftxImageView(
                 imageUrl:
-                    !StringUtils.isNullOrEmpty(user.avatar) ? user.avatar! : '',
+                    !StringUtils.isNullOrEmpty(widget.user.avatar)
+                        ? widget.user.avatar!
+                        : '',
                 width: 120,
                 height: 120,
                 errorWidget: Container(
@@ -79,7 +86,7 @@ class ProfileLoggedInView extends StatelessWidget {
               const SizedBox(height: 16),
               // User Name
               Text(
-                user.name ?? I18n.of(context).profileNavUnknownUser,
+                widget.user.name ?? I18n.of(context).profileNavUnknownUser,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -91,9 +98,10 @@ class ProfileLoggedInView extends StatelessWidget {
               const SizedBox(height: 8),
 
               // Badge
-              if (user.subscription != null && user.subscription != 0)
+              if (widget.user.subscription != null &&
+                  widget.user.subscription != 0)
                 UserSubscriptionBadgeView(
-                  subscription: user.subscription,
+                  subscription: widget.user.subscription,
                   fontSize: 14,
                 )
               else
@@ -103,7 +111,7 @@ class ProfileLoggedInView extends StatelessWidget {
               // Join Date
               Text(
                 I18n.of(context).steamUserDetailJoinedDate(
-                  DateFormatUtils.formatDateAgo(user.createdAt ?? ''),
+                  DateFormatUtils.formatDateAgo(widget.user.createdAt ?? ''),
                 ),
                 style: const TextStyle(color: AppColors.grey, fontSize: 14),
               ),
@@ -116,76 +124,18 @@ class ProfileLoggedInView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 72,
-                child: OutlinedButton.icon(
-                  icon: const Icon(CupertinoIcons.square_list, size: 24),
-                  onPressed: () {
-                    unawaited(
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyListingsView(),
-                        ),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.dirtyWhite,
-                    side: const BorderSide(color: AppColors.dirtyWhite),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  label: Text(
-                    I18n.of(context).profileLoggedInMyListingsButton,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              _buildButton(
+                context,
+                I18n.of(context).profileLoggedInMyListingsButton,
+                CupertinoIcons.square_list,
+                const MyListingsView(),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 72,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    unawaited(
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyOrdersView(),
-                        ),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.dirtyWhite,
-                    side: const BorderSide(color: AppColors.dirtyWhite),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  icon: const Icon(CupertinoIcons.cube_box, size: 24),
-                  label: Text(
-                    I18n.of(context).profileLoggedInMyOrdersButton,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              _buildButton(
+                context,
+                I18n.of(context).profileLoggedInMyOrdersButton,
+                CupertinoIcons.cube_box,
+                const MyOrdersView(),
               ),
             ],
           ),
@@ -194,8 +144,48 @@ class ProfileLoggedInView extends StatelessWidget {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<HomeCubit>().profileCubit.initProfileLoggedInView();
+  }
+
+  Widget _buildButton(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Widget page,
+  ) {
+    return SizedBox(
+      width: double.infinity,
+      height: 72,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          unawaited(
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => page),
+            ),
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.dirtyWhite,
+          side: const BorderSide(color: AppColors.dirtyWhite),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        icon: Icon(icon, size: 24),
+        label: Text(
+          label,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+      ),
+    );
+  }
+
   String _buildStatsText(BuildContext context) {
-    final stats = user.marketStats;
+    final stats = widget.user.marketStats;
 
     return I18n.of(context).steamUserDetailStats(
       stats.live,

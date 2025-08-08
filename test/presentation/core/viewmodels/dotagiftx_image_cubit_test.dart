@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
@@ -9,23 +10,36 @@ import 'package:mockito/mockito.dart';
 
 import 'dotagiftx_image_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<Logger>(), MockSpec<DotagiftxRemoteConfig>()])
+@GenerateNiceMocks([
+  MockSpec<Logger>(),
+  MockSpec<DotagiftxRemoteConfig>(),
+  MockSpec<EnvironmentVariables>(),
+])
 void main() {
   group(DotagiftxImageCubit, () {
     late MockLogger mockLogger;
     late MockDotagiftxRemoteConfig mockDotagiftxRemoteConfig;
+    late MockEnvironmentVariables mockEnvironmentVariables;
 
     // Test data
     const testImageBaseUrl = 'https://test.example.com/images/';
+    const testBaseUrl = 'https://test.example.com';
     const emptyImageBaseUrl = '';
 
     setUp(() {
       mockLogger = MockLogger();
       mockDotagiftxRemoteConfig = MockDotagiftxRemoteConfig();
+      mockEnvironmentVariables = MockEnvironmentVariables();
+
+      when(mockEnvironmentVariables.baseUrl).thenReturn(testBaseUrl);
     });
 
     DotagiftxImageCubit createUnitToTest() {
-      return DotagiftxImageCubit(mockLogger, mockDotagiftxRemoteConfig);
+      return DotagiftxImageCubit(
+        mockLogger,
+        mockDotagiftxRemoteConfig,
+        mockEnvironmentVariables,
+      );
     }
 
     group('init', () {
@@ -69,7 +83,9 @@ void main() {
             ).called(1);
             expect(
               imageUrlCubit.state,
-              equals(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+              equals(
+                '$testBaseUrl${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+              ),
             );
           });
         },
@@ -93,7 +109,9 @@ void main() {
           ).called(1);
           expect(
             imageUrlCubit.state,
-            equals(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+            equals(
+              '$testBaseUrl${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+            ),
           );
         });
       });
@@ -118,7 +136,9 @@ void main() {
           ).called(1);
           expect(
             imageUrlCubit.state,
-            equals(RemoteConfigConstants.defaultDotagiftxImageBaseUrl),
+            equals(
+              '$testBaseUrl${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+            ),
           );
         });
       });

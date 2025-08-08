@@ -13,9 +13,9 @@ import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dar
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class ReservedItemView extends StatelessWidget {
+class UnknownHistoryItemView extends StatelessWidget {
   final MarketListingModel listing;
-  const ReservedItemView({required this.listing, super.key});
+  const UnknownHistoryItemView({required this.listing, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +99,9 @@ class ReservedItemView extends StatelessWidget {
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
-                                I18n.of(context).toReceiveItemViewReserved,
+                                I18n.of(context).unknownHistoryItemViewUnknown,
                                 style: const TextStyle(
-                                  color: AppColors.purple,
+                                  color: AppColors.grey,
                                   fontSize: 12,
                                 ),
                               ),
@@ -118,7 +118,6 @@ class ReservedItemView extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 4),
-
                           // notes
                           if (!StringUtils.isNullOrEmpty(listing.notes))
                             Text(
@@ -169,7 +168,7 @@ class ReservedItemView extends StatelessWidget {
                                 title:
                                     I18n.of(
                                       context,
-                                    ).historyReservedItemViewBuyerProfile,
+                                    ).completedItemViewViewSellerProfile,
                               ),
                         ),
                       ),
