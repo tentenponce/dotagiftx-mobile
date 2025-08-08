@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_orders_usecase.dart';
@@ -9,10 +10,11 @@ import 'package:mockito/mockito.dart';
 
 import 'get_my_orders_usecase_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DotagiftxAuthApi>()])
+@GenerateNiceMocks([MockSpec<DotagiftxAuthApi>(), MockSpec<KeychainStorage>()])
 void main() {
   group(GetMyOrdersUsecaseImpl, () {
     late MockDotagiftxAuthApi mockDotagiftxAuthApi;
+    late MockKeychainStorage mockKeychainStorage;
     late GetMyOrdersUsecaseImpl usecase;
 
     // Test data
@@ -32,7 +34,11 @@ void main() {
 
     setUp(() {
       mockDotagiftxAuthApi = MockDotagiftxAuthApi();
-      usecase = GetMyOrdersUsecaseImpl(mockDotagiftxAuthApi);
+      mockKeychainStorage = MockKeychainStorage();
+      usecase = GetMyOrdersUsecaseImpl(
+        mockDotagiftxAuthApi,
+        mockKeychainStorage,
+      );
     });
 
     group('get', () {

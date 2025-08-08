@@ -28,6 +28,15 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
 
   String get searchQuery => _searchQuery;
 
+  void filterBy(int status) {
+    if (state.status == status) {
+      return;
+    }
+
+    emit(state.copyWith(status: status));
+    unawaited(getMyOrders());
+  }
+
   Future<void> getMyOrders() async {
     if (state.isLoading) {
       return;
@@ -39,6 +48,7 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
       () => _getMyOrdersUsecase.get(
         limit: _pageLimit,
         page: 1,
+        status: state.status,
         searchQuery: _searchQuery,
       ),
       (response) async {
@@ -78,6 +88,7 @@ class MyOrdersCubit extends BaseCubit<MyOrdersState>
       () => _getMyOrdersUsecase.get(
         limit: _pageLimit,
         page: nextPage,
+        status: state.status,
         searchQuery: _searchQuery,
       ),
       (response) async {

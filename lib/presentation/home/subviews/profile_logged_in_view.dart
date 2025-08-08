@@ -10,7 +10,6 @@ import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
-import 'package:dotagiftx_mobile/presentation/transaction_history/transaction_history_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -129,13 +128,6 @@ class ProfileLoggedInView extends StatelessWidget {
                 I18n.of(context).profileLoggedInMyOrdersButton,
                 CupertinoIcons.cube_box,
                 const MyOrdersView(),
-              ),
-              const SizedBox(height: 12),
-              _buildButton(
-                context,
-                I18n.of(context).profileLoggedInTransactionHistoryButton,
-                CupertinoIcons.time,
-                const TransactionHistoryView(),
               ),
             ],
           ),
