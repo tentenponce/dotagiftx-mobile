@@ -33,10 +33,17 @@ class DotagiftxImageCubit extends BaseCubit<String> with CubitErrorMixin {
               : '${_environmentVariables.baseUrl}${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
         );
       },
-      onError:
-          (error) async => emit(
-            '${_environmentVariables.baseUrl}${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
-          ),
+      onError: (e, st) async {
+        emit(
+          '${_environmentVariables.baseUrl}${RemoteConfigConstants.defaultDotagiftxImageEndpoint}',
+        );
+        _logger.log(
+          LogLevel.error,
+          'Error getting dotagiftx image base url',
+          e,
+          st,
+        );
+      },
     );
   }
 }

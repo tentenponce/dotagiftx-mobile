@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_listings_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_listings_cubit.dart';
 import 'package:fake_async/fake_async.dart';
@@ -16,12 +17,14 @@ import 'my_listings_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<Logger>(),
   MockSpec<GetMyListingsUsecase>(),
+  MockSpec<GetMarketSummaryUsecase>(),
   MockSpec<DebouncerUtils>(),
 ])
 void main() {
   group(MyListingsCubit, () {
     late MockLogger mockLogger;
     late MockGetMyListingsUsecase mockGetMyListingsUsecase;
+    late MockGetMarketSummaryUsecase mockGetMarketSummaryUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
 
     const testMarketListing1 = MarketListingModel(
@@ -41,6 +44,7 @@ void main() {
     setUp(() async {
       mockLogger = MockLogger();
       mockGetMyListingsUsecase = MockGetMyListingsUsecase();
+      mockGetMarketSummaryUsecase = MockGetMarketSummaryUsecase();
       mockDebouncerUtils = MockDebouncerUtils();
 
       // Setup basic mocks
@@ -64,6 +68,7 @@ void main() {
       return MyListingsCubit(
         mockLogger,
         mockGetMyListingsUsecase,
+        mockGetMarketSummaryUsecase,
         mockDebouncerUtils,
       );
     }
@@ -81,6 +86,8 @@ void main() {
           searchQuery: anyNamed('searchQuery'),
         ),
       ).called(1);
+
+      verify(mockGetMarketSummaryUsecase.get()).called(1);
     });
 
     test('should set debouncer milliseconds during init', () async {
@@ -120,6 +127,19 @@ void main() {
     );
 
     group('refreshListings', () {
+      test('should get market summary', () async {
+        // Arrange
+        final unit = createUnitToTest();
+
+        reset(mockGetMarketSummaryUsecase);
+
+        // Act
+        await unit.refreshListings();
+
+        // Assert
+        verify(mockGetMarketSummaryUsecase.get()).called(1);
+      });
+
       test('should get listings with page 1 on successful refresh', () async {
         // Arrange
         when(

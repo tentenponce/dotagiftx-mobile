@@ -128,9 +128,15 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                 spacing: 8,
                 children: [
                   BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsActiveButton,
+                        label: I18n.of(context).myListingsActiveButton(
+                          state.marketSummary?.activeListings ?? 0,
+                        ),
                         filter: ApiConstants.queryMarketStatusLive.toString(),
                         currentFilter: state.status.toString(),
                         onTap: () {
@@ -142,9 +148,15 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                     },
                   ),
                   BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsReservedButton,
+                        label: I18n.of(context).myListingsReservedButton(
+                          state.marketSummary?.reservedListings ?? 0,
+                        ),
                         filter:
                             ApiConstants.queryMarketStatusReserved.toString(),
                         currentFilter: state.status.toString(),
@@ -157,9 +169,15 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                     },
                   ),
                   BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsDeliveredButton,
+                        label: I18n.of(context).myListingsDeliveredButton(
+                          state.marketSummary?.deliveredListings ?? 0,
+                        ),
                         filter: ApiConstants.queryMarketStatusSold.toString(),
                         currentFilter: state.status.toString(),
                         onTap: () {
@@ -171,6 +189,9 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                     },
                   ),
                   BlocBuilder<MyListingsCubit, MyListingsState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
                         label: I18n.of(context).myListingsHistoryButton,

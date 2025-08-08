@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_orders_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/viewmodels/my_orders_cubit.dart';
 import 'package:fake_async/fake_async.dart';
@@ -16,12 +17,14 @@ import 'my_orders_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<Logger>(),
   MockSpec<GetMyOrdersUsecase>(),
+  MockSpec<GetMarketSummaryUsecase>(),
   MockSpec<DebouncerUtils>(),
 ])
 void main() {
   group(MyOrdersCubit, () {
     late MockLogger mockLogger;
     late MockGetMyOrdersUsecase mockGetMyOrdersUsecase;
+    late MockGetMarketSummaryUsecase mockGetMarketSummaryUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
 
     const testMarketListing1 = MarketListingModel(
@@ -41,6 +44,7 @@ void main() {
     setUp(() async {
       mockLogger = MockLogger();
       mockGetMyOrdersUsecase = MockGetMyOrdersUsecase();
+      mockGetMarketSummaryUsecase = MockGetMarketSummaryUsecase();
       mockDebouncerUtils = MockDebouncerUtils();
 
       // Setup basic mocks
@@ -65,6 +69,7 @@ void main() {
       return MyOrdersCubit(
         mockLogger,
         mockGetMyOrdersUsecase,
+        mockGetMarketSummaryUsecase,
         mockDebouncerUtils,
       );
     }
@@ -82,6 +87,8 @@ void main() {
           searchQuery: anyNamed('searchQuery'),
         ),
       ).called(1);
+
+      verify(mockGetMarketSummaryUsecase.get()).called(1);
     });
 
     test('should set debouncer milliseconds during init', () async {
@@ -90,6 +97,19 @@ void main() {
 
       // Assert
       verify(mockDebouncerUtils.milliseconds = 500).called(1);
+    });
+
+    test('should get market summary', () async {
+      // Arrange
+      final unit = createUnitToTest();
+
+      reset(mockGetMarketSummaryUsecase);
+
+      // Act
+      await unit.refreshOrders();
+
+      // Assert
+      verify(mockGetMarketSummaryUsecase.get()).called(1);
     });
 
     test('should update search query when searchListings is called', () {

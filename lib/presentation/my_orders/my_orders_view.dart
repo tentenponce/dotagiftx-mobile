@@ -162,6 +162,9 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
                 spacing: 8,
                 children: [
                   BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
                         label: I18n.of(context).myOrdersActiveButton,
@@ -176,9 +179,15 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
                     },
                   ),
                   BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myOrdersToReceiveButton,
+                        label: I18n.of(context).myOrdersToReceiveButton(
+                          state.marketSummary?.toReceiveOrders ?? 0,
+                        ),
                         filter:
                             ApiConstants.queryMarketStatusReserved.toString(),
                         currentFilter: state.status.toString(),
@@ -191,9 +200,15 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
                     },
                   ),
                   BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.marketSummary != current.marketSummary ||
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myOrdersCompletedButton,
+                        label: I18n.of(context).myOrdersCompletedButton(
+                          state.marketSummary?.completedOrders ?? 0,
+                        ),
                         filter:
                             ApiConstants.queryMarketStatusCompleted.toString(),
                         currentFilter: state.status.toString(),
@@ -206,6 +221,9 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
                     },
                   ),
                   BlocBuilder<MyOrdersCubit, MyOrdersState>(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
                         label: I18n.of(context).myOrdersHistoryButton,

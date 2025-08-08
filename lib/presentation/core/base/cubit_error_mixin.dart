@@ -9,7 +9,7 @@ mixin CubitErrorMixin<State> on BaseCubit<State> {
   Future<void> cubitHandler<R>(
     Future<R> Function() call,
     Future<void> Function(R resp) onSuccess, {
-    Future<void> Function(Object? e)? onError,
+    Future<void> Function(Object? e, StackTrace? st)? onError,
   }) async {
     logger.log(LogLevel.info, 'Calling... $call');
     try {
@@ -22,7 +22,7 @@ mixin CubitErrorMixin<State> on BaseCubit<State> {
     } catch (e, st) {
       if (!isClosed) {
         onError != null
-            ? await onError(e)
+            ? await onError(e, st)
             : await defaultErrorHandler(call, e, st);
       }
     }
