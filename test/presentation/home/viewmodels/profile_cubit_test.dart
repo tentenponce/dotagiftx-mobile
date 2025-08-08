@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/domain/models/user_model.dart';
+import 'package:dotagiftx_mobile/domain/usecases/get_user_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/login_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/logout_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
@@ -20,6 +21,7 @@ import 'profile_cubit_test.mocks.dart';
   MockSpec<EnvironmentVariables>(),
   MockSpec<LoginUsecase>(),
   MockSpec<LogoutUsecase>(),
+  MockSpec<GetUserUsecase>(),
   MockSpec<ListenLocalStorage>(),
 ])
 void main() {
@@ -29,6 +31,7 @@ void main() {
     late MockLoginUsecase mockLoginUsecase;
     late MockLogoutUsecase mockLogoutUsecase;
     late MockListenLocalStorage mockListenLocalStorage;
+    late MockGetUserUsecase mockGetUserUsecase;
     late bool navigateToHomeCalled;
 
     // Test data
@@ -50,6 +53,7 @@ void main() {
       mockLoginUsecase = MockLoginUsecase();
       mockLogoutUsecase = MockLogoutUsecase();
       mockListenLocalStorage = MockListenLocalStorage();
+      mockGetUserUsecase = MockGetUserUsecase();
       navigateToHomeCalled = false;
 
       when(mockEnvironmentVariables.baseUrl).thenReturn(testBaseUrl);
@@ -61,6 +65,7 @@ void main() {
         mockEnvironmentVariables,
         mockLoginUsecase,
         mockLogoutUsecase,
+        mockGetUserUsecase,
         mockListenLocalStorage,
       );
       cubit.navigateToHome = () {
@@ -68,6 +73,22 @@ void main() {
       };
       return cubit;
     }
+
+    test('initProfileLoggedInView should get user', () async {
+      // Arrange
+      when(mockGetUserUsecase.call()).thenAnswer((_) async => testUserModel);
+
+      final profileCubit = createUnitToTest();
+
+      // Act
+      profileCubit.initProfileLoggedInView();
+
+      await Future<void>.delayed(Duration.zero);
+
+      // Assert
+      verify(mockGetUserUsecase.call()).called(1);
+      expect(profileCubit.state.user, equals(testUserModel));
+    });
 
     group('getLoginUrl', () {
       test('should return correct login URL', () {

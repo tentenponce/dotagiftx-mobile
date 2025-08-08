@@ -126,6 +126,29 @@ void main() {
       },
     );
 
+    group('getMarketSummary', () {
+      test('should show null market summary when error occurs', () async {
+        // Arrange
+        when(mockGetMarketSummaryUsecase.get()).thenThrow(Exception('test'));
+
+        // Act
+        final unit = createUnitToTest();
+
+        await Future<void>.delayed(Duration.zero);
+
+        // Assert
+        expect(unit.state.marketSummary, isNull);
+        verify(
+          mockLogger.log(
+            LogLevel.error,
+            'Error getting market summary',
+            any,
+            any,
+          ),
+        ).called(1);
+      });
+    });
+
     group('refreshListings', () {
       test('should get market summary', () async {
         // Arrange

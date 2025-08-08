@@ -99,19 +99,6 @@ void main() {
       verify(mockDebouncerUtils.milliseconds = 500).called(1);
     });
 
-    test('should get market summary', () async {
-      // Arrange
-      final unit = createUnitToTest();
-
-      reset(mockGetMarketSummaryUsecase);
-
-      // Act
-      await unit.refreshOrders();
-
-      // Assert
-      verify(mockGetMarketSummaryUsecase.get()).called(1);
-    });
-
     test('should update search query when searchListings is called', () {
       // Arrange
       final unit = createUnitToTest();
@@ -140,7 +127,43 @@ void main() {
       },
     );
 
+    group('getMarketSummary', () {
+      test('should show null market summary when error occurs', () async {
+        // Arrange
+        when(mockGetMarketSummaryUsecase.get()).thenThrow(Exception('test'));
+
+        // Act
+        final unit = createUnitToTest();
+
+        await Future<void>.delayed(Duration.zero);
+
+        // Assert
+        expect(unit.state.marketSummary, isNull);
+        verify(
+          mockLogger.log(
+            LogLevel.error,
+            'Error getting market summary',
+            any,
+            any,
+          ),
+        ).called(1);
+      });
+    });
+
     group('refreshOrders', () {
+      test('should get market summary', () async {
+        // Arrange
+        final unit = createUnitToTest();
+
+        reset(mockGetMarketSummaryUsecase);
+
+        // Act
+        await unit.refreshOrders();
+
+        // Assert
+        verify(mockGetMarketSummaryUsecase.get()).called(1);
+      });
+
       test('should get orders with page 1 on successful refresh', () async {
         // Arrange
         when(

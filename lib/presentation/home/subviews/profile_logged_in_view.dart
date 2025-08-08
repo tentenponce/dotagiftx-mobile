@@ -14,11 +14,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileLoggedInView extends StatelessWidget {
+class ProfileLoggedInView extends StatefulWidget {
   final UserModel user;
 
   const ProfileLoggedInView({required this.user, super.key});
 
+  @override
+  State<ProfileLoggedInView> createState() => _ProfileLoggedInViewState();
+}
+
+class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +64,9 @@ class ProfileLoggedInView extends StatelessWidget {
             children: [
               DotagiftxImageView(
                 imageUrl:
-                    !StringUtils.isNullOrEmpty(user.avatar) ? user.avatar! : '',
+                    !StringUtils.isNullOrEmpty(widget.user.avatar)
+                        ? widget.user.avatar!
+                        : '',
                 width: 120,
                 height: 120,
                 errorWidget: Container(
@@ -79,7 +86,7 @@ class ProfileLoggedInView extends StatelessWidget {
               const SizedBox(height: 16),
               // User Name
               Text(
-                user.name ?? I18n.of(context).profileNavUnknownUser,
+                widget.user.name ?? I18n.of(context).profileNavUnknownUser,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -91,9 +98,10 @@ class ProfileLoggedInView extends StatelessWidget {
               const SizedBox(height: 8),
 
               // Badge
-              if (user.subscription != null && user.subscription != 0)
+              if (widget.user.subscription != null &&
+                  widget.user.subscription != 0)
                 UserSubscriptionBadgeView(
-                  subscription: user.subscription,
+                  subscription: widget.user.subscription,
                   fontSize: 14,
                 )
               else
@@ -103,7 +111,7 @@ class ProfileLoggedInView extends StatelessWidget {
               // Join Date
               Text(
                 I18n.of(context).steamUserDetailJoinedDate(
-                  DateFormatUtils.formatDateAgo(user.createdAt ?? ''),
+                  DateFormatUtils.formatDateAgo(widget.user.createdAt ?? ''),
                 ),
                 style: const TextStyle(color: AppColors.grey, fontSize: 14),
               ),
@@ -134,6 +142,13 @@ class ProfileLoggedInView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<HomeCubit>().profileCubit.initProfileLoggedInView();
   }
 
   Widget _buildButton(
@@ -170,7 +185,7 @@ class ProfileLoggedInView extends StatelessWidget {
   }
 
   String _buildStatsText(BuildContext context) {
-    final stats = user.marketStats;
+    final stats = widget.user.marketStats;
 
     return I18n.of(context).steamUserDetailStats(
       stats.live,
