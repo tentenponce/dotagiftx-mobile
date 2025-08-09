@@ -165,7 +165,7 @@ jobs:
           "supportedAbis": ["${ABIS[$ABI]}"],
           "supportedLocales": ["en"],
           "screenDensity": 420,
-          "sdkVersion": 21
+          "sdkVersion": 26
         }
         EOF
 
