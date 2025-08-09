@@ -1,15 +1,20 @@
 import 'package:injectable/injectable.dart';
 
 abstract interface class EnvironmentVariables {
+  String get appName;
   String get baseUrl;
   String get firebaseApiKey;
   String get firebaseAppId;
   String get firebaseProjectId;
   String get firebaseStorageBucket;
+  String get loginRedirectUrl;
 }
 
 @LazySingleton(as: EnvironmentVariables)
 class EnvironmentVariablesImpl implements EnvironmentVariables {
+  @override
+  String get appName => const String.fromEnvironment('appName');
+
   @override
   String get baseUrl => const String.fromEnvironment('baseUrl');
 
@@ -26,4 +31,8 @@ class EnvironmentVariablesImpl implements EnvironmentVariables {
   @override
   String get firebaseStorageBucket =>
       const String.fromEnvironment('firebaseStorageBucket');
+
+  @override
+  String get loginRedirectUrl =>
+      const String.fromEnvironment('loginRedirectUrl');
 }

@@ -5,8 +5,8 @@ import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/item_verification_icon_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
-import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/item_verification_icon_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/steam_user_detail/steam_user_detail_view.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +113,8 @@ class MarketOfferCardView extends StatelessWidget {
                               ItemVerificationIconView(
                                 status: offer.inventoryStatus,
                                 isResell: offer.resell,
+                                name: offer.user?.name,
+                                createdAt: offer.createdAt,
                               ),
                             ],
                           ),

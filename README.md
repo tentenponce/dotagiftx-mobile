@@ -44,6 +44,9 @@ Mobile platform for [dotagiftx.com](https://dotagiftx.com/) - Market place for D
    ```json
    {
      "baseUrl": "your-api-base-url",
+     "appName": "app name here",
+     "appId": "application ID for Android",
+     "loginRedirectUrl": "login-redirect-url-for-steam-redirect",
      "firebaseApiKey": "your-firebase-api-key",
      "firebaseAppId": "your-firebase-app-id",
      "firebaseProjectId": "your-firebase-project-id",

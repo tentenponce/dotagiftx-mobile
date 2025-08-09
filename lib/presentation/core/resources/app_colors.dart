@@ -10,4 +10,11 @@ abstract final class AppColors {
   static const Color veryRare = Color.fromRGBO(251, 134, 0, 1);
   static const Color mythical = Color.fromRGBO(136, 71, 255, 1);
   static const Color immortal = Color.fromRGBO(178, 138, 51, 1);
+  static const Color warningBlue = Color.fromRGBO(41, 182, 246, 1);
+  static const Color warningYellow = Color.fromRGBO(255, 226, 183, 1);
+  static const Color dirtyWhite = Color.fromRGBO(238, 238, 238, 1);
+  static const Color purple = Color.fromRGBO(238, 130, 238, 1);
+  static const Color aqua = Color.fromRGBO(0, 255, 255, 1);
+  static const Color orangered = Color.fromRGBO(255, 69, 0, 1);
+  static const Color lightGreen = Color.fromRGBO(144, 238, 144, 1);
 }

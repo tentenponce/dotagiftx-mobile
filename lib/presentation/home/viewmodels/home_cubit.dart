@@ -10,6 +10,7 @@ import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/heroes_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/treasures_cubit.dart';
 import 'package:injectable/injectable.dart';
 
@@ -17,6 +18,7 @@ import 'package:injectable/injectable.dart';
 class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   final TreasuresCubit treasuresCubit;
   final HeroesCubit heroesCubit;
+  final ProfileCubit profileCubit;
 
   final Logger _logger;
   final GetTrendingUsecase _getTrendingUsecase;
@@ -25,12 +27,12 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   final SearchCatalogUsecase _searchCatalogUsecase;
   final DebouncerUtils _debouncerUtils;
 
-  String currentSearchQuery = '';
   int _currentSearchPage = 1;
 
   HomeCubit(
     this.treasuresCubit,
     this.heroesCubit,
+    this.profileCubit,
     this._logger,
     this._getTrendingUsecase,
     this._getNewBuyOrdersUsecase,
@@ -51,7 +53,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   }
 
   Future<void> loadMoreSearchResults() async {
-    if (state.loadingMoreSearchResults || currentSearchQuery.isEmpty) {
+    if (state.loadingMoreSearchResults || state.currentSearchQuery.isEmpty) {
       return;
     }
 
@@ -67,7 +69,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
 
     await cubitHandler(
       () => _searchCatalogUsecase.search(
-        query: currentSearchQuery,
+        query: state.currentSearchQuery,
         page: nextPage,
       ),
       (response) async {
@@ -91,7 +93,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
 
   Future<void> searchCatalog({required String query}) async {
     if (query.isEmpty) {
-      currentSearchQuery = query;
+      emit(state.copyWith(currentSearchQuery: query));
       _debouncerUtils.cancel();
       _currentSearchPage = 1;
       emit(
@@ -105,12 +107,12 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     }
 
     // Reset pagination state for new searches
-    if (query != currentSearchQuery) {
+    if (query != state.currentSearchQuery) {
       _currentSearchPage = 1;
       emit(state.copyWith(searchResults: [], totalSearchResultsCount: 0));
     }
 
-    currentSearchQuery = query;
+    emit(state.copyWith(currentSearchQuery: query));
     emit(state.copyWith(loadingSearchResults: true));
     _debouncerUtils.run(() async {
       await cubitHandler(

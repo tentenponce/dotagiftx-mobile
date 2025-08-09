@@ -6,10 +6,10 @@ import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:dotagiftx_mobile/presentation/steam_user_detail/guidelines_view.dart';
-import 'package:dotagiftx_mobile/presentation/steam_user_detail/user_detail_webview_view.dart';
 import 'package:flutter/material.dart';
 
 class SteamUserDetailView extends StatefulWidget {

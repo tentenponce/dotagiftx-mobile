@@ -16,5 +16,6 @@ abstract class HomeState with _$HomeState {
     @Default([]) List<DotaItemModel> newSellListingItems,
     @Default([]) List<DotaItemModel> searchResults,
     @Default(0) int totalSearchResultsCount,
+    @Default('') String currentSearchQuery,
   }) = _HomeState;
 }

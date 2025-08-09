@@ -1,4 +1,4 @@
-import 'package:dotagiftx_mobile/data/api/dotagiftx_api.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:injectable/injectable.dart';
@@ -14,7 +14,7 @@ abstract interface class GetDotaItemOffersUsecase {
 
 @LazySingleton(as: GetDotaItemOffersUsecase)
 class GetDotaItemOffersUsecaseImpl implements GetDotaItemOffersUsecase {
-  final DotagiftxApi _dotagiftxApi;
+  final DotagiftxAuthApi _dotagiftxApi;
 
   GetDotaItemOffersUsecaseImpl(this._dotagiftxApi);
 
@@ -34,6 +34,7 @@ class GetDotaItemOffersUsecaseImpl implements GetDotaItemOffersUsecase {
       ApiConstants.queryInventoryStatusVerified,
       sort,
       ApiConstants.queryIndexItemId,
+      null,
     );
 
     return (response.data, response.totalCount);

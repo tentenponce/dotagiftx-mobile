@@ -37,6 +37,74 @@ class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
 
   @override
   Widget build(BuildContext context) {
+    // Show empty state when no results and not loading
+    if (widget.searchResults.isEmpty && !widget.isLoading) {
+      return Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: widget.onRefresh,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSectionHeader(context),
+                          SizedBox(
+                            height: constraints.maxHeight * 0.6,
+                            width: double.infinity,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.search_off_outlined,
+                                    size: 64,
+                                    color: AppColors.grey,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    I18n.of(context).homeSearchResultsEmpty,
+                                    style: const TextStyle(
+                                      color: AppColors.grey,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    I18n.of(
+                                      context,
+                                    ).homeSearchResultsEmptyDescription,
+                                    style: const TextStyle(
+                                      color: AppColors.grey,
+                                      fontSize: 14,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    }
+
     return Stack(
       children: [
         RefreshIndicator(

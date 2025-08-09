@@ -24,7 +24,7 @@ abstract final class DateFormatUtils {
         return 'Just now';
       }
     } catch (e) {
-      return 'Unknown';
+      return 'Unknown ago';
     }
   }
 }

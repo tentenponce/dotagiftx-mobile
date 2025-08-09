@@ -5,14 +5,17 @@ abstract final class RemoteConfigConstants {
   static const String keyDotagiftxImageBaseUrl = 'dotagiftx_image_base_url';
   static const String keyTreasures = 'treasures';
   static const String keyRoadmap = 'roadmap';
+  static const String keyTokenRotationSeconds = 'token_rotation_seconds';
+
+  static const int defaultTokenRotationSeconds = 270;
 
   static const Iterable<RoadmapModel> defaultRoadmap = [
     RoadmapModel(
       id: 'initial_login',
       title: 'Initial Login',
       description: 'Allows you to manage your listings and orders',
-      isCompleted: false,
-      isActive: true,
+      isCompleted: true,
+      isActive: false,
       isVoted: false,
     ),
     RoadmapModel(
@@ -41,8 +44,7 @@ abstract final class RemoteConfigConstants {
     ),
   ];
 
-  static const String defaultDotagiftxImageBaseUrl =
-      'https://api.dotagiftx.com/images/';
+  static const String defaultDotagiftxImageEndpoint = 'images/';
 
   static const String defaultMiddlemanUrl = 'https://dotagiftx.com/middleman';
   static const Iterable<TreasureModel> defaultTreasures = [
@@ -233,6 +235,10 @@ abstract final class RemoteConfigConstants {
 
   static String defaultSteamInventoryUrl(String steamId) =>
       'https://steamcommunity.com/profiles/$steamId/inventory/';
+
+  static String defaultSteamProfileUrl(String steamId) =>
+      'https://steamcommunity.com/profiles/$steamId/';
+
   static String defaultSteamRepUrl(String steamId) =>
       'https://steamrep.com/search?q=$steamId';
 
