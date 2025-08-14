@@ -261,6 +261,11 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    context.read<MyListingsCubit>().showToastError = (message) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    };
   }
 
   Widget _buildBody(BuildContext context, MyListingsState state) {
