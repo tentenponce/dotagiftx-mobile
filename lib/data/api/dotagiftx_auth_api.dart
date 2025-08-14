@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dotagiftx_mobile/data/core/dio/dio_provider.dart';
+import 'package:dotagiftx_mobile/data/requests/patch_my_market_request.dart';
 import 'package:dotagiftx_mobile/data/responses/market_listing_response.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/domain/models/user_model.dart';
@@ -46,4 +47,10 @@ abstract interface class DotagiftxAuthApi {
 
   @GET('my/profile')
   Future<UserModel> getUser();
+
+  @PATCH('/my/markets/{marketId}')
+  Future<void> patchMyMarket(
+    @Path('marketId') String marketId,
+    @Body() PatchMyMarketRequest request,
+  );
 }
