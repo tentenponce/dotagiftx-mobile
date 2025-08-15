@@ -146,5 +146,16 @@
     "cancelledItemViewCancelled": "Cancelled",
     "cancelledItemViewViewBuyerProfile": "View Buyer Profile",
     "orderRemovedItemViewOrderRemoved": "Order Removed",
-    "unknownHistoryItemViewUnknown": "Unknown Status"
+    "listingRemovedItemViewListingRemoved": "Removed",
+    "unknownHistoryItemViewUnknown": "Unknown Status",
+    "myActiveListingDialogViewTitle": "Update Listing",
+    "myActiveListingDialogViewStatus": "Status:",
+    "myActiveListingDialogViewListed": "Listed",
+    "myActiveListingDialogViewPrice": "Price: ${price}",
+    "myActiveListingDialogViewListedDate": "Listed: {date}",
+    "myActiveListingDialogViewBuyerSteamProfileUrl": "Buyer's Steam profile URL*",
+    "myActiveListingDialogViewReservationNotes": "Reservation Notes",
+    "myActiveListingDialogViewReservationNotesDescription": "Delivery date and deposit details",
+    "myActiveListingDialogViewRemoveButton": "Remove Listing",
+    "myActiveListingDialogViewReserveButton": "Reserve to Buyer"
 }

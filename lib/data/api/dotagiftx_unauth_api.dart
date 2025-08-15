@@ -33,13 +33,17 @@ abstract interface class DotagiftxUnauthApi {
   );
 
   @GET('stats/market_summary')
-  Future<MarketSummaryResponse> getMarketSummary(
-    @Query('partner_steam_id') String? partnerSteamId,
-    @Query('user_id') String? userId,
+  Future<MarketSummaryResponse> getPartnerMarketSummary(
+    @Query('partner_steam_id') String partnerSteamId,
   );
 
   @GET('/catalogs_trend')
   Future<CatalogResponse> getTrendingCatalogs();
+
+  @GET('stats/market_summary')
+  Future<MarketSummaryResponse> getUserMarketSummary(
+    @Query('user_id') String userId,
+  );
 
   @GET('auth/steam?{openIdQueryParams}')
   Future<LoginResponse> loginSteam(@Path('openIdQueryParams') String openid);
