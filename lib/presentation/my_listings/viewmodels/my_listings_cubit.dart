@@ -2,14 +2,10 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
-import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
-import 'package:dotagiftx_mobile/data/core/dio/api_exceptions.dart';
 import 'package:dotagiftx_mobile/domain/usecases/cancel_reserve_my_listing_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/deliver_my_listing_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_listings_usecase.dart';
-import 'package:dotagiftx_mobile/domain/usecases/remove_my_listing_usecase.dart';
-import 'package:dotagiftx_mobile/domain/usecases/reserve_my_listing_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/states/my_listings_state.dart';
@@ -20,8 +16,6 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
     with CubitErrorMixin<MyListingsState> {
   static const int _pageLimit = 20;
 
-  late final void Function(String message) showToastError;
-
   int _currentPage = 1;
   String _searchQuery = '';
 
@@ -30,8 +24,6 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   final DebouncerUtils _debouncerUtils;
   final GetMyListingsUsecase _getMyListingsUsecase;
   final GetMarketSummaryUsecase _getMarketSummaryUsecase;
-  final RemoveMyListingUsecase _removeMyListingUsecase;
-  final ReserveMyListingUsecase _reserveMyListingUsecase;
   final CancelReserveMyListingUsecase _cancelReserveMyListingUsecase;
   final DeliverMyListingUsecase _deliverMyListingUsecase;
 
@@ -40,8 +32,6 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
     this._getMyListingsUsecase,
     this._getMarketSummaryUsecase,
     this._debouncerUtils,
-    this._removeMyListingUsecase,
-    this._reserveMyListingUsecase,
     this._cancelReserveMyListingUsecase,
     this._deliverMyListingUsecase,
   ) : super(const MyListingsState());
@@ -139,26 +129,6 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   Future<void> refreshListings() async {
     unawaited(getMyListings());
     unawaited(_getMarketSummary());
-  }
-
-  Future<void> removeListing(String marketId) async {
-    await cubitHandler(
-      () => _removeMyListingUsecase.remove(marketId),
-      (response) async {
-        unawaited(getMyListings());
-        unawaited(_getMarketSummary());
-      },
-      onError: (e, st) async {
-        if (e is BadRequestException &&
-            !StringUtils.isNullOrEmpty(e.apiErrorMessage)) {
-          showToastError(e.apiErrorMessage!);
-        } else {
-          showToastError(e.toString());
-
-          _logger.log(LogLevel.error, 'Error removing listing', e, st);
-        }
-      },
-    );
   }
 
   Future<void> searchListings(String query) async {

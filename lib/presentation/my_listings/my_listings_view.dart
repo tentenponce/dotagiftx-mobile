@@ -178,11 +178,6 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    context.read<MyListingsCubit>().showToastError = (message) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-    };
   }
 
   Widget _buildBody(BuildContext context, MyListingsState state) {
@@ -331,26 +326,19 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     }
   }
 
-  void _showActiveListingDialog(
+  Future<void> _showActiveListingDialog(
     BuildContext context,
     MarketListingModel listing,
-  ) {
-    unawaited(
-      showModalBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder:
-            (dialogContext) => MyActiveListingDialogView(
-              listing: listing,
-              onPressedRemove: () {
-                unawaited(
-                  context.read<MyListingsCubit>().removeListing(listing.id),
-                );
-                Navigator.of(dialogContext).pop();
-              },
-            ),
-      ),
+  ) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (dialogContext) => MyActiveListingDialogView(listing: listing),
     );
+
+    if ((result ?? false) && context.mounted) {
+      unawaited(context.read<MyListingsCubit>().refreshListings());
+    }
   }
 }

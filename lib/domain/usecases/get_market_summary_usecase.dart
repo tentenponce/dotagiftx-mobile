@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/core/constants/keychain_keys.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
 import 'package:dotagiftx_mobile/domain/models/market_summary_model.dart';
@@ -25,17 +26,23 @@ class GetMarketSummaryUsecaseImpl implements GetMarketSummaryUsecase {
     );
     final futureUserSummary = _dotagiftxUnauthApi.getUserMarketSummary(
       userId ?? '',
+      ApiConstants.queryIndexUserId,
+    );
+    final futureOrdersUserSummary = _dotagiftxUnauthApi.getUserMarketSummary(
+      userId ?? '',
+      null,
     );
 
     final partnerSummary = await futurePartnerSummary;
     final userSummary = await futureUserSummary;
+    final ordersUserSummary = await futureOrdersUserSummary;
 
     return MarketSummaryModel(
       activeListings: userSummary.live,
       reservedListings: userSummary.reserved,
       deliveredListings: userSummary.sold,
       toReceiveOrders: partnerSummary.reserved,
-      completedOrders: userSummary.bidCompleted,
+      completedOrders: ordersUserSummary.bidCompleted,
     );
   }
 }

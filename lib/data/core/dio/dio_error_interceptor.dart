@@ -21,6 +21,8 @@ class DioErrorInterceptor extends Interceptor {
             ? errorMap!['msg'].toString()
             : error.message;
 
+    print('errorMessage: $errorMessage');
+
     if (statusCode >= 400 && statusCode < 500) {
       return switch (statusCode) {
         401 => UnauthorizedException(error: error),

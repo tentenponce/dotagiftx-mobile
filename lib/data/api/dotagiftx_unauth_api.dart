@@ -43,6 +43,7 @@ abstract interface class DotagiftxUnauthApi {
   @GET('stats/market_summary')
   Future<MarketSummaryResponse> getUserMarketSummary(
     @Query('user_id') String userId,
+    @Query('index') String? index,
   );
 
   @GET('auth/steam?{openIdQueryParams}')

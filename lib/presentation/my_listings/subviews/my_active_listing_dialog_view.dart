@@ -1,30 +1,46 @@
+import 'dart:async';
+
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_active_listing_dialog_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MyActiveListingDialogView extends StatefulWidget {
+class MyActiveListingDialogView extends StatelessWidget
+    with ViewCubitMixin<MyActiveListingDialogCubit> {
   final MarketListingModel listing;
-  final VoidCallback onPressedRemove;
-
-  const MyActiveListingDialogView({
-    required this.listing,
-    required this.onPressedRemove,
-    super.key,
-  });
+  const MyActiveListingDialogView({required this.listing, super.key});
 
   @override
-  State<MyActiveListingDialogView> createState() =>
+  Widget buildView(BuildContext context) {
+    return _MyActiveListingDialogView(listing: listing);
+  }
+}
+
+class _MyActiveListingDialogView extends StatefulWidget {
+  final MarketListingModel listing;
+
+  const _MyActiveListingDialogView({required this.listing});
+
+  @override
+  State<_MyActiveListingDialogView> createState() =>
       _MyActiveListingDialogViewState();
 }
 
-class _MyActiveListingDialogViewState extends State<MyActiveListingDialogView> {
+class _MyActiveListingDialogViewState
+    extends State<_MyActiveListingDialogView> {
   final TextEditingController _steamUrlController = TextEditingController();
   final TextEditingController _reservationNotesController =
       TextEditingController();
+
+  String? _steamProfileUrlError;
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +182,13 @@ class _MyActiveListingDialogViewState extends State<MyActiveListingDialogView> {
                       horizontal: 16,
                       vertical: 12,
                     ),
+                    error:
+                        !StringUtils.isNullOrEmpty(_steamProfileUrlError)
+                            ? Text(
+                              _steamProfileUrlError!,
+                              style: const TextStyle(color: Colors.red),
+                            )
+                            : null,
                   ),
                 ),
               ],
@@ -201,7 +224,7 @@ class _MyActiveListingDialogViewState extends State<MyActiveListingDialogView> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 4),
 
             // Delivery date and deposit details text
             Text(
@@ -217,7 +240,12 @@ class _MyActiveListingDialogViewState extends State<MyActiveListingDialogView> {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: widget.onPressedRemove,
+                    onPressed:
+                        () => unawaited(
+                          context
+                              .read<MyActiveListingDialogCubit>()
+                              .removeListing(widget.listing.id),
+                        ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -248,10 +276,16 @@ class _MyActiveListingDialogViewState extends State<MyActiveListingDialogView> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {
-                      // Handle reserve to buyer
-                      Navigator.of(context).pop();
-                    },
+                    onPressed:
+                        () => unawaited(
+                          context
+                              .read<MyActiveListingDialogCubit>()
+                              .reserveListing(
+                                widget.listing.id,
+                                _steamUrlController.text,
+                                _reservationNotesController.text,
+                              ),
+                        ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -299,5 +333,45 @@ class _MyActiveListingDialogViewState extends State<MyActiveListingDialogView> {
     _steamUrlController.dispose();
     _reservationNotesController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<MyActiveListingDialogCubit>()
+      ..showToastError = (message) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+      ..dismissDialog = () {
+        Navigator.of(context).pop(true);
+      }
+      ..showNullPartnerSteamIdError = () {
+        setState(() {
+          _steamProfileUrlError =
+              I18n.of(context).myListingsNullPartnerSteamIdError;
+        });
+      }
+      ..showInvalidUrlError = () {
+        setState(() {
+          _steamProfileUrlError = I18n.of(context).myListingsInvalidUrlError;
+        });
+      }
+      ..showInvalidSteamIdUrlError = () {
+        setState(() {
+          _steamProfileUrlError = I18n.of(
+            context,
+          ).myListingsInvalidSteamIdUrlError(
+            RemoteConfigConstants.steamPartnerIdBaseUrl,
+          );
+        });
+      }
+      ..showReserveErrorMessage = (message) {
+        setState(() {
+          _steamProfileUrlError = message;
+        });
+      };
   }
 }
