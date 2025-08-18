@@ -8,12 +8,12 @@ import 'package:dotagiftx_mobile/domain/usecases/remove_my_listing_usecase.dart'
 import 'package:dotagiftx_mobile/domain/usecases/reserve_my_listing_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/states/my_listings_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/states/my_active_listing_dialog_state.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class MyActiveListingDialogCubit extends BaseCubit<void>
-    with CubitErrorMixin<void> {
+class MyActiveListingDialogCubit extends BaseCubit<MyActiveListingDialogState>
+    with CubitErrorMixin<MyActiveListingDialogState> {
   late final void Function(String message) showToastError;
   late final void Function() dismissDialog;
   late final void Function() showNullPartnerSteamIdError;
@@ -29,7 +29,7 @@ class MyActiveListingDialogCubit extends BaseCubit<void>
     this._logger,
     this._removeMyListingUsecase,
     this._reserveMyListingUsecase,
-  ) : super(const MyListingsState());
+  ) : super(const MyActiveListingDialogState());
 
   @override
   Logger get logger => _logger;
@@ -38,6 +38,7 @@ class MyActiveListingDialogCubit extends BaseCubit<void>
   Future<void> init() async {}
 
   Future<void> removeListing(String marketId) async {
+    emit(state.copyWith(isRemoveListingLoading: true));
     await cubitHandler(
       () => _removeMyListingUsecase.remove(marketId),
       (response) async {
@@ -54,6 +55,8 @@ class MyActiveListingDialogCubit extends BaseCubit<void>
         }
       },
     );
+
+    emit(state.copyWith(isRemoveListingLoading: false));
   }
 
   Future<void> reserveListing(
@@ -61,6 +64,8 @@ class MyActiveListingDialogCubit extends BaseCubit<void>
     String partnerSteamId,
     String? notes,
   ) async {
+    emit(state.copyWith(isReserveListingLoading: true));
+
     await cubitHandler(
       () => _reserveMyListingUsecase.reserve(
         marketId: marketId,
@@ -87,5 +92,7 @@ class MyActiveListingDialogCubit extends BaseCubit<void>
         }
       },
     );
+
+    emit(state.copyWith(isReserveListingLoading: false));
   }
 }

@@ -7,14 +7,12 @@ part 'market_summary_model.g.dart';
 @CopyWith()
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MarketSummaryModel extends Equatable {
-  final int? activeListings;
   final int? reservedListings;
   final int? deliveredListings;
   final int? toReceiveOrders;
   final int? completedOrders;
 
   const MarketSummaryModel({
-    this.activeListings,
     this.reservedListings,
     this.deliveredListings,
     this.toReceiveOrders,
@@ -26,7 +24,6 @@ class MarketSummaryModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    activeListings,
     reservedListings,
     deliveredListings,
     toReceiveOrders,

@@ -24,9 +24,7 @@ class MyListingsFilterButtonsView extends StatelessWidget {
                     previous.status != current.status,
             builder: (context, state) {
               return MarketFilterButtonView(
-                label: I18n.of(context).myListingsActiveButton(
-                  state.marketSummary?.activeListings ?? 0,
-                ),
+                label: I18n.of(context).myListingsActiveButton,
                 filter: ApiConstants.queryMarketStatusLive.toString(),
                 currentFilter: state.status.toString(),
                 onTap: () {

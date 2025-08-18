@@ -88,7 +88,7 @@
     "roadmapItemViewSuccessVote": "Thanks for your vote!",
     "myListingsTitle": "My Listings",
     "myListingsSearchHint": "Search for an item listing",
-    "myListingsActiveButton": "Active Listings ({count})",
+    "myListingsActiveButton": "Active Listings",
     "myListingsReservedButton": "Reserved ({count})",
     "myListingsDeliveredButton": "Delivered ({count})",
     "myListingsHistoryButton": "History",

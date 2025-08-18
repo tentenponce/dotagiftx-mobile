@@ -38,7 +38,6 @@ class GetMarketSummaryUsecaseImpl implements GetMarketSummaryUsecase {
     final ordersUserSummary = await futureOrdersUserSummary;
 
     return MarketSummaryModel(
-      activeListings: userSummary.live,
       reservedListings: userSummary.reserved,
       deliveredListings: userSummary.sold,
       toReceiveOrders: partnerSummary.reserved,

@@ -7,8 +7,10 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_active_listing_dialog_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/states/my_active_listing_dialog_state.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -275,49 +277,45 @@ class _MyActiveListingDialogViewState
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed:
-                        () => unawaited(
-                          context
-                              .read<MyActiveListingDialogCubit>()
-                              .reserveListing(
-                                widget.listing.id,
-                                _steamUrlController.text,
-                                _reservationNotesController.text,
+                  child: BlocBuilder<
+                    MyActiveListingDialogCubit,
+                    MyActiveListingDialogState
+                  >(
+                    builder: (context, state) {
+                      return AppOutlineButton(
+                        isLoading: state.isReserveListingLoading,
+                        onPressed:
+                            () => unawaited(
+                              context
+                                  .read<MyActiveListingDialogCubit>()
+                                  .reserveListing(
+                                    widget.listing.id,
+                                    _steamUrlController.text,
+                                    _reservationNotesController.text,
+                                  ),
+                            ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.event_available,
+                              size: 20,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              I18n.of(
+                                context,
+                              ).myActiveListingDialogViewReserveButton,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
+                            ),
+                          ],
                         ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1,
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.event_available,
-                          size: 20,
-                          color: AppColors.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          I18n.of(
-                            context,
-                          ).myActiveListingDialogViewReserveButton,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ),
               ],
