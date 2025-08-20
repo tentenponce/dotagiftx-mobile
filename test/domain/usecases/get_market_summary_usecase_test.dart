@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/core/constants/keychain_keys.dart';
 import 'package:dotagiftx_mobile/data/local/keychain_storage.dart';
 import 'package:dotagiftx_mobile/data/responses/market_summary_response.dart';
@@ -37,26 +38,22 @@ void main() {
         const steamId = '12345';
         const userId = '67890';
 
-        const partnerSummaryResponse = MarketSummaryResponse(
-          live: 5,
-          reserved: 3,
-          sold: 10,
-          bidCompleted: 2,
-        );
+        const partnerSummaryResponse = MarketSummaryResponse(reserved: 3);
 
         const userSummaryResponse = MarketSummaryResponse(
-          live: 8,
           reserved: 4,
           sold: 15,
+        );
+
+        const ordersUserSummaryResponse = MarketSummaryResponse(
           bidCompleted: 7,
         );
 
         const expectedMarketSummary = MarketSummaryModel(
-          activeListings: 8, // userSummary.live
           reservedListings: 4, // userSummary.reserved
           deliveredListings: 15, // userSummary.sold
           toReceiveOrders: 3, // partnerSummary.reserved
-          completedOrders: 7, // userSummary.bidCompleted
+          completedOrders: 7, // ordersUserSummary.bidCompleted
         );
 
         when(
@@ -66,10 +63,16 @@ void main() {
           mockKeychainStorage.getValue(KeychainKeys.userId),
         ).thenAnswer((_) async => userId);
         when(
-          mockDotagiftxUnauthApi.getMarketSummary(steamId, ''),
+          mockDotagiftxUnauthApi.getPartnerMarketSummary(steamId),
         ).thenAnswer((_) async => partnerSummaryResponse);
         when(
-          mockDotagiftxUnauthApi.getMarketSummary('', userId),
+          mockDotagiftxUnauthApi.getUserMarketSummary(userId, null),
+        ).thenAnswer((_) async => ordersUserSummaryResponse);
+        when(
+          mockDotagiftxUnauthApi.getUserMarketSummary(
+            userId,
+            ApiConstants.queryIndexUserId,
+          ),
         ).thenAnswer((_) async => userSummaryResponse);
 
         // Act
@@ -79,8 +82,18 @@ void main() {
         expect(result, equals(expectedMarketSummary));
         verify(mockKeychainStorage.getValue(KeychainKeys.steamId)).called(1);
         verify(mockKeychainStorage.getValue(KeychainKeys.userId)).called(1);
-        verify(mockDotagiftxUnauthApi.getMarketSummary(steamId, '')).called(1);
-        verify(mockDotagiftxUnauthApi.getMarketSummary('', userId)).called(1);
+        verify(
+          mockDotagiftxUnauthApi.getPartnerMarketSummary(steamId),
+        ).called(1);
+        verify(
+          mockDotagiftxUnauthApi.getUserMarketSummary(userId, null),
+        ).called(1);
+        verify(
+          mockDotagiftxUnauthApi.getUserMarketSummary(
+            userId,
+            ApiConstants.queryIndexUserId,
+          ),
+        ).called(1);
       });
     });
   });

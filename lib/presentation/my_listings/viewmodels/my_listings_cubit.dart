@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
-import 'package:dotagiftx_mobile/domain/usecases/cancel_reserve_my_listing_usecase.dart';
-import 'package:dotagiftx_mobile/domain/usecases/deliver_my_listing_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_market_summary_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_my_listings_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -24,16 +22,12 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   final DebouncerUtils _debouncerUtils;
   final GetMyListingsUsecase _getMyListingsUsecase;
   final GetMarketSummaryUsecase _getMarketSummaryUsecase;
-  final CancelReserveMyListingUsecase _cancelReserveMyListingUsecase;
-  final DeliverMyListingUsecase _deliverMyListingUsecase;
 
   MyListingsCubit(
     this._logger,
     this._getMyListingsUsecase,
     this._getMarketSummaryUsecase,
     this._debouncerUtils,
-    this._cancelReserveMyListingUsecase,
-    this._deliverMyListingUsecase,
   ) : super(const MyListingsState());
 
   @override
