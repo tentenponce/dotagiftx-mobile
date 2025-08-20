@@ -213,6 +213,10 @@ class _MyActiveListingDialogViewState
                   maxLines: 4,
                   decoration: InputDecoration(
                     hintStyle: const TextStyle(color: AppColors.grey),
+                    hintText:
+                        I18n.of(
+                          context,
+                        ).myActiveListingDialogViewReservationNotesDescription,
                     filled: true,
                     fillColor: AppColors.darkGrey,
                     border: OutlineInputBorder(
@@ -226,15 +230,6 @@ class _MyActiveListingDialogViewState
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 4),
-
-            // Delivery date and deposit details text
-            Text(
-              I18n.of(
-                context,
-              ).myActiveListingDialogViewReservationNotesDescription,
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
             ),
             const SizedBox(height: 32),
 
