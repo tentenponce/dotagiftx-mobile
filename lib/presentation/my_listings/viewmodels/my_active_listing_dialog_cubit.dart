@@ -14,7 +14,7 @@ import 'package:injectable/injectable.dart';
 @injectable
 class MyActiveListingDialogCubit extends BaseCubit<MyActiveListingDialogState>
     with CubitErrorMixin<MyActiveListingDialogState> {
-  late final void Function(String message) showToastError;
+  late final void Function(String message) showRemoveListingError;
   late final void Function() dismissDialog;
   late final void Function() showNullPartnerSteamIdError;
   late final void Function() showInvalidUrlError;
@@ -47,9 +47,9 @@ class MyActiveListingDialogCubit extends BaseCubit<MyActiveListingDialogState>
       onError: (e, st) async {
         if (e is BadRequestException &&
             !StringUtils.isNullOrEmpty(e.apiErrorMessage)) {
-          showToastError(e.apiErrorMessage!);
+          showRemoveListingError(e.apiErrorMessage!);
         } else {
-          showToastError(e.toString());
+          showRemoveListingError(e.toString());
 
           _logger.log(LogLevel.error, 'Error removing listing', e, st);
         }

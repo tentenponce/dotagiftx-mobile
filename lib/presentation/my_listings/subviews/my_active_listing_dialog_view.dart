@@ -42,6 +42,7 @@ class _MyActiveListingDialogViewState
   final TextEditingController _reservationNotesController =
       TextEditingController();
 
+  String? _removeListingError;
   String? _steamProfileUrlError;
 
   @override
@@ -332,6 +333,13 @@ class _MyActiveListingDialogViewState
                 ),
               ],
             ),
+            if (!StringUtils.isNullOrEmpty(_removeListingError)) ...[
+              const SizedBox(height: 16),
+              Text(
+                _removeListingError!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ],
           ],
         ),
       ),
@@ -350,10 +358,10 @@ class _MyActiveListingDialogViewState
     super.initState();
 
     context.read<MyActiveListingDialogCubit>()
-      ..showToastError = (message) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+      ..showRemoveListingError = (message) {
+        setState(() {
+          _removeListingError = message;
+        });
       }
       ..dismissDialog = () {
         Navigator.of(context).pop(true);
