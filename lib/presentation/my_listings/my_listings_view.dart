@@ -267,7 +267,8 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
           if (state.status == ApiConstants.queryMarketStatusLive) {
             return MyActiveListingItemView(
               listing: listing,
-              onTap: () => _showActiveListingDialog(context, listing),
+              onTap:
+                  () => unawaited(_showActiveListingDialog(context, listing)),
             );
           } else if (state.status == ApiConstants.queryMarketStatusReserved) {
             return ReservedItemView(listing: listing);
@@ -278,7 +279,9 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
               case ApiConstants.queryMarketStatusLive:
                 return MyActiveListingItemView(
                   listing: listing,
-                  onTap: () => _showActiveListingDialog(context, listing),
+                  onTap:
+                      () =>
+                          unawaited(_showActiveListingDialog(context, listing)),
                 );
               case ApiConstants.queryMarketStatusReserved:
                 return ReservedItemView(listing: listing);
