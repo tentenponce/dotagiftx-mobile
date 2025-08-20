@@ -246,6 +246,10 @@ class _MyActiveListingDialogViewState
                     MyActiveListingDialogCubit,
                     MyActiveListingDialogState
                   >(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.isRemoveListingLoading !=
+                            current.isRemoveListingLoading,
                     builder: (context, state) {
                       return AppOutlineButton(
                         isLoading: state.isRemoveListingLoading,
@@ -294,6 +298,10 @@ class _MyActiveListingDialogViewState
                     MyActiveListingDialogCubit,
                     MyActiveListingDialogState
                   >(
+                    buildWhen:
+                        (previous, current) =>
+                            previous.isReserveListingLoading !=
+                            current.isReserveListingLoading,
                     builder: (context, state) {
                       return AppOutlineButton(
                         isLoading: state.isReserveListingLoading,
