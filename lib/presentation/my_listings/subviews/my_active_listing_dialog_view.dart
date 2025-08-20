@@ -241,38 +241,50 @@ class _MyActiveListingDialogViewState
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed:
-                        () => unawaited(
-                          context
-                              .read<MyActiveListingDialogCubit>()
-                              .removeListing(widget.listing.id),
-                        ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      side: const BorderSide(color: Colors.white, width: 1),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.delete, size: 20, color: Colors.white),
-                        const SizedBox(width: 8),
-                        Text(
-                          I18n.of(
-                            context,
-                          ).myActiveListingDialogViewRemoveButton,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                  child: BlocBuilder<
+                    MyActiveListingDialogCubit,
+                    MyActiveListingDialogState
+                  >(
+                    builder: (context, state) {
+                      return AppOutlineButton(
+                        isLoading: state.isRemoveListingLoading,
+                        onPressed:
+                            () => unawaited(
+                              context
+                                  .read<MyActiveListingDialogCubit>()
+                                  .removeListing(widget.listing.id),
+                            ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
+                          side: const BorderSide(color: Colors.white, width: 1),
+                          elevation: 0,
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.delete,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              I18n.of(
+                                context,
+                              ).myActiveListingDialogViewRemoveButton,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 16),

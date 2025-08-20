@@ -37,6 +37,8 @@ class _AppOutlineButtonState extends State<AppOutlineButton> {
 
   @override
   Widget build(BuildContext context) {
+    final buttonStyle = _buttonStyle();
+
     return Stack(
       children: [
         AnimatedOpacity(
@@ -47,11 +49,13 @@ class _AppOutlineButtonState extends State<AppOutlineButton> {
             height: _size.height,
             child: OutlinedButton(
               onPressed: () {},
-              style: _buttonStyle(),
-              child: const SizedBox(
+              style: buttonStyle,
+              child: SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: buttonStyle?.foregroundColor?.resolve({}),
+                ),
               ),
             ),
           ),
@@ -68,7 +72,7 @@ class _AppOutlineButtonState extends State<AppOutlineButton> {
                       width: widget.width,
                       height: widget.height,
                       child: OutlinedButton(
-                        style: _buttonStyle(),
+                        style: buttonStyle,
                         onPressed: null,
                         child: widget.child,
                       ),
@@ -77,7 +81,7 @@ class _AppOutlineButtonState extends State<AppOutlineButton> {
                       width: widget.width,
                       height: widget.height,
                       child: OutlinedButton(
-                        style: _buttonStyle(),
+                        style: buttonStyle,
                         onPressed: () => widget.onPressed?.call(),
                         child: widget.child,
                       ),
