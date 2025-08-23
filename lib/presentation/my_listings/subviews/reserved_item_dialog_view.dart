@@ -9,41 +9,38 @@ import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart'
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_active_listing_dialog_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/my_orders/states/my_active_listing_dialog_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/states/reserved_item_dialog_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/reserved_item_dialog_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MyActiveListingDialogView extends StatelessWidget
-    with ViewCubitMixin<MyActiveListingDialogCubit> {
+class ReservedItemDialogView extends StatelessWidget
+    with ViewCubitMixin<ReservedItemDialogCubit> {
   final MarketListingModel listing;
-  const MyActiveListingDialogView({required this.listing, super.key});
+  const ReservedItemDialogView({required this.listing, super.key});
 
   @override
   Widget buildView(BuildContext context) {
-    return _MyActiveListingDialogView(listing: listing);
+    return _ReservedItemDialogView(listing: listing);
   }
 }
 
-class _MyActiveListingDialogView extends StatefulWidget {
+class _ReservedItemDialogView extends StatefulWidget {
   final MarketListingModel listing;
 
-  const _MyActiveListingDialogView({required this.listing});
+  const _ReservedItemDialogView({required this.listing});
 
   @override
-  State<_MyActiveListingDialogView> createState() =>
-      _MyActiveListingDialogViewState();
+  State<_ReservedItemDialogView> createState() =>
+      _ReservedItemDialogViewState();
 }
 
-class _MyActiveListingDialogViewState
-    extends State<_MyActiveListingDialogView> {
-  final TextEditingController _steamUrlController = TextEditingController();
-  final TextEditingController _reservationNotesController =
-      TextEditingController();
+class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
+  final TextEditingController _notesController = TextEditingController();
 
-  String? _removeListingError;
-  String? _steamProfileUrlError;
+  String? _cancelReservationError;
+  String? _deliverItemError;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +61,7 @@ class _MyActiveListingDialogViewState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  I18n.of(context).myActiveListingDialogViewTitle,
+                  I18n.of(context).reservedItemDialogViewTitle,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -88,6 +85,7 @@ class _MyActiveListingDialogViewState
                 // Item image
                 DotagiftxImageView(
                   imageUrl: widget.listing.item?.image ?? '',
+                  rarity: widget.listing.item?.rarity ?? '',
                   width: 120,
                   height: 90,
                 ),
@@ -118,9 +116,9 @@ class _MyActiveListingDialogViewState
                           ),
                           const SizedBox(width: 2),
                           Text(
-                            I18n.of(context).myActiveListingDialogViewListed,
-                            style: TextStyle(
-                              color: Colors.green[400],
+                            I18n.of(context).toReceiveItemViewReserved,
+                            style: const TextStyle(
+                              color: AppColors.purple,
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
@@ -142,9 +140,9 @@ class _MyActiveListingDialogViewState
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        I18n.of(context).myActiveListingDialogViewListedDate(
+                        I18n.of(context).reservedItemViewReservedDate(
                           DateFormatUtils.formatExactDateTime(
-                            widget.listing.createdAt ?? '',
+                            widget.listing.updatedAt ?? '',
                           ),
                         ),
                         style: const TextStyle(
@@ -152,7 +150,6 @@ class _MyActiveListingDialogViewState
                           fontSize: 16,
                         ),
                       ),
-
                       if (!StringUtils.isNullOrEmpty(widget.listing.notes)) ...[
                         const SizedBox(height: 8),
                         Text(
@@ -180,64 +177,63 @@ class _MyActiveListingDialogViewState
             ),
             const SizedBox(height: 32),
 
-            // Steam profile URL input
+            // Notes input for actions
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Steam profile URL input
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      I18n.of(
+                        context,
+                      ).reservedItemDialogViewBuyerSteamProfileUrl,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      style: const TextStyle(color: Colors.white),
+                      controller: TextEditingController(
+                        text: RemoteConfigConstants.defaultSteamProfileUrl(
+                          widget.listing.partnerSteamId ?? '',
+                        ),
+                      ),
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        hintStyle: const TextStyle(color: AppColors.grey),
+                        filled: true,
+                        fillColor: AppColors.darkGrey,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      enabled: false,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
                 Text(
-                  I18n.of(
-                    context,
-                  ).myActiveListingDialogViewBuyerSteamProfileUrl,
+                  I18n.of(context).reservedItemDialogViewActionNotes,
                   style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 8),
                 TextField(
-                  controller: _steamUrlController,
+                  controller: _notesController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintStyle: const TextStyle(color: AppColors.grey),
-                    filled: true,
-                    fillColor: AppColors.darkGrey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    error:
-                        !StringUtils.isNullOrEmpty(_steamProfileUrlError)
-                            ? Text(
-                              _steamProfileUrlError!,
-                              style: const TextStyle(color: Colors.red),
-                            )
-                            : null,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Reservation notes input
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  I18n.of(context).myActiveListingDialogViewReservationNotes,
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _reservationNotesController,
-                  style: const TextStyle(color: Colors.white),
-                  maxLines: 4,
+                  maxLines: 3,
                   decoration: InputDecoration(
                     hintStyle: const TextStyle(color: AppColors.grey),
                     hintText:
-                        I18n.of(
-                          context,
-                        ).myActiveListingDialogViewReservationNotesDescription,
+                        I18n.of(context).reservedItemDialogViewActionNotesHint,
                     filled: true,
                     fillColor: AppColors.darkGrey,
                     border: OutlineInputBorder(
@@ -259,21 +255,27 @@ class _MyActiveListingDialogViewState
               children: [
                 Expanded(
                   child: BlocBuilder<
-                    MyActiveListingDialogCubit,
-                    MyActiveListingDialogState
+                    ReservedItemDialogCubit,
+                    ReservedItemDialogState
                   >(
                     buildWhen:
                         (previous, current) =>
-                            previous.isRemoveListingLoading !=
-                            current.isRemoveListingLoading,
+                            previous.isCancelReservationLoading !=
+                            current.isCancelReservationLoading,
                     builder: (context, state) {
                       return AppOutlineButton(
-                        isLoading: state.isRemoveListingLoading,
+                        isLoading: state.isCancelReservationLoading,
                         onPressed:
                             () => unawaited(
                               context
-                                  .read<MyActiveListingDialogCubit>()
-                                  .removeListing(widget.listing.id),
+                                  .read<ReservedItemDialogCubit>()
+                                  .cancelReservation(
+                                    marketId: widget.listing.id,
+                                    notes:
+                                        _notesController.text.trim().isEmpty
+                                            ? null
+                                            : _notesController.text.trim(),
+                                  ),
                             ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -288,7 +290,7 @@ class _MyActiveListingDialogViewState
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Icon(
-                              Icons.delete,
+                              Icons.cancel,
                               size: 20,
                               color: Colors.white,
                             ),
@@ -296,9 +298,9 @@ class _MyActiveListingDialogViewState
                             Text(
                               I18n.of(
                                 context,
-                              ).myActiveListingDialogViewRemoveButton,
+                              ).reservedItemDialogViewCancelButton,
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -311,31 +313,33 @@ class _MyActiveListingDialogViewState
                 const SizedBox(width: 16),
                 Expanded(
                   child: BlocBuilder<
-                    MyActiveListingDialogCubit,
-                    MyActiveListingDialogState
+                    ReservedItemDialogCubit,
+                    ReservedItemDialogState
                   >(
                     buildWhen:
                         (previous, current) =>
-                            previous.isReserveListingLoading !=
-                            current.isReserveListingLoading,
+                            previous.isDeliverItemLoading !=
+                            current.isDeliverItemLoading,
                     builder: (context, state) {
                       return AppOutlineButton(
-                        isLoading: state.isReserveListingLoading,
+                        isLoading: state.isDeliverItemLoading,
                         onPressed:
                             () => unawaited(
                               context
-                                  .read<MyActiveListingDialogCubit>()
-                                  .reserveListing(
-                                    widget.listing.id,
-                                    _steamUrlController.text,
-                                    _reservationNotesController.text,
+                                  .read<ReservedItemDialogCubit>()
+                                  .deliverItem(
+                                    marketId: widget.listing.id,
+                                    notes:
+                                        _notesController.text.trim().isEmpty
+                                            ? null
+                                            : _notesController.text.trim(),
                                   ),
                             ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Icon(
-                              Icons.event_available,
+                              Icons.assignment_turned_in,
                               size: 20,
                               color: AppColors.primary,
                             ),
@@ -343,7 +347,7 @@ class _MyActiveListingDialogViewState
                             Text(
                               I18n.of(
                                 context,
-                              ).myActiveListingDialogViewReserveButton,
+                              ).reservedItemDialogViewDeliverButton,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -357,10 +361,19 @@ class _MyActiveListingDialogViewState
                 ),
               ],
             ),
-            if (!StringUtils.isNullOrEmpty(_removeListingError)) ...[
+
+            // Error messages
+            if (!StringUtils.isNullOrEmpty(_cancelReservationError)) ...[
               const SizedBox(height: 16),
               Text(
-                _removeListingError!,
+                _cancelReservationError!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ],
+            if (!StringUtils.isNullOrEmpty(_deliverItemError)) ...[
+              const SizedBox(height: 16),
+              Text(
+                _deliverItemError!,
                 style: const TextStyle(color: Colors.red),
               ),
             ],
@@ -372,8 +385,7 @@ class _MyActiveListingDialogViewState
 
   @override
   void dispose() {
-    _steamUrlController.dispose();
-    _reservationNotesController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -381,39 +393,21 @@ class _MyActiveListingDialogViewState
   void initState() {
     super.initState();
 
-    context.read<MyActiveListingDialogCubit>()
-      ..showRemoveListingError = (message) {
+    context.read<ReservedItemDialogCubit>()
+      ..showCancelReservationError = (message) {
         setState(() {
-          _removeListingError = message;
+          _cancelReservationError = message;
+          _deliverItemError = null; // Clear other error
+        });
+      }
+      ..showDeliverItemError = (message) {
+        setState(() {
+          _deliverItemError = message;
+          _cancelReservationError = null; // Clear other error
         });
       }
       ..dismissDialog = () {
         Navigator.of(context).pop(true);
-      }
-      ..showNullPartnerSteamIdError = () {
-        setState(() {
-          _steamProfileUrlError =
-              I18n.of(context).myListingsNullPartnerSteamIdError;
-        });
-      }
-      ..showInvalidUrlError = () {
-        setState(() {
-          _steamProfileUrlError = I18n.of(context).myListingsInvalidUrlError;
-        });
-      }
-      ..showInvalidSteamIdUrlError = () {
-        setState(() {
-          _steamProfileUrlError = I18n.of(
-            context,
-          ).myListingsInvalidSteamIdUrlError(
-            RemoteConfigConstants.steamPartnerIdBaseUrl,
-          );
-        });
-      }
-      ..showReserveErrorMessage = (message) {
-        setState(() {
-          _steamProfileUrlError = message;
-        });
       };
   }
 }

@@ -14,6 +14,7 @@ import 'package:dotagiftx_mobile/presentation/my_listings/subviews/listing_remov
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_dialog_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_listings_filter_buttons_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item_dialog_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_listings_cubit.dart';
@@ -271,7 +272,10 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                   () => unawaited(_showActiveListingDialog(context, listing)),
             );
           } else if (state.status == ApiConstants.queryMarketStatusReserved) {
-            return ReservedItemView(listing: listing);
+            return ReservedItemView(
+              listing: listing,
+              onTap: () => unawaited(_showReservedItemDialog(context, listing)),
+            );
           } else if (state.status == ApiConstants.queryMarketStatusSold) {
             return DeliveredItemView(listing: listing);
           } else if (state.status == ApiConstants.queryMarketStatusAll) {
@@ -284,7 +288,12 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                           unawaited(_showActiveListingDialog(context, listing)),
                 );
               case ApiConstants.queryMarketStatusReserved:
-                return ReservedItemView(listing: listing);
+                return ReservedItemView(
+                  listing: listing,
+                  onTap:
+                      () =>
+                          unawaited(_showReservedItemDialog(context, listing)),
+                );
               case ApiConstants.queryMarketStatusSold:
                 return DeliveredItemView(listing: listing);
               case ApiConstants.queryMarketStatusCancelled:
@@ -338,6 +347,22 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (dialogContext) => MyActiveListingDialogView(listing: listing),
+    );
+
+    if ((result ?? false) && context.mounted) {
+      unawaited(context.read<MyListingsCubit>().refreshListings());
+    }
+  }
+
+  Future<void> _showReservedItemDialog(
+    BuildContext context,
+    MarketListingModel listing,
+  ) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (dialogContext) => ReservedItemDialogView(listing: listing),
     );
 
     if ((result ?? false) && context.mounted) {

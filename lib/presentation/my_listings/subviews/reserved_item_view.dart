@@ -1,21 +1,19 @@
-import 'dart:async';
-
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
-import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/item_verification_icon_view.dart';
-import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 class ReservedItemView extends StatelessWidget {
   final MarketListingModel listing;
-  const ReservedItemView({required this.listing, super.key});
+  final VoidCallback? onTap;
+
+  const ReservedItemView({required this.listing, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -154,25 +152,7 @@ class ReservedItemView extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap:
-                      () => unawaited(
-                        showModalBottomSheet<void>(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder:
-                              (context) => UserDetailWebviewView(
-                                url:
-                                    RemoteConfigConstants.defaultSteamProfileUrl(
-                                      listing.partnerSteamId ?? '',
-                                    ),
-                                title:
-                                    I18n.of(
-                                      context,
-                                    ).historyReservedItemViewBuyerProfile,
-                              ),
-                        ),
-                      ),
+                  onTap: onTap,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),

@@ -160,5 +160,12 @@
     "myActiveListingDialogViewReservationNotes": "Reservation Notes",
     "myActiveListingDialogViewReservationNotesDescription": "Delivery date and deposit details",
     "myActiveListingDialogViewRemoveButton": "Remove Listing",
-    "myActiveListingDialogViewReserveButton": "Reserve to Buyer"
+    "myActiveListingDialogViewReserveButton": "Reserve to Buyer",
+    "reservedItemDialogViewTitle": "Update Reservation",
+    "reservedItemDialogViewBuyerNotes": "Notes",
+    "reservedItemDialogViewBuyerSteamProfileUrl": "Buyer's Steam profile URL",
+    "reservedItemDialogViewActionNotes": "Notes",
+    "reservedItemDialogViewActionNotesHint": "Screenshot URL for verification or reason for cancellation",
+    "reservedItemDialogViewCancelButton": "Cancel Reservation",
+    "reservedItemDialogViewDeliverButton": "Item Delivered"
 }
