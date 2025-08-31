@@ -14,7 +14,6 @@ import 'get_dota_item_offers_usecase_test.mocks.dart';
 void main() {
   group(GetDotaItemOffersUsecaseImpl, () {
     late MockDotagiftxAuthApi mockDotagiftxAuthApi;
-    late GetDotaItemOffersUsecaseImpl usecase;
 
     // Test data
     const testUser1 = SteamUserModel(
@@ -51,8 +50,11 @@ void main() {
 
     setUp(() {
       mockDotagiftxAuthApi = MockDotagiftxAuthApi();
-      usecase = GetDotaItemOffersUsecaseImpl(mockDotagiftxAuthApi);
     });
+
+    GetDotaItemOffersUsecase createUnitTest() {
+      return GetDotaItemOffersUsecaseImpl(mockDotagiftxAuthApi);
+    }
 
     group('get', () {
       test(
@@ -81,7 +83,7 @@ void main() {
           ).thenAnswer((_) async => expectedResponse);
 
           // Act
-          final result = await usecase.get(itemId: testItemId);
+          final result = await createUnitTest().get(itemId: testItemId);
 
           // Assert
           expect(result.$1, equals(expectedOffers));
@@ -131,7 +133,7 @@ void main() {
           ).thenAnswer((_) async => expectedResponse);
 
           // Act
-          final result = await usecase.get(
+          final result = await createUnitTest().get(
             itemId: testItemId,
             limit: customLimit,
             page: customPage,
@@ -181,7 +183,7 @@ void main() {
         ).thenAnswer((_) async => expectedResponse);
 
         // Act
-        final result = await usecase.get(itemId: testItemId);
+        final result = await createUnitTest().get(itemId: testItemId);
 
         // Assert
         expect(result.$1, isEmpty);

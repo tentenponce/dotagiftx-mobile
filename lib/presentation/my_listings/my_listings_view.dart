@@ -3,14 +3,18 @@ import 'dart:math';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/unknown_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/states/my_listings_state.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/cancelled_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/delivered_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/listing_removed_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_dialog_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_active_listing_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/my_listings_filter_buttons_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item_dialog_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/reserved_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/shimmer_listing_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_listings_cubit.dart';
@@ -121,93 +125,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
             ),
 
             // Filter Buttons
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              width: double.infinity,
-              child: Wrap(
-                spacing: 8,
-                children: [
-                  BlocBuilder<MyListingsCubit, MyListingsState>(
-                    buildWhen:
-                        (previous, current) =>
-                            previous.marketSummary != current.marketSummary ||
-                            previous.status != current.status,
-                    builder: (context, state) {
-                      return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsActiveButton(
-                          state.marketSummary?.activeListings ?? 0,
-                        ),
-                        filter: ApiConstants.queryMarketStatusLive.toString(),
-                        currentFilter: state.status.toString(),
-                        onTap: () {
-                          context.read<MyListingsCubit>().filterBy(
-                            ApiConstants.queryMarketStatusLive,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  BlocBuilder<MyListingsCubit, MyListingsState>(
-                    buildWhen:
-                        (previous, current) =>
-                            previous.marketSummary != current.marketSummary ||
-                            previous.status != current.status,
-                    builder: (context, state) {
-                      return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsReservedButton(
-                          state.marketSummary?.reservedListings ?? 0,
-                        ),
-                        filter:
-                            ApiConstants.queryMarketStatusReserved.toString(),
-                        currentFilter: state.status.toString(),
-                        onTap: () {
-                          context.read<MyListingsCubit>().filterBy(
-                            ApiConstants.queryMarketStatusReserved,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  BlocBuilder<MyListingsCubit, MyListingsState>(
-                    buildWhen:
-                        (previous, current) =>
-                            previous.marketSummary != current.marketSummary ||
-                            previous.status != current.status,
-                    builder: (context, state) {
-                      return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsDeliveredButton(
-                          state.marketSummary?.deliveredListings ?? 0,
-                        ),
-                        filter: ApiConstants.queryMarketStatusSold.toString(),
-                        currentFilter: state.status.toString(),
-                        onTap: () {
-                          context.read<MyListingsCubit>().filterBy(
-                            ApiConstants.queryMarketStatusSold,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  BlocBuilder<MyListingsCubit, MyListingsState>(
-                    buildWhen:
-                        (previous, current) =>
-                            previous.status != current.status,
-                    builder: (context, state) {
-                      return MarketFilterButtonView(
-                        label: I18n.of(context).myListingsHistoryButton,
-                        filter: ApiConstants.queryMarketStatusAll.toString(),
-                        currentFilter: state.status.toString(),
-                        onTap: () {
-                          context.read<MyListingsCubit>().filterBy(
-                            ApiConstants.queryMarketStatusAll,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
+            const MyListingsFilterButtonsView(),
 
             Expanded(
               child: Stack(
@@ -348,21 +266,40 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
           final listing = state.listings[index];
 
           if (state.status == ApiConstants.queryMarketStatusLive) {
-            return MyActiveListingItemView(listing: listing);
+            return MyActiveListingItemView(
+              listing: listing,
+              onTap:
+                  () => unawaited(_showActiveListingDialog(context, listing)),
+            );
           } else if (state.status == ApiConstants.queryMarketStatusReserved) {
-            return ReservedItemView(listing: listing);
+            return ReservedItemView(
+              listing: listing,
+              onTap: () => unawaited(_showReservedItemDialog(context, listing)),
+            );
           } else if (state.status == ApiConstants.queryMarketStatusSold) {
             return DeliveredItemView(listing: listing);
           } else if (state.status == ApiConstants.queryMarketStatusAll) {
             switch (listing.status) {
               case ApiConstants.queryMarketStatusLive:
-                return MyActiveListingItemView(listing: listing);
+                return MyActiveListingItemView(
+                  listing: listing,
+                  onTap:
+                      () =>
+                          unawaited(_showActiveListingDialog(context, listing)),
+                );
               case ApiConstants.queryMarketStatusReserved:
-                return ReservedItemView(listing: listing);
+                return ReservedItemView(
+                  listing: listing,
+                  onTap:
+                      () =>
+                          unawaited(_showReservedItemDialog(context, listing)),
+                );
               case ApiConstants.queryMarketStatusSold:
                 return DeliveredItemView(listing: listing);
               case ApiConstants.queryMarketStatusCancelled:
                 return CancelledItemView(listing: listing);
+              case ApiConstants.queryMarketStatusOrderRemoved:
+                return ListingRemovedItemView(listing: listing);
               default:
                 return UnknownHistoryItemView(listing: listing);
             }
@@ -398,6 +335,38 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
         _scrollController.offset >=
             _scrollController.position.maxScrollExtent - 200) {
       unawaited(context.read<MyListingsCubit>().loadMoreListings());
+    }
+  }
+
+  Future<void> _showActiveListingDialog(
+    BuildContext context,
+    MarketListingModel listing,
+  ) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (dialogContext) => MyActiveListingDialogView(listing: listing),
+    );
+
+    if ((result ?? false) && context.mounted) {
+      unawaited(context.read<MyListingsCubit>().refreshListings());
+    }
+  }
+
+  Future<void> _showReservedItemDialog(
+    BuildContext context,
+    MarketListingModel listing,
+  ) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (dialogContext) => ReservedItemDialogView(listing: listing),
+    );
+
+    if ((result ?? false) && context.mounted) {
+      unawaited(context.read<MyListingsCubit>().refreshListings());
     }
   }
 }
