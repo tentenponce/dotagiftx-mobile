@@ -8,7 +8,7 @@ import 'package:dotagiftx_mobile/domain/usecases/remove_my_listing_usecase.dart'
 import 'package:dotagiftx_mobile/domain/usecases/reserve_my_listing_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/my_orders/states/my_active_listing_dialog_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/states/my_active_listing_dialog_state.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

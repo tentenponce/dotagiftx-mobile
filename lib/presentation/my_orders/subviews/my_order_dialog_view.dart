@@ -9,40 +9,38 @@ import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart'
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/states/my_active_listing_dialog_state.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_active_listing_dialog_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/states/my_order_dialog_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/viewmodels/my_order_dialog_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MyActiveListingDialogView extends StatelessWidget
-    with ViewCubitMixin<MyActiveListingDialogCubit> {
+class MyOrderDialogView extends StatelessWidget
+    with ViewCubitMixin<MyOrderDialogCubit> {
   final MarketListingModel listing;
-  const MyActiveListingDialogView({required this.listing, super.key});
+  const MyOrderDialogView({required this.listing, super.key});
 
   @override
   Widget buildView(BuildContext context) {
-    return _MyActiveListingDialogView(listing: listing);
+    return _MyOrderDialogView(listing: listing);
   }
 }
 
-class _MyActiveListingDialogView extends StatefulWidget {
+class _MyOrderDialogView extends StatefulWidget {
   final MarketListingModel listing;
 
-  const _MyActiveListingDialogView({required this.listing});
+  const _MyOrderDialogView({required this.listing});
 
   @override
-  State<_MyActiveListingDialogView> createState() =>
-      _MyActiveListingDialogViewState();
+  State<_MyOrderDialogView> createState() => _MyOrderDialogViewState();
 }
 
-class _MyActiveListingDialogViewState
-    extends State<_MyActiveListingDialogView> {
+class _MyOrderDialogViewState extends State<_MyOrderDialogView> {
   final TextEditingController _steamUrlController = TextEditingController();
   final TextEditingController _reservationNotesController =
       TextEditingController();
 
-  String? _removeListingError;
+  String? _removeOrderError;
   String? _steamProfileUrlError;
 
   @override
@@ -64,7 +62,7 @@ class _MyActiveListingDialogViewState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  I18n.of(context).myActiveListingDialogViewTitle,
+                  I18n.of(context).myOrderDialogViewTitle,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -110,7 +108,7 @@ class _MyActiveListingDialogViewState
                       Row(
                         children: [
                           Text(
-                            I18n.of(context).myActiveListingDialogViewStatus,
+                            I18n.of(context).myOrderDialogViewStatus,
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 16,
@@ -118,7 +116,7 @@ class _MyActiveListingDialogViewState
                           ),
                           const SizedBox(width: 2),
                           Text(
-                            I18n.of(context).myActiveListingDialogViewListed,
+                            I18n.of(context).myOrderDialogViewListed,
                             style: TextStyle(
                               color: Colors.green[400],
                               fontSize: 16,
@@ -129,7 +127,7 @@ class _MyActiveListingDialogViewState
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        I18n.of(context).myActiveListingDialogViewPrice(
+                        I18n.of(context).myOrderDialogViewPrice(
                           NumberFormatUtils.formatDecimal(
                             widget.listing.price,
                             2,
@@ -142,7 +140,7 @@ class _MyActiveListingDialogViewState
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        I18n.of(context).myActiveListingDialogViewListedDate(
+                        I18n.of(context).myOrderDialogViewOrderedDate(
                           DateFormatUtils.formatExactDateTime(
                             widget.listing.createdAt ?? '',
                           ),
@@ -185,9 +183,7 @@ class _MyActiveListingDialogViewState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  I18n.of(
-                    context,
-                  ).myActiveListingDialogViewBuyerSteamProfileUrl,
+                  I18n.of(context).myOrderDialogViewBuyerSteamProfileUrl,
                   style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 8),
@@ -224,7 +220,7 @@ class _MyActiveListingDialogViewState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  I18n.of(context).myActiveListingDialogViewReservationNotes,
+                  I18n.of(context).myOrderDialogViewReservationNotes,
                   style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 8),
@@ -237,7 +233,7 @@ class _MyActiveListingDialogViewState
                     hintText:
                         I18n.of(
                           context,
-                        ).myActiveListingDialogViewReservationNotesDescription,
+                        ).myOrderDialogViewReservationNotesDescription,
                     filled: true,
                     fillColor: AppColors.darkGrey,
                     border: OutlineInputBorder(
@@ -258,22 +254,19 @@ class _MyActiveListingDialogViewState
             Row(
               children: [
                 Expanded(
-                  child: BlocBuilder<
-                    MyActiveListingDialogCubit,
-                    MyActiveListingDialogState
-                  >(
+                  child: BlocBuilder<MyOrderDialogCubit, MyOrderDialogState>(
                     buildWhen:
                         (previous, current) =>
-                            previous.isRemoveListingLoading !=
-                            current.isRemoveListingLoading,
+                            previous.isRemoveOrderLoading !=
+                            current.isRemoveOrderLoading,
                     builder: (context, state) {
                       return AppOutlineButton(
-                        isLoading: state.isRemoveListingLoading,
+                        isLoading: state.isRemoveOrderLoading,
                         onPressed:
                             () => unawaited(
-                              context
-                                  .read<MyActiveListingDialogCubit>()
-                                  .removeListing(widget.listing.id),
+                              context.read<MyOrderDialogCubit>().removeOrder(
+                                widget.listing.id,
+                              ),
                             ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -294,9 +287,7 @@ class _MyActiveListingDialogViewState
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              I18n.of(
-                                context,
-                              ).myActiveListingDialogViewRemoveButton,
+                              I18n.of(context).myOrderDialogViewRemoveButton,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -310,26 +301,21 @@ class _MyActiveListingDialogViewState
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: BlocBuilder<
-                    MyActiveListingDialogCubit,
-                    MyActiveListingDialogState
-                  >(
+                  child: BlocBuilder<MyOrderDialogCubit, MyOrderDialogState>(
                     buildWhen:
                         (previous, current) =>
-                            previous.isReserveListingLoading !=
-                            current.isReserveListingLoading,
+                            previous.isCompleteOrderLoading !=
+                            current.isCompleteOrderLoading,
                     builder: (context, state) {
                       return AppOutlineButton(
-                        isLoading: state.isReserveListingLoading,
+                        isLoading: state.isCompleteOrderLoading,
                         onPressed:
                             () => unawaited(
-                              context
-                                  .read<MyActiveListingDialogCubit>()
-                                  .reserveListing(
-                                    widget.listing.id,
-                                    _steamUrlController.text,
-                                    _reservationNotesController.text,
-                                  ),
+                              context.read<MyOrderDialogCubit>().completeOrder(
+                                widget.listing.id,
+                                _steamUrlController.text,
+                                _reservationNotesController.text,
+                              ),
                             ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -341,9 +327,7 @@ class _MyActiveListingDialogViewState
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              I18n.of(
-                                context,
-                              ).myActiveListingDialogViewReserveButton,
+                              I18n.of(context).myOrderDialogViewCompleteButton,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -357,10 +341,10 @@ class _MyActiveListingDialogViewState
                 ),
               ],
             ),
-            if (!StringUtils.isNullOrEmpty(_removeListingError)) ...[
+            if (!StringUtils.isNullOrEmpty(_removeOrderError)) ...[
               const SizedBox(height: 16),
               Text(
-                _removeListingError!,
+                _removeOrderError!,
                 style: const TextStyle(color: Colors.red),
               ),
             ],
@@ -381,10 +365,10 @@ class _MyActiveListingDialogViewState
   void initState() {
     super.initState();
 
-    context.read<MyActiveListingDialogCubit>()
-      ..showRemoveListingError = (message) {
+    context.read<MyOrderDialogCubit>()
+      ..showRemoveOrderError = (message) {
         setState(() {
-          _removeListingError = message;
+          _removeOrderError = message;
         });
       }
       ..dismissDialog = () {
@@ -393,24 +377,24 @@ class _MyActiveListingDialogViewState
       ..showNullPartnerSteamIdError = () {
         setState(() {
           _steamProfileUrlError =
-              I18n.of(context).myListingsNullPartnerSteamIdError;
+              I18n.of(context).myOrdersNullPartnerSteamIdError;
         });
       }
       ..showInvalidUrlError = () {
         setState(() {
-          _steamProfileUrlError = I18n.of(context).myListingsInvalidUrlError;
+          _steamProfileUrlError = I18n.of(context).myOrdersInvalidUrlError;
         });
       }
       ..showInvalidSteamIdUrlError = () {
         setState(() {
           _steamProfileUrlError = I18n.of(
             context,
-          ).myListingsInvalidSteamIdUrlError(
+          ).myOrdersInvalidSteamIdUrlError(
             RemoteConfigConstants.steamPartnerIdBaseUrl,
           );
         });
       }
-      ..showReserveErrorMessage = (message) {
+      ..showCompleteOrderErrorMessage = (message) {
         setState(() {
           _steamProfileUrlError = message;
         });
