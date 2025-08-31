@@ -38,9 +38,7 @@ void main() {
               notes: testNotes,
             ),
           ),
-        ).thenAnswer((_) async {
-          return null;
-        });
+        ).thenAnswer((_) async {});
 
         // Act
         await createUnitToTest().complete(
@@ -73,9 +71,7 @@ void main() {
               notes: null,
             ),
           ),
-        ).thenAnswer((_) async {
-          return null;
-        });
+        ).thenAnswer((_) async {});
 
         // Act
         await createUnitToTest().complete(
