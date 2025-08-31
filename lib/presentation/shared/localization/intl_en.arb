@@ -111,6 +111,9 @@
     "myOrdersNoReservedOrdersDescription": "Your reserved market orders will appear here",
     "myOrdersNoSearchActiveOrdersTitle": "No search results",
     "myOrdersNoSearchActiveOrdersDescription": "No active orders found for your search query",
+    "myOrdersNullPartnerSteamIdError": "Steam Profile is required.",
+    "myOrdersInvalidUrlError": "Steam Profile is not a valid URL.",
+    "myOrdersInvalidSteamIdUrlError": "Steam Profile should start with {steamProfileBaseUrl}",
     "myActiveOrderItemViewOrderedDate": "Ordered",
     "itemVerificationIconPendingTitleTooltip": "Pending",
     "itemVerificationIconPendingDescriptionTooltip": "Posted {createdAt} and processing for verification.",
@@ -167,5 +170,15 @@
     "reservedItemDialogViewActionNotes": "Notes",
     "reservedItemDialogViewActionNotesHint": "Screenshot URL for verification or reason for cancellation",
     "reservedItemDialogViewCancelButton": "Cancel Reservation",
-    "reservedItemDialogViewDeliverButton": "Item Delivered"
+    "reservedItemDialogViewDeliverButton": "Item Delivered",
+    "myOrderDialogViewTitle": "Update Buy Order",
+    "myOrderDialogViewStatus": "Status:",
+    "myOrderDialogViewListed": "Listed",
+    "myOrderDialogViewPrice": "Price: ${price}",
+    "myOrderDialogViewOrderedDate": "Ordered: {date}",
+    "myOrderDialogViewBuyerSteamProfileUrl": "Buyer's Steam profile URL*",
+    "myOrderDialogViewReservationNotes": "Reservation Notes",
+    "myOrderDialogViewReservationNotesDescription": "Delivery date and deposit details",
+    "myOrderDialogViewRemoveButton": "Remove Order",
+    "myOrderDialogViewCompleteButton": "Mark as Complete"
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
+import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
@@ -10,6 +11,7 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/unknown_history_item_
 import 'package:dotagiftx_mobile/presentation/my_orders/states/my_orders_state.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/completed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/my_active_order_item_view.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/subviews/my_order_dialog_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/order_removed_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/shimmer_order_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/subviews/to_receive_item_view.dart';
@@ -378,7 +380,10 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
           final order = state.orders[index];
 
           if (state.status == ApiConstants.queryMarketStatusLive) {
-            return MyActiveOrderItemView(order: order);
+            return MyActiveOrderItemView(
+              order: order,
+              onTap: () => unawaited(_showActiveOrderDialog(context, order)),
+            );
           } else if (state.status == ApiConstants.queryMarketStatusReserved) {
             return ToReceiveItemView(listing: order);
           } else if (state.status == ApiConstants.queryMarketStatusCompleted) {
@@ -386,7 +391,11 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
           } else if (state.status == ApiConstants.queryMarketStatusAll) {
             switch (order.status) {
               case ApiConstants.queryMarketStatusLive:
-                return MyActiveOrderItemView(order: order);
+                return MyActiveOrderItemView(
+                  order: order,
+                  onTap:
+                      () => unawaited(_showActiveOrderDialog(context, order)),
+                );
               case ApiConstants.queryMarketStatusReserved:
                 return ToReceiveItemView(listing: order);
               case ApiConstants.queryMarketStatusCompleted:
@@ -428,6 +437,22 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
         _scrollController.offset >=
             _scrollController.position.maxScrollExtent - 200) {
       unawaited(context.read<MyOrdersCubit>().loadMoreOrders());
+    }
+  }
+
+  Future<void> _showActiveOrderDialog(
+    BuildContext context,
+    MarketListingModel listing,
+  ) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (dialogContext) => MyOrderDialogView(listing: listing),
+    );
+
+    if ((result ?? false) && context.mounted) {
+      unawaited(context.read<MyOrdersCubit>().refreshOrders());
     }
   }
 }

@@ -4,32 +4,32 @@ import 'package:dio/dio.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/core/dio/api_exceptions.dart';
 import 'package:dotagiftx_mobile/domain/core/domain_exceptions.dart';
+import 'package:dotagiftx_mobile/domain/usecases/complete_order_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/remove_my_listing_usecase.dart';
-import 'package:dotagiftx_mobile/domain/usecases/reserve_my_listing_usecase.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/states/my_active_listing_dialog_state.dart';
-import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/my_active_listing_dialog_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/states/my_order_dialog_state.dart';
+import 'package:dotagiftx_mobile/presentation/my_orders/viewmodels/my_order_dialog_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'my_active_listing_dialog_cubit_test.mocks.dart';
+import 'my_order_dialog_cubit_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<Logger>(),
   MockSpec<RemoveMyListingUsecase>(),
-  MockSpec<ReserveMyListingUsecase>(),
+  MockSpec<CompleteOrderUsecase>(),
 ])
 void main() {
-  group(MyActiveListingDialogCubit, () {
+  group(MyOrderDialogCubit, () {
     late MockLogger mockLogger;
     late MockRemoveMyListingUsecase mockRemoveMyListingUsecase;
-    late MockReserveMyListingUsecase mockReserveMyListingUsecase;
+    late MockCompleteOrderUsecase mockCompleteOrderUsecase;
     late bool dismissDialogCalled;
-    late String? removeListingErrorMessage;
+    late String? removeOrderErrorMessage;
     late bool showNullPartnerSteamIdErrorCalled;
     late bool showInvalidUrlErrorCalled;
     late bool showInvalidSteamIdUrlErrorCalled;
-    late String? reserveErrorMessage;
+    late String? completeOrderErrorMessage;
 
     // Test data
     const testMarketId = 'test-market-id-123';
@@ -40,25 +40,25 @@ void main() {
     setUp(() {
       mockLogger = MockLogger();
       mockRemoveMyListingUsecase = MockRemoveMyListingUsecase();
-      mockReserveMyListingUsecase = MockReserveMyListingUsecase();
+      mockCompleteOrderUsecase = MockCompleteOrderUsecase();
       dismissDialogCalled = false;
-      removeListingErrorMessage = null;
+      removeOrderErrorMessage = null;
       showNullPartnerSteamIdErrorCalled = false;
       showInvalidUrlErrorCalled = false;
       showInvalidSteamIdUrlErrorCalled = false;
-      reserveErrorMessage = null;
+      completeOrderErrorMessage = null;
     });
 
-    MyActiveListingDialogCubit createUnitToTest() {
-      final cubit = MyActiveListingDialogCubit(
+    MyOrderDialogCubit createUnitToTest() {
+      final cubit = MyOrderDialogCubit(
         mockLogger,
         mockRemoveMyListingUsecase,
-        mockReserveMyListingUsecase,
+        mockCompleteOrderUsecase,
       );
 
       // Set up callback functions
-      cubit.showRemoveListingError = (message) {
-        removeListingErrorMessage = message;
+      cubit.showRemoveOrderError = (message) {
+        removeOrderErrorMessage = message;
       };
       cubit.dismissDialog = () {
         dismissDialogCalled = true;
@@ -72,15 +72,15 @@ void main() {
       cubit.showInvalidSteamIdUrlError = () {
         showInvalidSteamIdUrlErrorCalled = true;
       };
-      cubit.showReserveErrorMessage = (message) {
-        reserveErrorMessage = message;
+      cubit.showCompleteOrderErrorMessage = (message) {
+        completeOrderErrorMessage = message;
       };
 
       return cubit;
     }
 
-    group('removeListing', () {
-      test('should complete remove listing successfully', () async {
+    group('removeOrder', () {
+      test('should complete remove order successfully', () async {
         // Arrange
         when(
           mockRemoveMyListingUsecase.remove(testMarketId),
@@ -89,12 +89,12 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.removeListing(testMarketId);
+        await cubit.removeOrder(testMarketId);
 
         // Assert
-        expect(cubit.state.isRemoveListingLoading, isFalse);
+        expect(cubit.state.isRemoveOrderLoading, isFalse);
         expect(dismissDialogCalled, isTrue);
-        expect(removeListingErrorMessage, isNull);
+        expect(removeOrderErrorMessage, isNull);
         verify(mockRemoveMyListingUsecase.remove(testMarketId)).called(1);
       });
 
@@ -113,12 +113,12 @@ void main() {
           final cubit = createUnitToTest();
 
           // Act
-          await cubit.removeListing(testMarketId);
+          await cubit.removeOrder(testMarketId);
 
           // Assert
-          expect(cubit.state.isRemoveListingLoading, isFalse);
+          expect(cubit.state.isRemoveOrderLoading, isFalse);
           expect(dismissDialogCalled, isFalse);
-          expect(removeListingErrorMessage, equals(testApiErrorMessage));
+          expect(removeOrderErrorMessage, equals(testApiErrorMessage));
           verify(mockRemoveMyListingUsecase.remove(testMarketId)).called(1);
         },
       );
@@ -137,17 +137,17 @@ void main() {
           final cubit = createUnitToTest();
 
           // Act
-          await cubit.removeListing(testMarketId);
+          await cubit.removeOrder(testMarketId);
 
           // Assert
-          expect(cubit.state.isRemoveListingLoading, isFalse);
+          expect(cubit.state.isRemoveOrderLoading, isFalse);
           expect(dismissDialogCalled, isFalse);
-          expect(removeListingErrorMessage, equals(exception.toString()));
+          expect(removeOrderErrorMessage, equals(exception.toString()));
           verify(mockRemoveMyListingUsecase.remove(testMarketId)).called(1);
           verify(
             mockLogger.log(
               LogLevel.error,
-              'Error removing listing',
+              'Error removing order',
               exception,
               any,
             ),
@@ -165,24 +165,24 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.removeListing(testMarketId);
+        await cubit.removeOrder(testMarketId);
 
         // Assert
-        expect(cubit.state.isRemoveListingLoading, isFalse);
+        expect(cubit.state.isRemoveOrderLoading, isFalse);
         expect(dismissDialogCalled, isFalse);
-        expect(removeListingErrorMessage, equals(exception.toString()));
+        expect(removeOrderErrorMessage, equals(exception.toString()));
         verify(mockRemoveMyListingUsecase.remove(testMarketId)).called(1);
         verify(
           mockLogger.log(
             LogLevel.error,
-            'Error removing listing',
+            'Error removing order',
             exception,
             any,
           ),
         ).called(1);
       });
 
-      test('should set loading state during remove listing', () async {
+      test('should set loading state during remove order', () async {
         // Arrange
         final completer = Completer<void>();
         when(
@@ -192,25 +192,25 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        final removeFuture = cubit.removeListing(testMarketId);
+        final removeFuture = cubit.removeOrder(testMarketId);
 
         // Assert loading state
-        expect(cubit.state.isRemoveListingLoading, isTrue);
+        expect(cubit.state.isRemoveOrderLoading, isTrue);
 
         // Complete the removal
         completer.complete();
         await removeFuture;
 
         // Assert final state
-        expect(cubit.state.isRemoveListingLoading, isFalse);
+        expect(cubit.state.isRemoveOrderLoading, isFalse);
       });
     });
 
-    group('reserveListing', () {
-      test('should complete reserve listing successfully', () async {
+    group('completeOrder', () {
+      test('should complete order successfully', () async {
         // Arrange
         when(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -222,14 +222,14 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.reserveListing(testMarketId, testPartnerSteamId, testNotes);
+        await cubit.completeOrder(testMarketId, testPartnerSteamId, testNotes);
 
         // Assert
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
         expect(dismissDialogCalled, isTrue);
-        expect(reserveErrorMessage, isNull);
+        expect(completeOrderErrorMessage, isNull);
         verify(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -237,43 +237,40 @@ void main() {
         ).called(1);
       });
 
-      test(
-        'should complete reserve listing successfully without notes',
-        () async {
-          // Arrange
-          when(
-            mockReserveMyListingUsecase.reserve(
-              marketId: testMarketId,
-              partnerSteamId: testPartnerSteamId,
-              notes: null,
-            ),
-          ).thenAnswer((_) async {
-            return;
-          });
+      test('should complete order successfully without notes', () async {
+        // Arrange
+        when(
+          mockCompleteOrderUsecase.complete(
+            marketId: testMarketId,
+            partnerSteamId: testPartnerSteamId,
+            notes: null,
+          ),
+        ).thenAnswer((_) async {
+          return;
+        });
 
-          final cubit = createUnitToTest();
+        final cubit = createUnitToTest();
 
-          // Act
-          await cubit.reserveListing(testMarketId, testPartnerSteamId, null);
+        // Act
+        await cubit.completeOrder(testMarketId, testPartnerSteamId, null);
 
-          // Assert
-          expect(cubit.state.isReserveListingLoading, isFalse);
-          expect(dismissDialogCalled, isTrue);
-          expect(reserveErrorMessage, isNull);
-          verify(
-            mockReserveMyListingUsecase.reserve(
-              marketId: testMarketId,
-              partnerSteamId: testPartnerSteamId,
-              notes: null,
-            ),
-          ).called(1);
-        },
-      );
+        // Assert
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
+        expect(dismissDialogCalled, isTrue);
+        expect(completeOrderErrorMessage, isNull);
+        verify(
+          mockCompleteOrderUsecase.complete(
+            marketId: testMarketId,
+            partnerSteamId: testPartnerSteamId,
+            notes: null,
+          ),
+        ).called(1);
+      });
 
       test('should handle NullPartnerSteamIdException', () async {
         // Arrange
         when(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -283,19 +280,19 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.reserveListing(testMarketId, testPartnerSteamId, testNotes);
+        await cubit.completeOrder(testMarketId, testPartnerSteamId, testNotes);
 
         // Assert
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
         expect(dismissDialogCalled, isFalse);
         expect(showNullPartnerSteamIdErrorCalled, isTrue);
-        expect(reserveErrorMessage, isNull);
+        expect(completeOrderErrorMessage, isNull);
       });
 
       test('should handle InvalidUrlException', () async {
         // Arrange
         when(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -305,19 +302,19 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.reserveListing(testMarketId, testPartnerSteamId, testNotes);
+        await cubit.completeOrder(testMarketId, testPartnerSteamId, testNotes);
 
         // Assert
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
         expect(dismissDialogCalled, isFalse);
         expect(showInvalidUrlErrorCalled, isTrue);
-        expect(reserveErrorMessage, isNull);
+        expect(completeOrderErrorMessage, isNull);
       });
 
       test('should handle InvalidSteamIdUrlException', () async {
         // Arrange
         when(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -327,13 +324,13 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.reserveListing(testMarketId, testPartnerSteamId, testNotes);
+        await cubit.completeOrder(testMarketId, testPartnerSteamId, testNotes);
 
         // Assert
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
         expect(dismissDialogCalled, isFalse);
         expect(showInvalidSteamIdUrlErrorCalled, isTrue);
-        expect(reserveErrorMessage, isNull);
+        expect(completeOrderErrorMessage, isNull);
       });
 
       test(
@@ -345,7 +342,7 @@ void main() {
             apiErrorMessage: testApiErrorMessage,
           );
           when(
-            mockReserveMyListingUsecase.reserve(
+            mockCompleteOrderUsecase.complete(
               marketId: testMarketId,
               partnerSteamId: testPartnerSteamId,
               notes: testNotes,
@@ -355,16 +352,16 @@ void main() {
           final cubit = createUnitToTest();
 
           // Act
-          await cubit.reserveListing(
+          await cubit.completeOrder(
             testMarketId,
             testPartnerSteamId,
             testNotes,
           );
 
           // Assert
-          expect(cubit.state.isReserveListingLoading, isFalse);
+          expect(cubit.state.isCompleteOrderLoading, isFalse);
           expect(dismissDialogCalled, isFalse);
-          expect(reserveErrorMessage, equals(testApiErrorMessage));
+          expect(completeOrderErrorMessage, equals(testApiErrorMessage));
         },
       );
 
@@ -376,7 +373,7 @@ void main() {
             error: DioException(requestOptions: RequestOptions()),
           );
           when(
-            mockReserveMyListingUsecase.reserve(
+            mockCompleteOrderUsecase.complete(
               marketId: testMarketId,
               partnerSteamId: testPartnerSteamId,
               notes: testNotes,
@@ -386,20 +383,20 @@ void main() {
           final cubit = createUnitToTest();
 
           // Act
-          await cubit.reserveListing(
+          await cubit.completeOrder(
             testMarketId,
             testPartnerSteamId,
             testNotes,
           );
 
           // Assert
-          expect(cubit.state.isReserveListingLoading, isFalse);
+          expect(cubit.state.isCompleteOrderLoading, isFalse);
           expect(dismissDialogCalled, isFalse);
-          expect(reserveErrorMessage, equals(exception.toString()));
+          expect(completeOrderErrorMessage, equals(exception.toString()));
           verify(
             mockLogger.log(
               LogLevel.error,
-              'Error reserving listing',
+              'Error completing order',
               exception,
               any,
             ),
@@ -411,7 +408,7 @@ void main() {
         // Arrange
         final exception = Exception('Generic error');
         when(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -421,27 +418,27 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        await cubit.reserveListing(testMarketId, testPartnerSteamId, testNotes);
+        await cubit.completeOrder(testMarketId, testPartnerSteamId, testNotes);
 
         // Assert
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
         expect(dismissDialogCalled, isFalse);
-        expect(reserveErrorMessage, equals(exception.toString()));
+        expect(completeOrderErrorMessage, equals(exception.toString()));
         verify(
           mockLogger.log(
             LogLevel.error,
-            'Error reserving listing',
+            'Error completing order',
             exception,
             any,
           ),
         ).called(1);
       });
 
-      test('should set loading state during reserve listing', () async {
+      test('should set loading state during complete order', () async {
         // Arrange
         final completer = Completer<void>();
         when(
-          mockReserveMyListingUsecase.reserve(
+          mockCompleteOrderUsecase.complete(
             marketId: testMarketId,
             partnerSteamId: testPartnerSteamId,
             notes: testNotes,
@@ -451,21 +448,21 @@ void main() {
         final cubit = createUnitToTest();
 
         // Act
-        final reserveFuture = cubit.reserveListing(
+        final completeFuture = cubit.completeOrder(
           testMarketId,
           testPartnerSteamId,
           testNotes,
         );
 
         // Assert loading state
-        expect(cubit.state.isReserveListingLoading, isTrue);
+        expect(cubit.state.isCompleteOrderLoading, isTrue);
 
-        // Complete the reservation
+        // Complete the complete order
         completer.complete();
-        await reserveFuture;
+        await completeFuture;
 
         // Assert final state
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
       });
     });
 
@@ -475,9 +472,9 @@ void main() {
         final cubit = createUnitToTest();
 
         // Assert
-        expect(cubit.state, equals(const MyActiveListingDialogState()));
-        expect(cubit.state.isRemoveListingLoading, isFalse);
-        expect(cubit.state.isReserveListingLoading, isFalse);
+        expect(cubit.state, equals(const MyOrderDialogState()));
+        expect(cubit.state.isRemoveOrderLoading, isFalse);
+        expect(cubit.state.isCompleteOrderLoading, isFalse);
       });
     });
 
@@ -490,7 +487,7 @@ void main() {
         await cubit.init();
 
         // Assert - init method is empty, so just verify it completes without error
-        expect(cubit.state, equals(const MyActiveListingDialogState()));
+        expect(cubit.state, equals(const MyOrderDialogState()));
       });
     });
 
