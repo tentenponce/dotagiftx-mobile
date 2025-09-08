@@ -14,6 +14,7 @@ import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_l
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -182,7 +183,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                         context,
                                         MaterialPageRoute(
                                           builder:
-                                              (context) => const RoadmapView(),
+                                              (context) => const PostItemView(),
                                         ),
                                       ),
                                     );

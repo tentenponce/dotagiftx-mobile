@@ -3,6 +3,7 @@ import 'package:dotagiftx_mobile/data/core/dio/dio_provider.dart';
 import 'package:dotagiftx_mobile/data/requests/refresh_token_request.dart';
 import 'package:dotagiftx_mobile/data/requests/revoke_token_request.dart';
 import 'package:dotagiftx_mobile/data/responses/catalog_response.dart';
+import 'package:dotagiftx_mobile/data/responses/dota_items_response.dart';
 import 'package:dotagiftx_mobile/data/responses/login_response.dart';
 import 'package:dotagiftx_mobile/data/responses/market_summary_response.dart';
 import 'package:dotagiftx_mobile/data/responses/refresh_token_response.dart';
@@ -30,6 +31,13 @@ abstract interface class DotagiftxUnauthApi {
     @Query('limit') int limit,
     @Query('page') int page,
     @Query('q') String? search,
+  );
+
+  @GET('/items')
+  Future<DotaItemsResponse> getDotaItems(
+    @Query('limit') int limit,
+    @Query('active') String? active,
+    @Query('sort') String sort,
   );
 
   @GET('stats/market_summary')
