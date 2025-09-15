@@ -180,5 +180,9 @@
     "myOrderDialogViewReservationNotes": "Reservation Notes",
     "myOrderDialogViewReservationNotesDescription": "Delivery date and deposit details",
     "myOrderDialogViewRemoveButton": "Remove Order",
-    "myOrderDialogViewCompleteButton": "Mark as Complete"
+    "myOrderDialogViewCompleteButton": "Mark as Complete",
+    "postItemViewTitle": "Post your item on DotagiftX",
+    "postItemViewDescription": "Only verified ( ✓ ) items from your inventory will be listed on Item page. All your posts will still be visible on your profile.",
+    "postItemViewItemName": "Item name",
+    "postItemViewItemHint": "Search item you want to post."
 }

@@ -11,11 +11,10 @@ import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/buy_orde
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/dota_item_market_detail_subview.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_listing_filter_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_list_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/post_item_and_place_order_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
-import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -173,79 +172,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                       child: Column(
                         children: [
                           // Action Buttons
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    unawaited(
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => const PostItemView(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.black,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    I18n.of(
-                                      context,
-                                    ).dotaItemDetailPostItemButton,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    unawaited(
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => const RoadmapView(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppColors.primary,
-                                    side: const BorderSide(
-                                      color: AppColors.primary,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    I18n.of(
-                                      context,
-                                    ).dotaItemDetailBuyOrderButton,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          const PostItemAndPlaceOrderButtonsView(),
                           const SizedBox(height: 16),
                           // Tab Bar with Dynamic Counts
                           BlocBuilder<OffersListCubit, OffersListState>(

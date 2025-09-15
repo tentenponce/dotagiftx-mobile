@@ -1,34 +1,40 @@
-import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class PostItemView extends StatefulWidget {
+class PostItemView extends StatelessWidget with ViewCubitMixin<PostItemCubit> {
   const PostItemView({super.key});
 
   @override
-  State<PostItemView> createState() => _PostItemViewState();
+  Widget buildView(BuildContext context) {
+    return _PostItemView();
+  }
 }
 
-class _PostItemViewState extends State<PostItemView> {
+class _PostItemView extends StatefulWidget {
+  @override
+  State<_PostItemView> createState() => _PostItemViewState();
+}
+
+class _PostItemViewState extends State<_PostItemView> {
+  final _itemSearchFocusNode = FocusNode();
   final TextEditingController _itemSearchController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-
-  DotaItemModel? _selectedItem;
-  List<DotaItemModel> _filteredItems = [];
-  List<DotaItemModel> _allItems = [];
-  bool _showDropdown = false;
-  bool _isLoading = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
+        surfaceTintColor: AppColors.black,
         backgroundColor: AppColors.black,
         elevation: 0,
         leading: IconButton(
@@ -36,7 +42,7 @@ class _PostItemViewState extends State<PostItemView> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Post your item on DotagiftX',
+          I18n.of(context).postItemViewTitle,
           style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 20.sp,
@@ -44,74 +50,85 @@ class _PostItemViewState extends State<PostItemView> {
           ),
         ),
       ),
-      body:
-          _isLoading
-              ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              )
-              : SingleChildScrollView(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header description
-                    Container(
-                      margin: EdgeInsets.only(bottom: 24.h),
-                      child: Text(
-                        'Only verified ( ✓ ) items from your inventory will be listed on Item page. All your posts will still be visible on your profile.',
-                        style: GoogleFonts.inter(
-                          color: AppColors.grey,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-
-                    // Item dropdown
-                    _buildItemDropdown(),
-
-                    // Price and Quantity row
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                            label: 'Price',
-                            controller: _priceController,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,2}'),
-                              ),
-                            ],
+      body: SafeArea(
+        bottom: true,
+        top: false,
+        child: BlocBuilder<PostItemCubit, PostItemState>(
+          buildWhen:
+              (previous, current) =>
+                  previous.isGetItemsLoading != current.isGetItemsLoading,
+          builder: (context, state) {
+            return state.isGetItemsLoading
+                ? const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                )
+                : SingleChildScrollView(
+                  padding: EdgeInsets.all(16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header description
+                      Container(
+                        margin: EdgeInsets.only(bottom: 24.h),
+                        child: Text(
+                          I18n.of(context).postItemViewDescription,
+                          style: GoogleFonts.inter(
+                            color: AppColors.grey,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.4,
                           ),
                         ),
-                        SizedBox(width: 12.w),
-                        _buildQuantityField(),
-                      ],
-                    ),
+                      ),
 
-                    // Notes field
-                    _buildTextField(
-                      label: 'Notes',
-                      controller: _notesController,
-                      maxLines: 4,
-                    ),
+                      // Item dropdown
+                      _buildItemDropdown(),
 
-                    // Post button
-                    _buildPostButton(),
+                      // Price and Quantity row
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                              label: 'Price',
+                              controller: _priceController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          _buildQuantityField(),
+                        ],
+                      ),
 
-                    // Expiration date
-                    _buildExpirationDate(),
+                      // Notes field
+                      _buildTextField(
+                        label: 'Notes',
+                        controller: _notesController,
+                        maxLines: 4,
+                      ),
 
-                    // Guides section
-                    _buildGuidesSection(),
-                  ],
-                ),
-              ),
+                      // Post button
+                      _buildPostButton(),
+
+                      // Expiration date
+                      _buildExpirationDate(),
+
+                      // Guides section
+                      _buildGuidesSection(),
+                    ],
+                  ),
+                );
+          },
+        ),
+      ),
     );
   }
 
@@ -119,7 +136,6 @@ class _PostItemViewState extends State<PostItemView> {
   void dispose() {
     _itemSearchController.dispose();
     _priceController.dispose();
-    _quantityController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -127,8 +143,12 @@ class _PostItemViewState extends State<PostItemView> {
   @override
   void initState() {
     super.initState();
-    _quantityController.text = '1';
-    _loadDotaItems();
+
+    _itemSearchFocusNode.addListener(() {
+      setState(
+        () {},
+      ); // to rebuild the search item dropdown if not focus then hide dropdown
+    });
   }
 
   Widget _buildExpirationDate() {
@@ -230,8 +250,8 @@ class _PostItemViewState extends State<PostItemView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Item name',
-            style: GoogleFonts.inter(
+            I18n.of(context).postItemViewItemName,
+            style: TextStyle(
               color: Colors.white,
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
@@ -248,137 +268,159 @@ class _PostItemViewState extends State<PostItemView> {
             ),
             child: Column(
               children: [
-                TextField(
-                  controller: _itemSearchController,
-                  onChanged: _filterItems,
-                  onTap: () {
-                    if (_itemSearchController.text.isNotEmpty) {
-                      _filterItems(_itemSearchController.text);
+                BlocListener<PostItemCubit, PostItemState>(
+                  listener: (context, state) {
+                    if (state.selectedItem != null) {
+                      _itemSearchController.text =
+                          '${state.selectedItem?.hero ?? 'Unknown'} - ${state.selectedItem?.name ?? 'Unknown'}';
                     }
                   },
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontSize: 14.sp,
-                  ),
-                  decoration: InputDecoration(
-                    hintText:
-                        'Search item you want to post from your inventory.',
-                    hintStyle: GoogleFonts.inter(
-                      color: AppColors.grey,
-                      fontSize: 14.sp,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.darkGrey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 16.h,
-                    ),
-                    suffixIcon: Icon(
-                      Icons.keyboard_arrow_down,
-                      color: AppColors.grey,
-                      size: 24.sp,
+                  child: TextField(
+                    focusNode: _itemSearchFocusNode,
+                    controller: _itemSearchController,
+                    onChanged: context.read<PostItemCubit>().filterItems,
+                    onTap: () {
+                      if (_itemSearchController.text.isNotEmpty) {
+                        context.read<PostItemCubit>().filterItems(
+                          _itemSearchController.text,
+                        );
+                      }
+                    },
+                    style: TextStyle(color: Colors.white, fontSize: 14.sp),
+                    decoration: InputDecoration(
+                      hintText: I18n.of(context).postItemViewItemHint,
+                      hintStyle: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 14.sp,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.darkGrey,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 16.h,
+                      ),
+                      suffixIcon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: AppColors.grey,
+                        size: 24.sp,
+                      ),
                     ),
                   ),
                 ),
-                if (_showDropdown && _filteredItems.isNotEmpty)
-                  Container(
-                    constraints: BoxConstraints(maxHeight: 200.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.darkGrey,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(12.r),
-                        bottomRight: Radius.circular(12.r),
-                      ),
-                      border: Border(
-                        top: BorderSide(
-                          color: AppColors.grey.withValues(alpha: 0.3),
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _filteredItems.length,
-                      itemBuilder: (context, index) {
-                        final item = _filteredItems[index];
-                        return InkWell(
-                          onTap: () => _selectItem(item),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
+                BlocBuilder<PostItemCubit, PostItemState>(
+                  buildWhen:
+                      (previous, current) =>
+                          previous.showDropdown != current.showDropdown ||
+                          previous.items != current.items,
+                  builder: (context, state) {
+                    return state.showDropdown && _itemSearchFocusNode.hasFocus
+                        ? Container(
+                          constraints: BoxConstraints(maxHeight: 200.h),
+                          decoration: BoxDecoration(
+                            color: AppColors.darkGrey,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(12.r),
+                              bottomRight: Radius.circular(12.r),
                             ),
-                            decoration: BoxDecoration(
-                              border:
-                                  index < _filteredItems.length - 1
-                                      ? Border(
-                                        bottom: BorderSide(
-                                          color: AppColors.grey.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                          width: 0.5,
-                                        ),
-                                      )
-                                      : null,
+                            border: Border(
+                              top: BorderSide(
+                                color: AppColors.grey.withValues(alpha: 0.3),
+                                width: 1,
+                              ),
                             ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: state.items.length,
+                            itemBuilder: (context, index) {
+                              final item = state.items[index];
+                              return InkWell(
+                                onTap:
+                                    () => context
+                                        .read<PostItemCubit>()
+                                        .selectItem(item),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                    vertical: 12.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    border:
+                                        index < state.items.length - 1
+                                            ? Border(
+                                              bottom: BorderSide(
+                                                color: AppColors.grey
+                                                    .withValues(alpha: 0.2),
+                                                width: 0.5,
+                                              ),
+                                            )
+                                            : null,
+                                  ),
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        item.name ?? '',
-                                        style: GoogleFonts.inter(
-                                          color: Colors.white,
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w500,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${item.hero ?? 'Unknown'} - ${item.name ?? 'Unknown'}',
+                                              style: GoogleFonts.inter(
+                                                color: Colors.white,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            if (item.hero != null) ...[
+                                              SizedBox(height: 2.h),
+                                              Text(
+                                                item.hero!,
+                                                style: GoogleFonts.inter(
+                                                  color: AppColors.grey,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
                                         ),
                                       ),
-                                      if (item.hero != null) ...[
-                                        SizedBox(height: 2.h),
-                                        Text(
-                                          item.hero!,
-                                          style: GoogleFonts.inter(
-                                            color: AppColors.grey,
-                                            fontSize: 12.sp,
+                                      if (item.rarity != null)
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 8.w,
+                                            vertical: 4.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: _getRarityColor(
+                                              item.rarity!,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              4.r,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            item.rarity!,
+                                            style: GoogleFonts.inter(
+                                              color: Colors.white,
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                      ],
                                     ],
                                   ),
                                 ),
-                                if (item.rarity != null)
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w,
-                                      vertical: 4.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _getRarityColor(item.rarity!),
-                                      borderRadius: BorderRadius.circular(4.r),
-                                    ),
-                                    child: Text(
-                                      item.rarity!,
-                                      style: GoogleFonts.inter(
-                                        color: Colors.white,
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ),
+                        )
+                        : const SizedBox.shrink();
+                  },
+                ),
               ],
             ),
           ),
@@ -392,15 +434,7 @@ class _PostItemViewState extends State<PostItemView> {
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 20.h),
       child: ElevatedButton(
-        onPressed:
-            _selectedItem != null && _priceController.text.isNotEmpty
-                ? () {
-                  // Handle post item logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Item posted successfully!')),
-                  );
-                }
-                : null,
+        onPressed: () => context.read<PostItemCubit>().postItem(),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.black,
@@ -446,8 +480,11 @@ class _PostItemViewState extends State<PostItemView> {
           ),
           SizedBox(height: 8.h),
           TextField(
-            controller: _quantityController,
             keyboardType: TextInputType.number,
+            onChanged:
+                (value) =>
+                    context.read<PostItemCubit>().quantity =
+                        int.tryParse(value) ?? 0,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(color: Colors.white, fontSize: 14.sp),
@@ -596,27 +633,6 @@ class _PostItemViewState extends State<PostItemView> {
     );
   }
 
-  void _filterItems(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredItems = _allItems;
-        _showDropdown = false;
-      } else {
-        _filteredItems =
-            _allItems
-                .where(
-                  (item) =>
-                      (item.name?.toLowerCase().contains(query.toLowerCase()) ??
-                          false) ||
-                      (item.hero?.toLowerCase().contains(query.toLowerCase()) ??
-                          false),
-                )
-                .toList();
-        _showDropdown = _filteredItems.isNotEmpty;
-      }
-    });
-  }
-
   Color _getRarityColor(String rarity) {
     switch (rarity.toLowerCase()) {
       case 'immortal':
@@ -632,57 +648,5 @@ class _PostItemViewState extends State<PostItemView> {
       default:
         return AppColors.grey;
     }
-  }
-
-  Future<void> _loadDotaItems() async {
-    // Simulate loading - in real app this would use GetDotaItemsUsecase
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-
-    // Mock data for demonstration
-    _allItems = [
-      const DotaItemModel(
-        id: '1',
-        name: 'Dragonclaw Hook',
-        hero: 'Pudge',
-        rarity: 'Immortal',
-      ),
-      const DotaItemModel(
-        id: '2',
-        name: 'Stache',
-        hero: 'Pudge',
-        rarity: 'Mythical',
-      ),
-      const DotaItemModel(
-        id: '3',
-        name: 'Arcana',
-        hero: 'Pudge',
-        rarity: 'Arcana',
-      ),
-      const DotaItemModel(
-        id: '4',
-        name: 'Phantom Assassin Arcana',
-        hero: 'Phantom Assassin',
-        rarity: 'Arcana',
-      ),
-      const DotaItemModel(
-        id: '5',
-        name: 'Invoker Immortal',
-        hero: 'Invoker',
-        rarity: 'Immortal',
-      ),
-    ];
-
-    setState(() {
-      _isLoading = false;
-      _filteredItems = _allItems;
-    });
-  }
-
-  void _selectItem(DotaItemModel item) {
-    setState(() {
-      _selectedItem = item;
-      _itemSearchController.text = item.name ?? '';
-      _showDropdown = false;
-    });
   }
 }
