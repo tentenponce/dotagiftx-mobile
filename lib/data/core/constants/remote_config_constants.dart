@@ -230,6 +230,8 @@ abstract final class RemoteConfigConstants {
     ),
   ];
 
+  static String steamPartnerIdBaseUrl = 'https://steamcommunity.com';
+
   static String defaultDotabuffUrl(String steamId) =>
       'https://www.dotabuff.com/players/$steamId';
 

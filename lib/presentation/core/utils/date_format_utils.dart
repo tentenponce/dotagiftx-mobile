@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 abstract final class DateFormatUtils {
   static String formatDateAgo(String dateString) {
     try {
@@ -25,6 +27,15 @@ abstract final class DateFormatUtils {
       }
     } catch (e) {
       return 'Unknown ago';
+    }
+  }
+
+  static String formatExactDateTime(String dateString) {
+    try {
+      final date = DateTime.parse(dateString);
+      return DateFormat('MMM d, yyyy - h:mm a').format(date);
+    } catch (e) {
+      return dateString;
     }
   }
 }
