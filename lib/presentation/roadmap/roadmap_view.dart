@@ -10,7 +10,6 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RoadmapView extends StatelessWidget with ViewCubitMixin<RoadmapCubit> {
   const RoadmapView({super.key});
@@ -38,9 +37,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
         elevation: 0,
         title: Text(
           I18n.of(context).roadmapViewTitle,
-          style: GoogleFonts.inter(
+          style: const TextStyle(
             color: Colors.white,
-            fontSize: 20.sp,
+            fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -73,18 +72,18 @@ class _RoadmapViewState extends State<_RoadmapView> {
                   children: [
                     Text(
                       I18n.of(context).roadmapViewUpcomingFeatures,
-                      style: GoogleFonts.inter(
+                      style: const TextStyle(
                         color: AppColors.primary,
-                        fontSize: 24.sp,
+                        fontSize: 24,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       I18n.of(context).roadmapViewDescription,
-                      style: GoogleFonts.inter(
+                      style: const TextStyle(
                         color: AppColors.grey,
-                        fontSize: 14.sp,
+                        fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -151,9 +150,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
                 child: Text(
                   I18n.of(context).roadmapViewSuggestion,
                   maxLines: 2,
-                  style: GoogleFonts.inter(
+                  style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16.sp,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -163,9 +162,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
           SizedBox(height: 12.h),
           Text(
             I18n.of(context).roadmapViewSuggestionDescription,
-            style: GoogleFonts.inter(
+            style: const TextStyle(
               color: AppColors.grey,
-              fontSize: 14.sp,
+              fontSize: 14,
               fontWeight: FontWeight.w400,
               height: 1.4,
             ),
@@ -176,13 +175,10 @@ class _RoadmapViewState extends State<_RoadmapView> {
           TextField(
             controller: _suggestionController,
             maxLines: 4,
-            style: GoogleFonts.inter(color: Colors.white, fontSize: 14.sp),
+            style: const TextStyle(color: Colors.white, fontSize: 14),
             decoration: InputDecoration(
               hintText: I18n.of(context).roadmapViewSuggestionHint,
-              hintStyle: GoogleFonts.inter(
-                color: AppColors.grey,
-                fontSize: 14.sp,
-              ),
+              hintStyle: const TextStyle(color: AppColors.grey, fontSize: 14),
               filled: true,
               fillColor: AppColors.black,
               border: OutlineInputBorder(
@@ -231,8 +227,8 @@ class _RoadmapViewState extends State<_RoadmapView> {
               ),
               child: Text(
                 I18n.of(context).roadmapViewSubmitSuggestionButton,
-                style: GoogleFonts.inter(
-                  fontSize: 16.sp,
+                style: const TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -253,7 +249,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
       SnackBar(
         content: Text(
           I18n.of(context).roadmapViewSubmitSuggestionSuccess,
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 14.sp),
+          style: const TextStyle(color: Colors.white, fontSize: 14),
         ),
         backgroundColor: AppColors.primary,
         duration: const Duration(seconds: 3),
