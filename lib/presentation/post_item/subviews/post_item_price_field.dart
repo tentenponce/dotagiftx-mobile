@@ -61,24 +61,7 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
                   fillColor: AppColors.darkGrey,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.grey.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: AppColors.primary,
-                      width: 2,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.grey.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
+                    borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -90,9 +73,9 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
           ],
         ),
         const SizedBox(height: 4),
-        const Text(
-          'Price value will be on USD.',
-          style: TextStyle(color: AppColors.grey, fontSize: 12),
+        Text(
+          I18n.of(context).postItemViewTextFieldPriceDescription,
+          style: const TextStyle(color: AppColors.grey, fontSize: 12),
         ),
       ],
     );

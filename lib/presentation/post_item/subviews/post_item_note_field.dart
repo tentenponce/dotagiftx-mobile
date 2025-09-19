@@ -56,24 +56,7 @@ class _PostItemNoteFieldState extends State<PostItemNoteField> {
                     fillColor: AppColors.darkGrey,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: AppColors.grey.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: AppColors.primary,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: AppColors.grey.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
+                      borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,

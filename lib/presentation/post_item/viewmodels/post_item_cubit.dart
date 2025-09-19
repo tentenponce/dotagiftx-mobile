@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_items_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -12,26 +13,33 @@ import 'package:injectable/injectable.dart';
 class PostItemCubit extends BaseCubit<PostItemState>
     with CubitErrorMixin<PostItemState> {
   final Logger _logger;
+  final DotagiftxUnauthApi _dotagiftxUnauthApi;
   final GetDotaItemsUsecase _getDotaItemsUsecase;
 
   List<DotaItemModel> _items = [];
   double price = 0;
   int quantity = 0;
 
-  PostItemCubit(this._logger, this._getDotaItemsUsecase)
-    : super(const PostItemState());
+  PostItemCubit(
+    this._logger,
+    this._getDotaItemsUsecase,
+    this._dotagiftxUnauthApi,
+  ) : super(const PostItemState());
 
   @override
   Logger get logger => _logger;
 
+  void clearSelectedItem() {
+    emit(state.copyWith(selectedItem: null, items: _items));
+  }
+
   void filterItems(String query) {
     emit(state.copyWith(selectedItem: null));
     if (query.isEmpty) {
-      emit(state.copyWith(items: _items, showDropdown: false));
+      emit(state.copyWith(items: _items));
     } else {
       emit(
         state.copyWith(
-          showDropdown: true,
           items:
               _items
                   .toList()
@@ -59,7 +67,16 @@ class PostItemCubit extends BaseCubit<PostItemState>
   }
 
   void selectItem(DotaItemModel item) {
-    emit(state.copyWith(selectedItem: item, showDropdown: false));
+    emit(state.copyWith(selectedItem: item, items: _items));
+
+    unawaited(
+      cubitHandler(
+        () => _dotagiftxUnauthApi.getCatalogBySlug(item.slug ?? ''),
+        (item) async {
+          emit(state.copyWith(selectedItem: item));
+        },
+      ),
+    );
   }
 
   Future<void> _getDotaItems() async {

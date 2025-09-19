@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_guide
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_note_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_price_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_quantity_field.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_selected_dota_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,10 @@ class _PostItemView extends StatelessWidget {
 
               // Item dropdown
               const PostItemDotaItemField(),
+
+              const SizedBox(height: 16),
+
+              const PostItemSelectedDotaItemView(),
 
               const SizedBox(height: 16),
 

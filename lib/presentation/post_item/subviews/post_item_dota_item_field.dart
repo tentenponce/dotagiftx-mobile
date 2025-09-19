@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
@@ -5,6 +6,7 @@ import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cub
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PostItemDotaItemField extends StatefulWidget {
   const PostItemDotaItemField({super.key});
@@ -27,62 +29,80 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
           style: const TextStyle(color: Colors.white70, fontSize: 14),
         ),
         const SizedBox(height: 8),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.grey.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
-          child: Column(
-            children: [
-              BlocListener<PostItemCubit, PostItemState>(
-                listener: (context, state) {
-                  if (state.selectedItem != null) {
-                    _itemSearchController.text =
-                        '${state.selectedItem?.hero ?? 'Unknown'} - ${state.selectedItem?.name ?? 'Unknown'}';
+        Column(
+          children: [
+            BlocListener<PostItemCubit, PostItemState>(
+              listener: (context, state) {
+                if (state.selectedItem != null) {
+                  _itemSearchController.text =
+                      '${state.selectedItem?.hero ?? 'Unknown'} - ${state.selectedItem?.name ?? 'Unknown'}';
+                  _itemSearchFocusNode.unfocus();
+                }
+              },
+              child: TextField(
+                focusNode: _itemSearchFocusNode,
+                controller: _itemSearchController,
+                onChanged: context.read<PostItemCubit>().filterItems,
+                onTap: () {
+                  if (_itemSearchController.text.isNotEmpty) {
+                    context.read<PostItemCubit>().filterItems(
+                      _itemSearchController.text,
+                    );
                   }
                 },
-                child: TextField(
-                  focusNode: _itemSearchFocusNode,
-                  controller: _itemSearchController,
-                  onChanged: context.read<PostItemCubit>().filterItems,
-                  onTap: () {
-                    if (_itemSearchController.text.isNotEmpty) {
-                      context.read<PostItemCubit>().filterItems(
-                        _itemSearchController.text,
-                      );
-                    }
-                  },
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                  decoration: InputDecoration(
-                    hintText: I18n.of(context).postItemViewItemHint,
-                    hintStyle: const TextStyle(
-                      color: AppColors.grey,
-                      fontSize: 14,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.darkGrey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    suffixIcon: const Icon(
-                      Icons.keyboard_arrow_down,
-                      color: AppColors.grey,
-                      size: 24,
-                    ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: I18n.of(context).postItemViewItemHint,
+                  hintStyle: const TextStyle(
+                    color: AppColors.grey,
+                    fontSize: 14,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.darkGrey,
+                  border: OutlineInputBorder(
+                    borderRadius:
+                        _itemSearchFocusNode.hasFocus
+                            ? const BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12),
+                            )
+                            : BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            context.read<PostItemCubit>().clearSelectedItem();
+                            _itemSearchController.clear();
+                          },
+                          child: const Icon(
+                            Icons.clear,
+                            color: AppColors.grey,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: AppColors.grey,
+                        size: 24,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              _buildListDropdown(),
-            ],
-          ),
+            ),
+            _buildListDropdown(),
+          ],
         ),
       ],
     );
@@ -109,105 +129,152 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
     return BlocBuilder<PostItemCubit, PostItemState>(
       buildWhen:
           (previous, current) =>
-              previous.showDropdown != current.showDropdown ||
-              previous.items != current.items,
+              previous.items != current.items ||
+              previous.isGetItemsLoading != current.isGetItemsLoading,
       builder: (context, state) {
-        return state.showDropdown && _itemSearchFocusNode.hasFocus
+        return _itemSearchFocusNode.hasFocus
             ? Container(
-              constraints: const BoxConstraints(maxHeight: 200),
-              decoration: BoxDecoration(
+              constraints:
+                  !state.isGetItemsLoading
+                      ? const BoxConstraints(maxHeight: 200)
+                      : null,
+              decoration: const BoxDecoration(
                 color: AppColors.darkGrey,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
                 ),
-                border: Border(
-                  top: BorderSide(
-                    color: AppColors.grey.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
               ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: state.items.length,
-                itemBuilder: (context, index) {
-                  final item = state.items[index];
-                  return InkWell(
-                    onTap: () => context.read<PostItemCubit>().selectItem(item),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        border:
-                            index < state.items.length - 1
-                                ? Border(
-                                  bottom: BorderSide(
-                                    color: AppColors.grey.withValues(
-                                      alpha: 0.2,
-                                    ),
-                                    width: 0.5,
-                                  ),
-                                )
-                                : null,
-                      ),
-                      child: Row(
+              child:
+                  state.isGetItemsLoading
+                      ? Column(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${item.hero ?? 'Unknown'} - ${item.name ?? 'Unknown'}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                if (item.hero != null) ...[
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    item.hero!,
-                                    style: const TextStyle(
-                                      color: AppColors.grey,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
+                          _buildShimmerSuggestionItem(),
+                          _buildShimmerSuggestionItem(),
+                          _buildShimmerSuggestionItem(),
+                          _buildShimmerSuggestionItem(end: true),
+                        ],
+                      )
+                      : state.items.isEmpty
+                      ? Center(
+                        child: Text(
+                          I18n.of(context).postItemViewItemNoResults,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 14,
                           ),
-                          if (item.rarity != null)
-                            Container(
+                        ),
+                      )
+                      : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.items.length,
+                        itemBuilder: (context, index) {
+                          final item = state.items[index];
+                          return InkWell(
+                            onTap:
+                                () => context.read<PostItemCubit>().selectItem(
+                                  item,
+                                ),
+                            child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
+                                horizontal: 16,
+                                vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: RarityUtils.getRarityColor(item.rarity),
-                                borderRadius: BorderRadius.circular(4),
+                                border:
+                                    index < state.items.length - 1
+                                        ? Border(
+                                          bottom: BorderSide(
+                                            color: AppColors.grey.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                            width: 0.5,
+                                          ),
+                                        )
+                                        : null,
                               ),
-                              child: Text(
-                                item.rarity!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              child: _buildSuggestionItem(item),
                             ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
             )
             : const SizedBox.shrink();
       },
+    );
+  }
+
+  Widget _buildShimmerSuggestionItem({bool? end}) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      child: Shimmer.fromColors(
+        baseColor: AppColors.darkGrey,
+        highlightColor: AppColors.grey.withValues(alpha: 0.5),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.darkGrey,
+            borderRadius:
+                (end ?? false)
+                    ? const BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    )
+                    : null,
+          ),
+          height: 40,
+          width: double.infinity,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSuggestionItem(DotaItemModel item) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${item.hero ?? 'Unknown'} - ${item.name ?? 'Unknown'}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              if (item.hero != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  item.hero!,
+                  style: const TextStyle(color: AppColors.grey, fontSize: 12),
+                ),
+              ],
+            ],
+          ),
+        ),
+        if (item.rarity != null)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: RarityUtils.getRarityColor(item.rarity),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              item.rarity!,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
