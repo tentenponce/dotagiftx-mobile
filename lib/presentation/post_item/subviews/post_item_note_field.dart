@@ -2,9 +2,15 @@ import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class PostItemNoteField extends StatelessWidget {
-  final TextEditingController controller;
-  const PostItemNoteField({required this.controller, super.key});
+class PostItemNoteField extends StatefulWidget {
+  const PostItemNoteField({super.key});
+
+  @override
+  State<PostItemNoteField> createState() => _PostItemNoteFieldState();
+}
+
+class _PostItemNoteFieldState extends State<PostItemNoteField> {
+  final TextEditingController _notesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +44,7 @@ class PostItemNoteField extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
-                  controller: controller,
+                  controller: _notesController,
                   maxLines: 4,
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                   decoration: InputDecoration(

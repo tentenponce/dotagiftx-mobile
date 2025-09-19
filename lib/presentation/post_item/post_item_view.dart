@@ -1,8 +1,7 @@
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_dota_item_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_guidelines_view.dart';
-import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_list_dropdown_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_note_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_price_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_quantity_field.dart';
@@ -20,17 +19,7 @@ class PostItemView extends StatelessWidget with ViewCubitMixin<PostItemCubit> {
   }
 }
 
-class _PostItemView extends StatefulWidget {
-  @override
-  State<_PostItemView> createState() => _PostItemViewState();
-}
-
-class _PostItemViewState extends State<_PostItemView> {
-  final _itemSearchFocusNode = FocusNode();
-  final TextEditingController _itemSearchController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
-
+class _PostItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,15 +64,15 @@ class _PostItemViewState extends State<_PostItemView> {
               ),
 
               // Item dropdown
-              _buildItemDropdown(),
+              const PostItemDotaItemField(),
+
+              const SizedBox(height: 16),
 
               // Price and Quantity row
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: PostItemPriceField(controller: _priceController),
-                  ),
+                  const Expanded(child: PostItemPriceField()),
                   const SizedBox(width: 12),
                   ConstrainedBox(
                     constraints: const BoxConstraints(minWidth: 100),
@@ -95,13 +84,13 @@ class _PostItemViewState extends State<_PostItemView> {
               const SizedBox(height: 16),
 
               // Notes field
-              PostItemNoteField(controller: _notesController),
+              const PostItemNoteField(),
 
               // Post button
-              _buildPostButton(),
+              _buildPostButton(context),
 
               // Expiration date
-              _buildExpirationDate(),
+              _buildExpirationDate(context),
 
               // Guides section
               const PostItemGuidelinesView(),
@@ -112,26 +101,7 @@ class _PostItemViewState extends State<_PostItemView> {
     );
   }
 
-  @override
-  void dispose() {
-    _itemSearchController.dispose();
-    _priceController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _itemSearchFocusNode.addListener(() {
-      setState(
-        () {},
-      ); // to rebuild the search item dropdown if not focus then hide dropdown
-    });
-  }
-
-  Widget _buildExpirationDate() {
+  Widget _buildExpirationDate(BuildContext context) {
     final now = DateTime.now();
     final expirationDate = now.add(const Duration(days: 30));
     final formattedDate =
@@ -151,82 +121,7 @@ class _PostItemViewState extends State<_PostItemView> {
     );
   }
 
-  Widget _buildItemDropdown() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            I18n.of(context).postItemViewItemName,
-            style: const TextStyle(color: Colors.white70, fontSize: 14),
-          ),
-          const SizedBox(height: 8),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.grey.withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              children: [
-                BlocListener<PostItemCubit, PostItemState>(
-                  listener: (context, state) {
-                    if (state.selectedItem != null) {
-                      _itemSearchController.text =
-                          '${state.selectedItem?.hero ?? 'Unknown'} - ${state.selectedItem?.name ?? 'Unknown'}';
-                    }
-                  },
-                  child: TextField(
-                    focusNode: _itemSearchFocusNode,
-                    controller: _itemSearchController,
-                    onChanged: context.read<PostItemCubit>().filterItems,
-                    onTap: () {
-                      if (_itemSearchController.text.isNotEmpty) {
-                        context.read<PostItemCubit>().filterItems(
-                          _itemSearchController.text,
-                        );
-                      }
-                    },
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: I18n.of(context).postItemViewItemHint,
-                      hintStyle: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 14,
-                      ),
-                      filled: true,
-                      fillColor: AppColors.darkGrey,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      suffixIcon: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: AppColors.grey,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                ),
-                PostItemListDropdownView(
-                  itemSearchFocusNode: _itemSearchFocusNode,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPostButton() {
+  Widget _buildPostButton(BuildContext context) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 20),

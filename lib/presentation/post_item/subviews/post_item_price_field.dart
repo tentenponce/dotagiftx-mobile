@@ -3,10 +3,15 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class PostItemPriceField extends StatelessWidget {
-  final TextEditingController controller;
+class PostItemPriceField extends StatefulWidget {
+  const PostItemPriceField({super.key});
 
-  const PostItemPriceField({required this.controller, super.key});
+  @override
+  State<PostItemPriceField> createState() => _PostItemPriceFieldState();
+}
+
+class _PostItemPriceFieldState extends State<PostItemPriceField> {
+  final TextEditingController _priceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,7 @@ class PostItemPriceField extends StatelessWidget {
           children: [
             Expanded(
               child: TextField(
-                controller: controller,
+                controller: _priceController,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
