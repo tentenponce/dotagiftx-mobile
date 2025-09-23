@@ -1,6 +1,8 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostItemNoteField extends StatefulWidget {
   const PostItemNoteField({super.key});
@@ -45,6 +47,8 @@ class _PostItemNoteFieldState extends State<PostItemNoteField> {
               Expanded(
                 child: TextField(
                   controller: _notesController,
+                  onChanged:
+                      (value) => context.read<PostItemCubit>().notes = value,
                   maxLines: 4,
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                   decoration: InputDecoration(
@@ -75,5 +79,11 @@ class _PostItemNoteFieldState extends State<PostItemNoteField> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _notesController.text = context.read<PostItemCubit>().notes;
   }
 }

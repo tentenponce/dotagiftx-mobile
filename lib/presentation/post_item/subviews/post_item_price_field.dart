@@ -1,7 +1,9 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostItemPriceField extends StatefulWidget {
   const PostItemPriceField({super.key});
@@ -44,6 +46,8 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
             Expanded(
               child: TextField(
                 controller: _priceController,
+                onChanged:
+                    (value) => context.read<PostItemCubit>().price = value,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
@@ -79,5 +83,11 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _priceController.text = context.read<PostItemCubit>().price;
   }
 }

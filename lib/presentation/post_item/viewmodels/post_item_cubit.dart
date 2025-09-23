@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_items_usecase.dart';
+import 'package:dotagiftx_mobile/domain/usecases/post_listing_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
@@ -12,18 +13,23 @@ import 'package:injectable/injectable.dart';
 @injectable
 class PostItemCubit extends BaseCubit<PostItemState>
     with CubitErrorMixin<PostItemState> {
+  late final void Function() showSuccessPost;
+
   final Logger _logger;
   final DotagiftxUnauthApi _dotagiftxUnauthApi;
   final GetDotaItemsUsecase _getDotaItemsUsecase;
+  final PostListingUsecase _postListingUsecase;
 
   List<DotaItemModel> _items = [];
-  double price = 0;
-  int quantity = 0;
+  String price = '';
+  String quantity = '1';
+  String notes = '';
 
   PostItemCubit(
     this._logger,
     this._getDotaItemsUsecase,
     this._dotagiftxUnauthApi,
+    this._postListingUsecase,
   ) : super(const PostItemState());
 
   @override
@@ -60,10 +66,29 @@ class PostItemCubit extends BaseCubit<PostItemState>
     unawaited(_getDotaItems());
   }
 
-  void postItem() {
-    if (state.selectedItem == null || price == 0 || quantity == 0) {
+  Future<void> postItem() async {
+    final parsedPrice = double.tryParse(price) ?? 0;
+    final parsedQuantity = int.tryParse(quantity) ?? 0;
+
+    // TODO(tenten): Show error to the user
+    if (state.selectedItem == null || parsedPrice <= 0 || parsedQuantity <= 0) {
       return;
     }
+
+    emit(state.copyWith(isPostItemLoading: true));
+    await cubitHandler(
+      () => _postListingUsecase.post(
+        itemId: state.selectedItem?.id ?? '',
+        price: parsedPrice,
+        quantity: parsedQuantity,
+        notes: notes,
+      ),
+      (response) async {
+        showSuccessPost();
+      },
+    );
+
+    emit(state.copyWith(isPostItemLoading: false));
   }
 
   void selectItem(DotaItemModel item) {
