@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
+import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_dota_item_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_guidelines_view.dart';
@@ -122,12 +123,27 @@ class _PostItemViewState extends State<_PostItemView> {
   void initState() {
     super.initState();
 
+    _scrollController.addListener(() {
+      FocusScope.of(context).unfocus();
+    });
+
     context.read<PostItemCubit>().showSuccessPost = () {
-      // TODO(tenten): Add an action to the snackbar to go to the my listings page
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(I18n.of(context).postItemViewSuccessPost),
-          backgroundColor: AppColors.primary,
+          action: SnackBarAction(
+            label: I18n.of(context).postItemViewSuccessPostAction,
+            onPressed: () {
+              unawaited(
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const MyListingsView(),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       );
     };

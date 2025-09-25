@@ -203,5 +203,6 @@
     "postItemViewGuideline2": "Dota 2 Giftables transaction only viable if the two steam user parties have been friends for 30 days.",
     "postItemViewGuideline3": "Please be clear in your terms and price. If the price is variable and subject to change, make a new post and remove the old one.",
     "postItemViewGuideline4": "Payment agreements will be done between you and the buyer. This website does not accept or integrate any payment service.",
-    "postItemViewSuccessPost": "Item posted successfully"
+    "postItemViewSuccessPost": "Item posted successfully!",
+    "postItemViewSuccessPostAction": "View Post"
 }

@@ -67,6 +67,8 @@ class PostItemCubit extends BaseCubit<PostItemState>
   }
 
   Future<void> postItem() async {
+    showSuccessPost();
+    return;
     final parsedPrice = double.tryParse(price) ?? 0;
     final parsedQuantity = int.tryParse(quantity) ?? 0;
 
