@@ -21,25 +21,13 @@ class _PostItemNoteFieldState extends State<PostItemNoteField> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                I18n.of(context).postItemViewTextFieldNotes,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Text(
-                ' *',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+          Text(
+            I18n.of(context).postItemViewTextFieldNotes,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 8),
           Row(

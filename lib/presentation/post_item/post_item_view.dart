@@ -150,18 +150,14 @@ class _PostItemViewState extends State<_PostItemView> {
   }
 
   Widget _buildExpirationDate(BuildContext context) {
-    final now = DateTime.now();
-    final expirationDate = now.add(const Duration(days: 30));
-    final formattedDate =
-        '${expirationDate.day.toString().padLeft(2, '0')}/${expirationDate.month.toString().padLeft(2, '0')}/${expirationDate.year}';
-
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
+      alignment: Alignment.center,
       child: Text(
-        I18n.of(context).postItemViewExpirationDate(formattedDate),
+        I18n.of(context).postItemViewExpirationDate,
         textAlign: TextAlign.center,
         style: const TextStyle(
-          color: AppColors.primary,
+          color: Colors.red,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -172,7 +168,7 @@ class _PostItemViewState extends State<_PostItemView> {
   Widget _buildPostButton(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 20),
+      margin: const EdgeInsets.only(top: 20, bottom: 10),
       child: BlocBuilder<PostItemCubit, PostItemState>(
         buildWhen:
             (previous, current) =>

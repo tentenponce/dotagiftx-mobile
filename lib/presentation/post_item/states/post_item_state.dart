@@ -10,5 +10,7 @@ abstract class PostItemState with _$PostItemState {
     @Default(false) bool isGetItemsLoading,
     @Default([]) List<DotaItemModel> items,
     @Default(null) DotaItemModel? selectedItem,
+    @Default(false) bool isItemErrorRequired,
+    @Default(false) bool isPriceErrorRequired,
   }) = _PostItemState;
 }

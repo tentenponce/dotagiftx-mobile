@@ -24,14 +24,30 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          I18n.of(context).postItemViewItemName,
-          style: const TextStyle(color: Colors.white70, fontSize: 14),
+        Row(
+          children: [
+            Text(
+              I18n.of(context).postItemViewItemName,
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
+            ),
+            const Text(
+              ' *',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BlocListener<PostItemCubit, PostItemState>(
+            BlocConsumer<PostItemCubit, PostItemState>(
+              listenWhen:
+                  (previous, current) =>
+                      previous.selectedItem != current.selectedItem,
               listener: (context, state) {
                 if (state.selectedItem != null) {
                   _itemSearchController.text =
@@ -39,67 +55,82 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
                   _itemSearchFocusNode.unfocus();
                 }
               },
-              child: TextField(
-                focusNode: _itemSearchFocusNode,
-                controller: _itemSearchController,
-                onChanged: context.read<PostItemCubit>().filterItems,
-                onTap: () {
-                  if (_itemSearchController.text.isNotEmpty) {
-                    context.read<PostItemCubit>().filterItems(
-                      _itemSearchController.text,
-                    );
-                  }
-                },
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: I18n.of(context).postItemViewItemHint,
-                  hintStyle: const TextStyle(
-                    color: AppColors.grey,
-                    fontSize: 14,
-                  ),
-                  filled: true,
-                  fillColor: AppColors.darkGrey,
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        _itemSearchFocusNode.hasFocus
-                            ? const BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(12),
-                            )
-                            : BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            context.read<PostItemCubit>().clearSelectedItem();
-                            _itemSearchController.clear();
-                          },
-                          child: const Icon(
-                            Icons.clear,
-                            color: AppColors.grey,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      const Icon(
-                        Icons.keyboard_arrow_down,
+              buildWhen:
+                  (previous, current) =>
+                      previous.isItemErrorRequired !=
+                      current.isItemErrorRequired,
+              builder:
+                  (context, state) => TextField(
+                    focusNode: _itemSearchFocusNode,
+                    controller: _itemSearchController,
+                    onChanged: context.read<PostItemCubit>().filterItems,
+                    onTap: () {
+                      if (_itemSearchController.text.isNotEmpty) {
+                        context.read<PostItemCubit>().filterItems(
+                          _itemSearchController.text,
+                        );
+                      }
+                    },
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: I18n.of(context).postItemViewItemHint,
+                      hintStyle: const TextStyle(
                         color: AppColors.grey,
-                        size: 24,
+                        fontSize: 14,
                       ),
-                    ],
+                      filled: true,
+                      fillColor: AppColors.darkGrey,
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            _itemSearchFocusNode.hasFocus
+                                ? const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  topRight: Radius.circular(12),
+                                )
+                                : BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      error:
+                          state.isItemErrorRequired &&
+                                  !_itemSearchFocusNode.hasFocus
+                              ? Text(
+                                I18n.of(context).postItemViewItemErrorRequired,
+                                style: const TextStyle(color: Colors.red),
+                              )
+                              : null,
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () {
+                                context
+                                    .read<PostItemCubit>()
+                                    .clearSelectedItem();
+                                _itemSearchController.clear();
+                              },
+                              child: const Icon(
+                                Icons.clear,
+                                color: AppColors.grey,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppColors.grey,
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
             ),
             _buildListDropdown(),
           ],

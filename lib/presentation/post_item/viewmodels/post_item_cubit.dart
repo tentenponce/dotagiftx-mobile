@@ -14,17 +14,18 @@ import 'package:injectable/injectable.dart';
 class PostItemCubit extends BaseCubit<PostItemState>
     with CubitErrorMixin<PostItemState> {
   late final void Function() showSuccessPost;
-
+  late final void Function(int quantity) setQuantity;
+  late final void Function() showPostError;
   final Logger _logger;
+
   final DotagiftxUnauthApi _dotagiftxUnauthApi;
   final GetDotaItemsUsecase _getDotaItemsUsecase;
   final PostListingUsecase _postListingUsecase;
-
   List<DotaItemModel> _items = [];
-  String price = '';
+
+  String _price = '';
   String quantity = '1';
   String notes = '';
-
   PostItemCubit(
     this._logger,
     this._getDotaItemsUsecase,
@@ -35,12 +36,24 @@ class PostItemCubit extends BaseCubit<PostItemState>
   @override
   Logger get logger => _logger;
 
+  String get price => _price;
+  set price(String value) {
+    emit(state.copyWith(isPriceErrorRequired: value.isEmpty));
+    _price = value;
+  }
+
   void clearSelectedItem() {
-    emit(state.copyWith(selectedItem: null, items: _items));
+    emit(
+      state.copyWith(
+        selectedItem: null,
+        items: _items,
+        isItemErrorRequired: true,
+      ),
+    );
   }
 
   void filterItems(String query) {
-    emit(state.copyWith(selectedItem: null));
+    emit(state.copyWith(selectedItem: null, isItemErrorRequired: false));
     if (query.isEmpty) {
       emit(state.copyWith(items: _items));
     } else {
@@ -70,8 +83,18 @@ class PostItemCubit extends BaseCubit<PostItemState>
     final parsedPrice = double.tryParse(price) ?? 0;
     final parsedQuantity = int.tryParse(quantity) ?? 0;
 
-    // TODO(tenten): Show error to the user
-    if (state.selectedItem == null || parsedPrice <= 0 || parsedQuantity <= 0) {
+    // default to 1 if quantity is less than or equal to 0
+    if (parsedQuantity <= 0) {
+      setQuantity(1);
+    }
+
+    if (state.selectedItem == null || parsedPrice <= 0) {
+      emit(
+        state.copyWith(
+          isItemErrorRequired: state.selectedItem == null,
+          isPriceErrorRequired: parsedPrice <= 0,
+        ),
+      );
       return;
     }
 
@@ -92,7 +115,13 @@ class PostItemCubit extends BaseCubit<PostItemState>
   }
 
   void selectItem(DotaItemModel item) {
-    emit(state.copyWith(selectedItem: item, items: _items));
+    emit(
+      state.copyWith(
+        selectedItem: item,
+        items: _items,
+        isItemErrorRequired: false,
+      ),
+    );
 
     unawaited(
       cubitHandler(

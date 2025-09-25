@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -44,34 +45,51 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
         Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: _priceController,
-                onChanged:
-                    (value) => context.read<PostItemCubit>().price = value,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-                ],
-                maxLines: 1,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-                decoration: InputDecoration(
-                  hintStyle: const TextStyle(
-                    color: AppColors.grey,
-                    fontSize: 14,
-                  ),
-                  filled: true,
-                  fillColor: AppColors.darkGrey,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
+              child: BlocBuilder<PostItemCubit, PostItemState>(
+                buildWhen:
+                    (previous, current) =>
+                        previous.isPriceErrorRequired !=
+                        current.isPriceErrorRequired,
+                builder: (context, state) {
+                  return TextField(
+                    controller: _priceController,
+                    onChanged:
+                        (value) => context.read<PostItemCubit>().price = value,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,2}'),
+                      ),
+                    ],
+                    maxLines: 1,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 14,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.darkGrey,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      error:
+                          state.isPriceErrorRequired
+                              ? Text(
+                                I18n.of(context).postItemViewPriceErrorRequired,
+                                style: const TextStyle(color: Colors.red),
+                              )
+                              : null,
+                    ),
+                  );
+                },
               ),
             ),
           ],

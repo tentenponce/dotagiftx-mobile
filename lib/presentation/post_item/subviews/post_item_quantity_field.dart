@@ -56,5 +56,8 @@ class _PostItemQuantityFieldState extends State<PostItemQuantityField> {
   void initState() {
     super.initState();
     _quantityController.text = context.read<PostItemCubit>().quantity;
+    context.read<PostItemCubit>().setQuantity = (quantity) {
+      _quantityController.text = quantity.toString();
+    };
   }
 }
