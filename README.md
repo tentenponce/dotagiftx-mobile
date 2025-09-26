@@ -15,9 +15,6 @@ Mobile platform for [dotagiftx.com](https://dotagiftx.com/) - Marketplace for Do
    - **arm64-v8a**: For most modern Android devices (64-bit ARM)
    - **armeabi-v7a**: For older Android devices (32-bit ARM)
    - **x86_64**: For Android emulators and x86 devices
-   - **universal**: Works on all architectures (larger file size)
-
-> **💡 Tip**: If you're unsure about your device architecture, download the universal APK.
 
 ## 🛠️ Development Setup
 
