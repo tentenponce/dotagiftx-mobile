@@ -18,6 +18,7 @@ class DotaItemModel extends Equatable {
   final String? origin;
   final int? reservedCount;
   final int? soldCount;
+  final int? bidCount;
 
   const DotaItemModel({
     required this.id,
@@ -31,6 +32,7 @@ class DotaItemModel extends Equatable {
     this.origin,
     this.reservedCount,
     this.soldCount,
+    this.bidCount,
   });
 
   factory DotaItemModel.fromJson(Map<String, dynamic> json) =>
@@ -49,6 +51,7 @@ class DotaItemModel extends Equatable {
     origin,
     reservedCount,
     soldCount,
+    bidCount,
   ];
 
   Map<String, dynamic> toJson() => _$DotaItemModelToJson(this);
