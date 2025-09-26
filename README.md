@@ -22,8 +22,7 @@ Mobile platform for [dotagiftx.com](https://dotagiftx.com/) - Marketplace for Do
 
 - Flutter SDK (3.29.3 or compatible)
 - [FVM (Flutter Version Manager)](https://fvm.app/) (recommended)
-- Android Studio or VS Code
-- Git
+- VS Code (recommended) or any IDE that you prefer
 
 ### Environment Configuration
 
