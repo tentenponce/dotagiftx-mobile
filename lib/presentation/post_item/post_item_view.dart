@@ -127,26 +127,34 @@ class _PostItemViewState extends State<_PostItemView> {
       FocusScope.of(context).unfocus();
     });
 
-    context.read<PostItemCubit>().showSuccessPost = () {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(I18n.of(context).postItemViewSuccessPost),
-          action: SnackBarAction(
-            label: I18n.of(context).postItemViewSuccessPostAction,
-            onPressed: () {
-              unawaited(
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (context) => const MyListingsView(),
+    context.read<PostItemCubit>()
+      ..showSuccessPost = () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(I18n.of(context).postItemViewSuccessPost),
+            action: SnackBarAction(
+              label: I18n.of(context).postItemViewSuccessPostAction,
+              onPressed: () {
+                unawaited(
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (context) => const MyListingsView(),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      );
-    };
+        );
+      }
+      ..showInvalidQuantityError = () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(I18n.of(context).postItemViewInvalidQuantityError),
+          ),
+        );
+      };
   }
 
   Widget _buildExpirationDate(BuildContext context) {

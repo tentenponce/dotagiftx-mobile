@@ -28,16 +28,16 @@ mixin CubitErrorMixin<State> on BaseCubit<State> {
       if (!isClosed) {
         onError != null
             ? await onError(e, st)
-            : await defaultErrorHandler(call, e, st);
+            : await defaultErrorHandler(e, call: call, stackTrace: st);
       }
     }
   }
 
   Future<T?> defaultErrorHandler<T extends Object?>(
-    Future<T?> Function() call,
-    Object? exception,
+    Object? exception, {
+    Future<T?> Function()? call,
     StackTrace? stackTrace,
-  ) {
+  }) {
     logger.log(LogLevel.error, 'Failed calling: $call', exception, stackTrace);
     if (exception is BadRequestException &&
         !StringUtils.isNullOrEmpty(exception.apiErrorMessage)) {

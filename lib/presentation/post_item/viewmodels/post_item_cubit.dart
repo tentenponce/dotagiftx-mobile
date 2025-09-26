@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
+import 'package:dotagiftx_mobile/domain/core/domain_exceptions.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_items_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/post_listing_usecase.dart';
@@ -15,7 +16,7 @@ class PostItemCubit extends BaseCubit<PostItemState>
     with CubitErrorMixin<PostItemState> {
   late final void Function() showSuccessPost;
   late final void Function(int quantity) setQuantity;
-  late final void Function() showPostError;
+  late final void Function() showInvalidQuantityError;
   final Logger _logger;
 
   final DotagiftxUnauthApi _dotagiftxUnauthApi;
@@ -81,10 +82,11 @@ class PostItemCubit extends BaseCubit<PostItemState>
 
   Future<void> postItem() async {
     final parsedPrice = double.tryParse(price) ?? 0;
-    final parsedQuantity = int.tryParse(quantity) ?? 0;
+    var parsedQuantity = int.tryParse(quantity) ?? 0;
 
     // default to 1 if quantity is less than or equal to 0
     if (parsedQuantity <= 0) {
+      parsedQuantity = 1;
       setQuantity(1);
     }
 
@@ -108,6 +110,19 @@ class PostItemCubit extends BaseCubit<PostItemState>
       ),
       (response) async {
         showSuccessPost();
+      },
+      onError: (e, st) async {
+        if (e is InvalidQuantityException) {
+          _logger.log(
+            LogLevel.error,
+            'Invalid quantity exception, quantity: $parsedQuantity',
+            e,
+            st,
+          );
+          showInvalidQuantityError();
+        } else {
+          unawaited(defaultErrorHandler(e, stackTrace: st));
+        }
       },
     );
 

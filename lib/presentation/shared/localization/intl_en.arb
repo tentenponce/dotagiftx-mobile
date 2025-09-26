@@ -207,6 +207,7 @@
     "postItemViewGuideline4": "Payment agreements will be done between you and the buyer. This website does not accept or integrate any payment service.",
     "postItemViewSuccessPost": "Item posted successfully!",
     "postItemViewSuccessPostAction": "View Post",
+    "postItemViewInvalidQuantityError": "Quantity must be greater than 0",
     "genericErrorDialogTitle": "Oops! Something went wrong.",
     "genericErrorDialogContent": "An error occurred. We'll fix it as soon as possible.",
     "genericErrorDialogOk": "OK",
