@@ -12,7 +12,9 @@ class DotaItemModel extends Equatable {
   final String? hero;
   final String? image;
   final String? rarity;
+  final String? slug;
   final double? lowestAsk;
+  final double? highestBid;
   final String? origin;
   final int? reservedCount;
   final int? soldCount;
@@ -23,7 +25,9 @@ class DotaItemModel extends Equatable {
     this.hero,
     this.image,
     this.rarity,
+    this.slug,
     this.lowestAsk,
+    this.highestBid,
     this.origin,
     this.reservedCount,
     this.soldCount,
@@ -39,7 +43,9 @@ class DotaItemModel extends Equatable {
     hero,
     rarity,
     image,
+    slug,
     lowestAsk,
+    highestBid,
     origin,
     reservedCount,
     soldCount,

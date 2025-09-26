@@ -6,8 +6,6 @@ import 'package:dotagiftx_mobile/presentation/roadmap/viewmodels/roadmap_cubit.d
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RoadmapItemView extends StatelessWidget {
   final RoadmapModel item;
@@ -27,8 +25,8 @@ class RoadmapItemView extends StatelessWidget {
               Column(
                 children: [
                   Container(
-                    width: 48.w,
-                    height: 48.h,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       color:
                           item.isCompleted
@@ -53,14 +51,14 @@ class RoadmapItemView extends StatelessWidget {
                               : item.isActive
                               ? AppColors.primary
                               : AppColors.grey,
-                      size: 24.sp,
+                      size: 24,
                     ),
                   ),
                   if (!isLast)
                     Expanded(
                       child: Container(
-                        width: 2.w,
-                        margin: EdgeInsets.only(top: 8.h),
+                        width: 2,
+                        margin: const EdgeInsets.only(top: 8),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -75,15 +73,15 @@ class RoadmapItemView extends StatelessWidget {
                     ),
                 ],
               ),
-              SizedBox(width: 16.w),
+              const SizedBox(width: 16),
 
               // Content
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(16.w),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.darkGrey,
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color:
                           item.isActive
@@ -100,64 +98,64 @@ class RoadmapItemView extends StatelessWidget {
                           Expanded(
                             child: Text(
                               item.title,
-                              style: GoogleFonts.inter(
+                              style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 18.sp,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                           if (item.isActive)
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 4.h,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.primary.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(6.r),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
                                 I18n.of(context).roadmapItemViewInProgress,
-                                style: GoogleFonts.inter(
+                                style: const TextStyle(
                                   color: AppColors.primary,
-                                  fontSize: 12.sp,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                           if (item.isCompleted)
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 4.h,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.rare.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(6.r),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
                                 I18n.of(context).roadmapItemViewCompleted,
-                                style: GoogleFonts.inter(
+                                style: const TextStyle(
                                   color: AppColors.rare,
-                                  fontSize: 12.sp,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                         ],
                       ),
-                      SizedBox(height: 8.h),
+                      const SizedBox(height: 8),
                       Text(
                         item.description,
-                        style: GoogleFonts.inter(
+                        style: const TextStyle(
                           color: AppColors.grey,
-                          fontSize: 14.sp,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                           height: 1.4,
                         ),
                       ),
-                      SizedBox(height: 12.h),
+                      const SizedBox(height: 12),
                       // Voting section
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -165,13 +163,13 @@ class RoadmapItemView extends StatelessWidget {
                           GestureDetector(
                             onTap: () => _showFeedback(context, item.id),
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: 6.h,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.black.withValues(alpha: 0.5),
-                                borderRadius: BorderRadius.circular(20.r),
+                                borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
                                   color:
                                       item.isVoted ?? false
@@ -188,7 +186,7 @@ class RoadmapItemView extends StatelessWidget {
                                     item.isVoted ?? false
                                         ? AppColors.primary
                                         : AppColors.grey,
-                                size: 16.sp,
+                                size: 16,
                               ),
                             ),
                           ),
@@ -201,7 +199,7 @@ class RoadmapItemView extends StatelessWidget {
             ],
           ),
         ),
-        if (!isLast) SizedBox(height: 16.h),
+        if (!isLast) const SizedBox(height: 16),
       ],
     );
   }
@@ -228,12 +226,12 @@ class RoadmapItemView extends StatelessWidget {
       SnackBar(
         content: Text(
           I18n.of(context).roadmapItemViewSuccessVote,
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 14.sp),
+          style: const TextStyle(color: Colors.white, fontSize: 14),
         ),
         backgroundColor: AppColors.primary,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }

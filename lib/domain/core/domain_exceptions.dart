@@ -2,6 +2,10 @@ class DomainException implements Exception {
   DomainException();
 }
 
+class InvalidQuantityException extends DomainException {
+  InvalidQuantityException();
+}
+
 class InvalidSteamIdUrlException extends DomainException {
   InvalidSteamIdUrlException();
 }
