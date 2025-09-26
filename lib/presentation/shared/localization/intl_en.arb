@@ -206,5 +206,10 @@
     "postItemViewGuideline3": "Please be clear in your terms and price. If the price is variable and subject to change, make a new post and remove the old one.",
     "postItemViewGuideline4": "Payment agreements will be done between you and the buyer. This website does not accept or integrate any payment service.",
     "postItemViewSuccessPost": "Item posted successfully!",
-    "postItemViewSuccessPostAction": "View Post"
+    "postItemViewSuccessPostAction": "View Post",
+    "genericErrorDialogTitle": "Oops! Something went wrong.",
+    "genericErrorDialogContent": "An error occurred. We'll fix it as soon as possible.",
+    "genericErrorDialogOk": "OK",
+    "apiErrorDialogTitle": "Oops! Something went wrong.",
+    "apiErrorDialogOk": "OK"
 }

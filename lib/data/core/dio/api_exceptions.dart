@@ -11,8 +11,13 @@ class ApiException extends DioException {
 
 class BadRequestException extends ApiException {
   final String? apiErrorMessage;
+  final int statusCode;
 
-  BadRequestException({required super.error, this.apiErrorMessage});
+  BadRequestException({
+    required super.error,
+    required this.statusCode,
+    this.apiErrorMessage,
+  });
 }
 
 class NetworkTimeoutException extends ApiException {

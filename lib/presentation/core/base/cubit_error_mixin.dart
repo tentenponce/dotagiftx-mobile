@@ -1,9 +1,14 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/data/core/dio/api_exceptions.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
 
 mixin CubitErrorMixin<State> on BaseCubit<State> {
+  void Function()? showErrorDialog;
+  void Function(String? message, String? code)? showApiErrorDialog;
+
   Logger get logger;
 
   Future<void> cubitHandler<R>(
@@ -33,8 +38,17 @@ mixin CubitErrorMixin<State> on BaseCubit<State> {
     Object? exception,
     StackTrace? stackTrace,
   ) {
-    // TODO(tenten): Implement default error handler
     logger.log(LogLevel.error, 'Failed calling: $call', exception, stackTrace);
+    if (exception is BadRequestException &&
+        !StringUtils.isNullOrEmpty(exception.apiErrorMessage)) {
+      showApiErrorDialog?.call(
+        exception.apiErrorMessage,
+        exception.statusCode.toString(),
+      );
+    } else {
+      showErrorDialog?.call();
+    }
+
     return Future.value(null);
   }
 }
