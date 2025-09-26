@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PostItemDotaItemField extends StatefulWidget {
-  const PostItemDotaItemField({super.key});
+  final DotaItemModel? preselectDotaItem;
+
+  const PostItemDotaItemField({super.key, this.preselectDotaItem});
 
   @override
   State<PostItemDotaItemField> createState() => _PostItemDotaItemFieldState();
@@ -149,6 +151,9 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
   @override
   void initState() {
     super.initState();
+
+    _itemSearchController.text =
+        '${widget.preselectDotaItem?.hero ?? 'Unknown'} - ${widget.preselectDotaItem?.name ?? 'Unknown'}';
 
     _itemSearchFocusNode.addListener(() {
       // trigger set state to rebuild the search item dropdown if not focus then hide dropdown

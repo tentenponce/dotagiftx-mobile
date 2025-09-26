@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
@@ -7,7 +8,8 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 
 class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
-  const PostItemAndPlaceOrderButtonsView({super.key});
+  final DotaItemModel dotaItem;
+  const PostItemAndPlaceOrderButtonsView({required this.dotaItem, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,10 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
               unawaited(
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PostItemView()),
+                  MaterialPageRoute(
+                    builder:
+                        (context) => PostItemView(preselectDotaItem: dotaItem),
+                  ),
                 ),
               );
             },

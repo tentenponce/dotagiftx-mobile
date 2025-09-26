@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
@@ -17,15 +18,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostItemView extends StatelessWidget with ViewCubitMixin<PostItemCubit> {
-  const PostItemView({super.key});
+  final DotaItemModel? preselectDotaItem;
+
+  const PostItemView({super.key, this.preselectDotaItem});
 
   @override
   Widget buildView(BuildContext context) {
-    return _PostItemView();
+    return _PostItemView(preselectDotaItem: preselectDotaItem);
   }
 }
 
 class _PostItemView extends StatefulWidget {
+  final DotaItemModel? preselectDotaItem;
+
+  const _PostItemView({this.preselectDotaItem});
+
   @override
   State<_PostItemView> createState() => _PostItemViewState();
 }
@@ -78,7 +85,9 @@ class _PostItemViewState extends State<_PostItemView> {
               ),
 
               // Item dropdown
-              const PostItemDotaItemField(),
+              PostItemDotaItemField(
+                preselectDotaItem: widget.preselectDotaItem,
+              ),
 
               const SizedBox(height: 16),
 
@@ -122,6 +131,10 @@ class _PostItemViewState extends State<_PostItemView> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.preselectDotaItem != null) {
+      context.read<PostItemCubit>().selectItem(widget.preselectDotaItem!);
+    }
 
     _scrollController.addListener(() {
       FocusScope.of(context).unfocus();

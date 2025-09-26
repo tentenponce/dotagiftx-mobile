@@ -743,6 +743,31 @@ void main() {
       });
     });
 
+    test(
+      'preselectItem should set selectedItem and fetch catalog data',
+      () async {
+        // Arrange
+        when(mockGetDotaItemsUsecase.get()).thenAnswer((_) async => testItems);
+        when(
+          mockDotagiftxUnauthApi.getCatalogBySlug('test-item-1'),
+        ).thenAnswer((_) async => testUpdatedItem);
+
+        final cubit = createUnitToTest();
+
+        // Act
+        cubit.preselectItem(testItem1);
+        expect(cubit.state.selectedItem, equals(testItem1));
+
+        await Future<void>.delayed(Duration.zero);
+
+        // Assert
+        expect(cubit.state.selectedItem, equals(testUpdatedItem));
+        verify(
+          mockDotagiftxUnauthApi.getCatalogBySlug('test-item-1'),
+        ).called(1);
+      },
+    );
+
     group('complex scenarios', () {
       test('should maintain filter after item selection', () async {
         // Arrange

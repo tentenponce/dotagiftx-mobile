@@ -172,7 +172,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                       child: Column(
                         children: [
                           // Action Buttons
-                          const PostItemAndPlaceOrderButtonsView(),
+                          PostItemAndPlaceOrderButtonsView(
+                            dotaItem: widget.item,
+                          ),
                           const SizedBox(height: 16),
                           // Tab Bar with Dynamic Counts
                           BlocBuilder<OffersListCubit, OffersListState>(
