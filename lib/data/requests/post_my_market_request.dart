@@ -10,18 +10,20 @@ class PostMyMarketRequest extends Equatable {
   final String itemId;
   final String notes;
   final double price;
+  final int? type;
 
   const PostMyMarketRequest({
     required this.itemId,
     required this.price,
     required this.notes,
+    this.type,
   });
 
   factory PostMyMarketRequest.fromJson(Map<String, dynamic> json) =>
       _$PostMyMarketRequestFromJson(json);
 
   @override
-  List<Object?> get props => [itemId, price, notes];
+  List<Object?> get props => [itemId, price, notes, type];
 
   Map<String, dynamic> toJson() => _$PostMyMarketRequestToJson(this);
 }

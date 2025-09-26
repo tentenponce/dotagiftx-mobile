@@ -96,26 +96,28 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
       FocusScope.of(context).unfocus();
     });
 
-    context.read<PlaceBuyOrderCubit>().showSuccessOrder = () {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(I18n.of(context).placeBuyOrderViewSuccessOrder),
-          action: SnackBarAction(
-            label: I18n.of(context).placeBuyOrderViewSuccessOrderAction,
-            onPressed: () {
-              unawaited(
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (context) => const MyOrdersView(),
+    context.read<PlaceBuyOrderCubit>()
+      ..selectedItem = widget.item
+      ..showSuccessOrder = () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(I18n.of(context).placeBuyOrderViewSuccessOrder),
+            action: SnackBarAction(
+              label: I18n.of(context).placeBuyOrderViewSuccessOrderAction,
+              onPressed: () {
+                unawaited(
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (context) => const MyOrdersView(),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      );
-    };
+        );
+      };
   }
 
   Widget _buildExpirationDate(BuildContext context) {
