@@ -212,5 +212,21 @@
     "genericErrorDialogContent": "An error occurred. We'll fix it as soon as possible.",
     "genericErrorDialogOk": "OK",
     "apiErrorDialogTitle": "Oops! Something went wrong.",
-    "apiErrorDialogOk": "OK"
+    "apiErrorDialogOk": "OK",
+    "placeBuyOrderViewTitle": "Buy - {itemName}",
+    "playBuyOrderDotaItemViewLowestPrice": "Lowest Price:",
+    "playBuyOrderDotaItemViewNoLowestPrice": "No offers yet",
+    "playBuyOrderDotaItemPriceTitle": "requests to buy at",
+    "playBuyOrderDotaItemPriceTitle2": "or lower",
+    "placeBuyOrderTextFieldNotes": "Notes",
+    "placeBuyOrderTextFieldNotesDescription": "Keep it short, This will be displayed when they check your order.",
+    "placeBuyOrderViewPlaceOrderButton": "Place Order",
+    "placeBuyOrderViewExpirationDate": "This buy order will expires in 7 days",
+    "placeBuyOrderViewGuidelinesTitle": "Placing buy order on Giftables",
+    "placeBuyOrderViewGuideline1": "Buyer profile details are only visible to signed in website users.",
+    "placeBuyOrderViewGuideline2": "As Giftables involves a party having to go first, please always check seller's reputation through SteamRep.",
+    "placeBuyOrderViewGuideline3": "Payment agreements will be done between you and the seller. This website does not accept or integrate any payment service.",
+    "placeBuyOrderViewGuideline4": "Please kindly remove this buy order after use to prevent seller's contacting you.",
+    "placeBuyOrderViewSuccessOrder": "Buy order placed successfully!",
+    "placeBuyOrderViewSuccessOrderAction": "View Order"
 }

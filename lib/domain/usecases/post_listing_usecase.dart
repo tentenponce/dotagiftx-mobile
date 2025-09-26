@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/requests/post_my_market_request.dart';
 import 'package:dotagiftx_mobile/domain/core/domain_exceptions.dart';
 import 'package:injectable/injectable.dart';
@@ -35,7 +36,12 @@ class PostListingUsecaseImpl implements PostListingUsecase {
     // API doesn't support bulk posting, so we need to post one by one
     for (var i = 0; i < quantity; i++) {
       await _dotagiftxAuthApi.postMyMarket(
-        PostMyMarketRequest(itemId: itemId, price: price, notes: notes),
+        PostMyMarketRequest(
+          itemId: itemId,
+          price: price,
+          notes: notes,
+          type: ApiConstants.queryMarketAsk,
+        ),
       );
     }
   }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dotagiftx_mobile/data/api/dotagiftx_auth_api.dart';
+import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/data/core/dio/api_exceptions.dart';
 import 'package:dotagiftx_mobile/data/requests/post_my_market_request.dart';
 import 'package:dotagiftx_mobile/domain/core/domain_exceptions.dart';
@@ -40,6 +41,7 @@ void main() {
                 itemId: testItemId,
                 price: testPrice,
                 notes: '',
+                type: ApiConstants.queryMarketAsk,
               ),
             ),
           ).thenAnswer((_) async => {});
@@ -56,6 +58,7 @@ void main() {
                 itemId: testItemId,
                 price: testPrice,
                 notes: '',
+                type: ApiConstants.queryMarketAsk,
               ),
             ),
           ).called(1);
@@ -72,6 +75,7 @@ void main() {
                 itemId: testItemId,
                 price: testPrice,
                 notes: testNotes,
+                type: ApiConstants.queryMarketAsk,
               ),
             ),
           ).thenAnswer((_) async => {});
@@ -93,6 +97,7 @@ void main() {
                 itemId: testItemId,
                 price: testPrice,
                 notes: testNotes,
+                type: ApiConstants.queryMarketAsk,
               ),
             ),
           ).called(1);
@@ -129,6 +134,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: testNotes,
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(quantity);
@@ -142,6 +148,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenAnswer((_) async => {});
@@ -158,6 +165,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);
@@ -171,6 +179,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: testNotes,
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenAnswer((_) async => {});
@@ -192,6 +201,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: testNotes,
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);
@@ -248,6 +258,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenThrow(exception);
@@ -266,6 +277,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);
@@ -282,6 +294,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenThrow(exception);
@@ -305,6 +318,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);
@@ -321,6 +335,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenThrow(exception);
@@ -344,6 +359,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);
@@ -358,6 +374,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: testNotes,
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenAnswer((_) async => {});
@@ -379,6 +396,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: testNotes,
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(largeQuantity);
@@ -392,6 +410,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenAnswer((_) async => {});
@@ -408,6 +427,7 @@ void main() {
               itemId: testItemId,
               price: testPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);
@@ -422,6 +442,7 @@ void main() {
               itemId: testItemId,
               price: zeroPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).thenAnswer((_) async => {});
@@ -438,6 +459,7 @@ void main() {
               itemId: testItemId,
               price: zeroPrice,
               notes: '',
+              type: ApiConstants.queryMarketAsk,
             ),
           ),
         ).called(1);

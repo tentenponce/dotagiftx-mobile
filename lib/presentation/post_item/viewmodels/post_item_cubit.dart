@@ -129,6 +129,19 @@ class PostItemCubit extends BaseCubit<PostItemState>
     emit(state.copyWith(isPostItemLoading: false));
   }
 
+  void preselectItem(DotaItemModel item) {
+    emit(state.copyWith(selectedItem: item));
+
+    unawaited(
+      cubitHandler(
+        () => _dotagiftxUnauthApi.getCatalogBySlug(item.slug ?? ''),
+        (item) async {
+          emit(state.copyWith(selectedItem: item));
+        },
+      ),
+    );
+  }
+
   void selectItem(DotaItemModel item) {
     emit(
       state.copyWith(
