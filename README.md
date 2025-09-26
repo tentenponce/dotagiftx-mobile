@@ -19,12 +19,6 @@ Mobile platform for [dotagiftx.com](https://dotagiftx.com/) - Marketplace for Do
 
 > **💡 Tip**: If you're unsure about your device architecture, download the universal APK.
 
-### How to Install APK
-
-1. Enable "Install from Unknown Sources" in your Android settings
-2. Download the APK file
-3. Open the downloaded file and follow the installation prompts
-
 ## 🛠️ Development Setup
 
 ### Prerequisites
