@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/place_buy_order/place_buy_order_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -19,12 +20,9 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               unawaited(
-                Navigator.push(
+                NavigatorUtils.push(
                   context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => PostItemView(preselectDotaItem: dotaItem),
-                  ),
+                  PostItemView(preselectDotaItem: dotaItem),
                 ),
               );
             },

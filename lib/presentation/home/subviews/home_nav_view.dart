@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
@@ -64,12 +65,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                   ? OutlinedButton(
                     onPressed: () {
                       unawaited(
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PostItemView(),
-                          ),
-                        ),
+                        NavigatorUtils.push(context, const PostItemView()),
                       );
                     },
                     style: OutlinedButton.styleFrom(

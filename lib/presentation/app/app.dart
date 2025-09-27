@@ -1,3 +1,6 @@
+import 'package:dotagiftx_mobile/core/logging/navigation_logger.dart';
+import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
+import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/app/viewmodels/app_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
@@ -14,10 +17,28 @@ class App extends StatelessWidget with ViewCubitMixin<AppCubit> {
 
   @override
   Widget buildView(BuildContext context) {
+    return _App();
+  }
+}
+
+class _App extends StatefulWidget {
+  @override
+  State<_App> createState() => _AppState();
+}
+
+class _AppState extends State<_App> {
+  final AppNavigationObserver _appNavigationObserver =
+      getIt<AppNavigationObserver>();
+
+  final NavigationLogger _navigationLogger = getIt<NavigationLogger>();
+
+  @override
+  Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       minTextAdapt: true,
       child: MaterialApp(
+        navigatorObservers: [_navigationLogger, _appNavigationObserver],
         navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),
         localizationsDelegates: const [
           I18n.delegate,
