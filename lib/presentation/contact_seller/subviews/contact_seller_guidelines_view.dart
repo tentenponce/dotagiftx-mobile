@@ -41,7 +41,7 @@ class ContactSellerGuidelinesView extends StatelessWidget {
                   RemoteConfigConstants.defaultSteamInventoryUrl(
                     steamUser.steamId ?? '',
                   ),
-                  I18n.of(context).guidelinesWebviewTitleInventory,
+                  I18n.of(context).contactSellerGuidelinesWebviewTitleInventory,
                 ),
           ),
           _TextSegment(
@@ -70,7 +70,7 @@ class ContactSellerGuidelinesView extends StatelessWidget {
                   RemoteConfigConstants.defaultSteamRepUrl(
                     steamUser.steamId ?? '',
                   ),
-                  I18n.of(context).guidelinesWebviewTitleSteamRep,
+                  I18n.of(context).contactSellerGuidelinesWebviewTitleSteamRep,
                 ),
           ),
           _TextSegment(
@@ -84,7 +84,9 @@ class ContactSellerGuidelinesView extends StatelessWidget {
                 RemoteConfigConstants.defaultTransactionHistoryUrl(
                   steamUser.steamId ?? '',
                 ),
-                I18n.of(context).guidelinesWebviewTitleTransactionHistory,
+                I18n.of(
+                  context,
+                ).contactSellerGuidelinesWebviewTitleTransactionHistory,
               );
             },
           ),
@@ -104,7 +106,7 @@ class ContactSellerGuidelinesView extends StatelessWidget {
             onTap:
                 () => onShowWebview(
                   RemoteConfigConstants.defaultMiddlemanUrl,
-                  I18n.of(context).guidelinesWebviewTitleMiddleman,
+                  I18n.of(context).contactSellerGuidelinesWebviewTitleMiddleman,
                 ),
           ),
           _TextSegment(
