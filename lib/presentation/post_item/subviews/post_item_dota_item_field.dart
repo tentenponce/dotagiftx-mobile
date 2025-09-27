@@ -152,8 +152,10 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
   void initState() {
     super.initState();
 
-    _itemSearchController.text =
-        '${widget.preselectDotaItem?.hero ?? 'Unknown'} - ${widget.preselectDotaItem?.name ?? 'Unknown'}';
+    if (widget.preselectDotaItem != null) {
+      _itemSearchController.text =
+          '${widget.preselectDotaItem?.hero ?? 'Unknown'} - ${widget.preselectDotaItem?.name ?? 'Unknown'}';
+    }
 
     _itemSearchFocusNode.addListener(() {
       // trigger set state to rebuild the search item dropdown if not focus then hide dropdown
