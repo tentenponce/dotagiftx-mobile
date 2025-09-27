@@ -9,7 +9,6 @@ import 'package:dotagiftx_mobile/presentation/roadmap/viewmodels/roadmap_cubit.d
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RoadmapView extends StatelessWidget with ViewCubitMixin<RoadmapCubit> {
   const RoadmapView({super.key});
@@ -33,6 +32,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
+        surfaceTintColor: AppColors.black,
         backgroundColor: AppColors.black,
         elevation: 0,
         title: Text(
@@ -52,16 +52,20 @@ class _RoadmapViewState extends State<_RoadmapView> {
         top: false, // App bar handles the top area
         bottom: true, // Ensure content respects navigation bar
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.w),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // User Suggestions Section
+              _buildSuggestionsSection(),
+              const SizedBox(height: 40),
+
               // Header Section
               Container(
-                padding: EdgeInsets.all(20.w),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: AppColors.darkGrey,
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: AppColors.grey.withValues(alpha: 0.3),
                     width: 1,
@@ -78,7 +82,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: 8.h),
+                    const SizedBox(height: 8),
                     Text(
                       I18n.of(context).roadmapViewDescription,
                       style: const TextStyle(
@@ -90,7 +94,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
                   ],
                 ),
               ),
-              SizedBox(height: 32.h),
+              const SizedBox(height: 32),
 
               // Roadmap Items
               BlocBuilder<RoadmapCubit, List<RoadmapModel>>(
@@ -105,12 +109,6 @@ class _RoadmapViewState extends State<_RoadmapView> {
                   );
                 },
               ),
-
-              SizedBox(height: 40.h),
-
-              // User Suggestions Section
-              _buildSuggestionsSection(),
-              SizedBox(height: 20.h),
             ],
           ),
         ),
@@ -126,10 +124,10 @@ class _RoadmapViewState extends State<_RoadmapView> {
 
   Widget _buildSuggestionsSection() {
     return Container(
-      padding: EdgeInsets.all(20.w),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.darkGrey,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.grey.withValues(alpha: 0.3),
           width: 1,
@@ -140,12 +138,12 @@ class _RoadmapViewState extends State<_RoadmapView> {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.lightbulb_outline,
                 color: AppColors.primary,
-                size: 24.sp,
+                size: 24,
               ),
-              SizedBox(width: 12.w),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   I18n.of(context).roadmapViewSuggestion,
@@ -159,7 +157,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          const SizedBox(height: 12),
           Text(
             I18n.of(context).roadmapViewSuggestionDescription,
             style: const TextStyle(
@@ -169,7 +167,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
               height: 1.4,
             ),
           ),
-          SizedBox(height: 16.h),
+          const SizedBox(height: 16),
 
           // Text Field
           TextField(
@@ -182,30 +180,30 @@ class _RoadmapViewState extends State<_RoadmapView> {
               filled: true,
               fillColor: AppColors.black,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
                   color: AppColors.grey.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(
                   color: AppColors.primary,
                   width: 2,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
                   color: AppColors.grey.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
-              contentPadding: EdgeInsets.all(16.w),
+              contentPadding: const EdgeInsets.all(16),
             ),
           ),
-          SizedBox(height: 16.h),
+          const SizedBox(height: 16),
 
           // Submit Button
           SizedBox(
@@ -219,9 +217,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 elevation: 0,
               ),
@@ -254,7 +252,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
         backgroundColor: AppColors.primary,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
 
