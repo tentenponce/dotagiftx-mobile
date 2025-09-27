@@ -59,6 +59,7 @@ class _HomeViewState extends StateBase<_HomeView> {
               currentIndex: _currentIndex,
               onTap: (index) {
                 setState(() {
+                  // TODO(tenten): add manual navigation logging
                   _currentIndex = index;
                 });
               },
