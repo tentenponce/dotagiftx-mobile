@@ -32,6 +32,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
     return Scaffold(
       backgroundColor: AppColors.black,
       appBar: AppBar(
+        surfaceTintColor: AppColors.black,
         backgroundColor: AppColors.black,
         elevation: 0,
         title: Text(
