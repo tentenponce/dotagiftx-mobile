@@ -45,12 +45,7 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () {
               unawaited(
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlaceBuyOrderView(item: dotaItem),
-                  ),
-                ),
+                NavigatorUtils.push(context, PlaceBuyOrderView(item: dotaItem)),
               );
             },
             style: OutlinedButton.styleFrom(

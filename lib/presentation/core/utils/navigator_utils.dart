@@ -1,17 +1,14 @@
-import 'package:dotagiftx_mobile/presentation/core/base/base_page_widget.dart';
+import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:flutter/material.dart';
 
 abstract final class NavigatorUtils {
   static final Map<PageName, Type> _owner = {};
+  static final Logger _logger = getIt<Logger>();
 
-  static Future<T?> push<T>(BuildContext context, BasePageWidget page) {
-    assert(
-      () {
-        _claim(page.pageName, page.runtimeType);
-        return true;
-      }(),
-      'PageName ${page.pageName} already claimed by ${_owner[page.pageName]}; cannot assign to ${page.runtimeType}.',
-    );
+  static Future<T?> push<T>(BuildContext context, PageNamed page) {
+    // check if the page is claimed
+    _claim(page.pageName, page.runtimeType);
 
     return Navigator.push(
       context,
@@ -25,7 +22,8 @@ abstract final class NavigatorUtils {
   static void _claim(PageName pageName, Type type) {
     final existing = _owner[pageName];
     if (existing != null && existing != type) {
-      throw FlutterError(
+      _logger.log(
+        LogLevel.error,
         'PageName "$pageName" already claimed by $existing; cannot assign to $type.',
       );
     }
@@ -35,9 +33,19 @@ abstract final class NavigatorUtils {
 
 enum PageName {
   postItem('post-item'),
-  placeBuyOrder('place-buy-order');
+  placeBuyOrder('place-buy-order'),
+  contactSeller('contact-seller'),
+  contactBuyer('contact-buyer'),
+  dotaItemDetail('dota-item-detail'),
+  myListings('my-listings'),
+  myOrders('my-orders'),
+  roadmap('roadmap');
 
   final String name;
 
   const PageName(this.name);
+}
+
+mixin PageNamed on Widget {
+  PageName get pageName;
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
@@ -19,10 +21,11 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DotaItemDetailView extends StatelessWidget
+class DotaItemDetailView extends BasePageStatelessWidget
     with ViewCubitMixin<DotaItemDetailCubit> {
   final DotaItemModel item;
-  const DotaItemDetailView({required this.item, super.key});
+  const DotaItemDetailView({required this.item, super.key})
+    : super(pageName: PageName.dotaItemDetail);
 
   @override
   Widget buildView(BuildContext context) {

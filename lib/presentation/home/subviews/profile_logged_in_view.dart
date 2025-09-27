@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
@@ -163,19 +164,14 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
     BuildContext context,
     String label,
     IconData icon,
-    Widget page,
+    PageNamed page,
   ) {
     return SizedBox(
       width: double.infinity,
       height: 72,
       child: OutlinedButton.icon(
         onPressed: () {
-          unawaited(
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page),
-            ),
-          );
+          unawaited(NavigatorUtils.push(context, page));
         },
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.dirtyWhite,

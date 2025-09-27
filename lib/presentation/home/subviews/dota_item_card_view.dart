@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/dota_item_detail_view.dart';
@@ -106,10 +107,6 @@ class DotaItemCardView extends StatelessWidget {
   }
 
   void _navigateToItemDetail(BuildContext context) {
-    unawaited(
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => DotaItemDetailView(item: item)),
-      ),
-    );
+    unawaited(NavigatorUtils.push(context, DotaItemDetailView(item: item)));
   }
 }

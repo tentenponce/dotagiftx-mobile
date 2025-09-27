@@ -4,18 +4,21 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/contact_buyer/subviews/contact_buyer_guidelines_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateful_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class ContactBuyerView extends StatefulWidget {
+class ContactBuyerView extends BasePageStatefulWidget {
   final SteamUserModel steamUser;
 
-  const ContactBuyerView({required this.steamUser, super.key});
+  const ContactBuyerView({required this.steamUser, super.key})
+    : super(pageName: PageName.contactBuyer);
 
   @override
   State<ContactBuyerView> createState() => _ContactBuyerViewState();

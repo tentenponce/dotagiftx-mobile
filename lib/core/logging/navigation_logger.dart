@@ -51,7 +51,7 @@ class NavigationLoggerImpl extends RouteObserver<ModalRoute<dynamic>>
     return _getRoutePath(_previousRoute);
   }
 
-  static String _getRoutePath(Route<dynamic>? route) {
+  String _getRoutePath(Route<dynamic>? route) {
     final routeSettings = route?.settings;
 
     return routeSettings?.name ?? '';
