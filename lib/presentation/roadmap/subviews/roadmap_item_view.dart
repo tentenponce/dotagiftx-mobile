@@ -1,11 +1,7 @@
-import 'dart:async';
-
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
-import 'package:dotagiftx_mobile/presentation/roadmap/viewmodels/roadmap_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RoadmapItemView extends StatelessWidget {
   final RoadmapModel item;
@@ -180,22 +176,5 @@ class RoadmapItemView extends StatelessWidget {
       default:
         return Icons.question_mark;
     }
-  }
-
-  void _showFeedback(BuildContext context, String featureId) {
-    unawaited(context.read<RoadmapCubit>().vote(featureId));
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          I18n.of(context).roadmapItemViewSuccessVote,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
-        ),
-        backgroundColor: AppColors.primary,
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
   }
 }
