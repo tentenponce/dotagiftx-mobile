@@ -110,7 +110,7 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
 
               // Join Date
               Text(
-                I18n.of(context).steamUserDetailJoinedDate(
+                I18n.of(context).profileLoggedInJoinedDate(
                   DateFormatUtils.formatDateAgo(widget.user.createdAt ?? ''),
                 ),
                 style: const TextStyle(color: AppColors.grey, fontSize: 14),
@@ -187,7 +187,7 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   String _buildStatsText(BuildContext context) {
     final stats = widget.user.marketStats;
 
-    return I18n.of(context).steamUserDetailStats(
+    return I18n.of(context).profileLoggedInStats(
       stats.live,
       stats.reserved,
       stats.sold,

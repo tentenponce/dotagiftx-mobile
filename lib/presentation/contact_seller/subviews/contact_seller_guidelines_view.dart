@@ -4,11 +4,11 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class GuidelinesView extends StatelessWidget {
+class ContactSellerGuidelinesView extends StatelessWidget {
   final SteamUserModel steamUser;
   final void Function(String url, String title) onShowWebview;
 
-  const GuidelinesView({
+  const ContactSellerGuidelinesView({
     required this.steamUser,
     required this.onShowWebview,
     super.key,
@@ -20,7 +20,7 @@ class GuidelinesView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          I18n.of(context).steamUserDetailGuidelinesTitle,
+          I18n.of(context).contactSellerViewGuidelinesTitle,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -30,9 +30,11 @@ class GuidelinesView extends StatelessWidget {
         const SizedBox(height: 16),
 
         _buildGuidelineItem([
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline1Prefix),
           _TextSegment(
-            text: I18n.of(context).steamUserDetailGuideline1LinkText,
+            text: I18n.of(context).contactSellerViewGuideline1Prefix,
+          ),
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline1LinkText,
             isLink: true,
             onTap:
                 () => onShowWebview(
@@ -42,22 +44,26 @@ class GuidelinesView extends StatelessWidget {
                   I18n.of(context).guidelinesWebviewTitleInventory,
                 ),
           ),
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline1Suffix),
-        ]),
-        const SizedBox(height: 12),
-
-        _buildGuidelineItem([
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline2),
-        ]),
-        const SizedBox(height: 12),
-
-        _GuidelineItem(text: I18n.of(context).steamUserDetailGuideline3),
-        const SizedBox(height: 12),
-
-        _buildGuidelineItem([
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline4Prefix),
           _TextSegment(
-            text: I18n.of(context).steamUserDetailGuideline4LinkText1,
+            text: I18n.of(context).contactSellerViewGuideline1Suffix,
+          ),
+        ]),
+        const SizedBox(height: 12),
+
+        _buildGuidelineItem([
+          _TextSegment(text: I18n.of(context).contactSellerViewGuideline2),
+        ]),
+        const SizedBox(height: 12),
+
+        _GuidelineItem(text: I18n.of(context).contactSellerViewGuideline3),
+        const SizedBox(height: 12),
+
+        _buildGuidelineItem([
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline4Prefix,
+          ),
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline4LinkText1,
             isLink: true,
             onTap:
                 () => onShowWebview(
@@ -67,9 +73,11 @@ class GuidelinesView extends StatelessWidget {
                   I18n.of(context).guidelinesWebviewTitleSteamRep,
                 ),
           ),
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline4Middle),
           _TextSegment(
-            text: I18n.of(context).steamUserDetailGuideline4LinkText2,
+            text: I18n.of(context).contactSellerViewGuideline4Middle,
+          ),
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline4LinkText2,
             isLink: true,
             onTap: () {
               onShowWebview(
@@ -80,14 +88,18 @@ class GuidelinesView extends StatelessWidget {
               );
             },
           ),
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline4Suffix),
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline4Suffix,
+          ),
         ]),
         const SizedBox(height: 12),
 
         _buildGuidelineItem([
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline5Prefix),
           _TextSegment(
-            text: I18n.of(context).steamUserDetailGuideline5LinkText,
+            text: I18n.of(context).contactSellerViewGuideline5Prefix,
+          ),
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline5LinkText,
             isLink: true,
             onTap:
                 () => onShowWebview(
@@ -95,7 +107,9 @@ class GuidelinesView extends StatelessWidget {
                   I18n.of(context).guidelinesWebviewTitleMiddleman,
                 ),
           ),
-          _TextSegment(text: I18n.of(context).steamUserDetailGuideline5Suffix),
+          _TextSegment(
+            text: I18n.of(context).contactSellerViewGuideline5Suffix,
+          ),
         ]),
       ],
     );

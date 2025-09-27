@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/presentation/contact_seller/contact_seller_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/item_verification_icon_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
-import 'package:dotagiftx_mobile/presentation/steam_user_detail/steam_user_detail_view.dart';
 import 'package:flutter/material.dart';
 
 class MarketOfferCardView extends StatelessWidget {
@@ -142,7 +142,7 @@ class MarketOfferCardView extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => _navigateToSteamUserDetail(context),
+                  onTap: () => _navigateToContactUser(context),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -153,12 +153,12 @@ class MarketOfferCardView extends StatelessWidget {
     );
   }
 
-  void _navigateToSteamUserDetail(BuildContext context) {
+  void _navigateToContactUser(BuildContext context) {
     if (offer.user != null) {
       unawaited(
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => SteamUserDetailView(steamUser: offer.user!),
+            builder: (context) => ContactSellerView(steamUser: offer.user!),
           ),
         ),
       );

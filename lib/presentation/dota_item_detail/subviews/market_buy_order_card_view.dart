@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/presentation/contact_seller/contact_seller_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
-import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -129,7 +129,7 @@ class MarketBuyOrderCardView extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => _navigateToRoadmap(context),
+                  onTap: () => _navigateToSteamUserDetail(context),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -140,11 +140,15 @@ class MarketBuyOrderCardView extends StatelessWidget {
     );
   }
 
-  void _navigateToRoadmap(BuildContext context) {
-    unawaited(
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => const RoadmapView())),
-    );
+  void _navigateToSteamUserDetail(BuildContext context) {
+    if (buyOrder.user != null) {
+      unawaited(
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ContactSellerView(steamUser: buyOrder.user!),
+          ),
+        ),
+      );
+    }
   }
 }
