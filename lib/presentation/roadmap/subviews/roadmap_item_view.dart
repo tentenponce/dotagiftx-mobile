@@ -155,43 +155,6 @@ class RoadmapItemView extends StatelessWidget {
                           height: 1.4,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      // Voting section
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () => _showFeedback(context, item.id),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.black.withValues(alpha: 0.5),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color:
-                                      item.isVoted ?? false
-                                          ? AppColors.primary
-                                          : AppColors.grey.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.thumb_up,
-                                color:
-                                    item.isVoted ?? false
-                                        ? AppColors.primary
-                                        : AppColors.grey,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),

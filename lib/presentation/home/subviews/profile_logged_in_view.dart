@@ -9,6 +9,7 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_bad
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
+import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +137,13 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
                 I18n.of(context).profileLoggedInMyOrdersButton,
                 CupertinoIcons.cube_box,
                 const MyOrdersView(),
+              ),
+              const SizedBox(height: 12),
+              _buildButton(
+                context,
+                I18n.of(context).profileLoggedInRoadmapButton,
+                CupertinoIcons.lightbulb,
+                const RoadmapView(),
               ),
             ],
           ),
