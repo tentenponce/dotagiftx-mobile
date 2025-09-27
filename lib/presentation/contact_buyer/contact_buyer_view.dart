@@ -3,25 +3,25 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
+import 'package:dotagiftx_mobile/presentation/contact_buyer/subviews/contact_buyer_guidelines_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
-import 'package:dotagiftx_mobile/presentation/steam_user_detail/guidelines_view.dart';
 import 'package:flutter/material.dart';
 
-class SteamUserDetailView extends StatefulWidget {
+class ContactBuyerView extends StatefulWidget {
   final SteamUserModel steamUser;
 
-  const SteamUserDetailView({required this.steamUser, super.key});
+  const ContactBuyerView({required this.steamUser, super.key});
 
   @override
-  State<SteamUserDetailView> createState() => _SteamUserDetailViewState();
+  State<ContactBuyerView> createState() => _ContactBuyerViewState();
 }
 
-class _SteamUserDetailViewState extends State<SteamUserDetailView> {
+class _ContactBuyerViewState extends State<ContactBuyerView> {
   late ScrollController _scrollController;
   bool _isScrolled = false;
 
@@ -38,7 +38,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
         surfaceTintColor: AppColors.black,
         elevation: 0,
         title: Text(
-          I18n.of(context).steamUserDetailTitle,
+          I18n.of(context).contactBuyerViewTitle,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -54,7 +54,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
             onPressed:
                 () => _showWebviewBottomSheet(
                   widget.steamUser.url ?? '',
-                  I18n.of(context).steamUserDetailSteamProfileButton,
+                  I18n.of(context).contactBuyerViewSteamProfileButton,
                 ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -65,7 +65,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
               ),
             ),
             child: Text(
-              I18n.of(context).steamUserDetailSteamProfileButton,
+              I18n.of(context).contactBuyerViewSteamProfileButton,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
@@ -97,7 +97,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
                   const SizedBox(height: 32),
 
                   // Guidelines Section
-                  GuidelinesView(
+                  ContactBuyerGuidelinesView(
                     steamUser: widget.steamUser,
                     onShowWebview: _showWebviewBottomSheet,
                   ),
@@ -166,30 +166,30 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildActionButton(
-          I18n.of(context).steamUserDetailSteamInventoryButton,
+          I18n.of(context).contactBuyerViewSteamInventoryButton,
           () => _showWebviewBottomSheet(
             RemoteConfigConstants.defaultSteamInventoryUrl(
               widget.steamUser.steamId ?? '',
             ),
-            I18n.of(context).steamUserDetailSteamInventoryButton,
+            I18n.of(context).contactBuyerViewSteamInventoryButton,
           ),
         ),
         _buildActionButton(
-          I18n.of(context).steamUserDetailSteamRepButton,
+          I18n.of(context).contactBuyerViewSteamRepButton,
           () => _showWebviewBottomSheet(
             RemoteConfigConstants.defaultSteamRepUrl(
               widget.steamUser.steamId ?? '',
             ),
-            I18n.of(context).steamUserDetailSteamRepButton,
+            I18n.of(context).contactBuyerViewSteamRepButton,
           ),
         ),
         _buildActionButton(
-          I18n.of(context).steamUserDetailDotabuffButton,
+          I18n.of(context).contactBuyerViewDotabuffButton,
           () => _showWebviewBottomSheet(
             RemoteConfigConstants.defaultDotabuffUrl(
               widget.steamUser.steamId ?? '',
             ),
-            I18n.of(context).steamUserDetailDotabuffButton,
+            I18n.of(context).contactBuyerViewDotabuffButton,
           ),
         ),
       ],
@@ -199,10 +199,10 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
   String _buildStatsText() {
     final stats = widget.steamUser.marketStats;
     if (stats == null) {
-      return I18n.of(context).steamUserDetailStats(0, 0, 0, 0);
+      return I18n.of(context).contactBuyerViewStats(0, 0, 0, 0);
     }
 
-    return I18n.of(context).steamUserDetailStats(
+    return I18n.of(context).contactBuyerViewStats(
       stats.live ?? 0,
       stats.reserved ?? 0,
       stats.sold ?? 0,
@@ -260,7 +260,7 @@ class _SteamUserDetailViewState extends State<SteamUserDetailView> {
 
           // Join Date
           Text(
-            I18n.of(context).steamUserDetailJoinedDate(
+            I18n.of(context).contactBuyerViewJoinedDate(
               DateFormatUtils.formatDateAgo(widget.steamUser.createdAt ?? ''),
             ),
             style: const TextStyle(color: AppColors.grey, fontSize: 14),
