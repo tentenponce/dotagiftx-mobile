@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
-import 'package:dotagiftx_mobile/presentation/contact_seller/contact_seller_view.dart';
+import 'package:dotagiftx_mobile/presentation/contact_buyer/contact_buyer_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -129,7 +129,7 @@ class MarketBuyOrderCardView extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => _navigateToSteamUserDetail(context),
+                  onTap: () => _navigateToContactBuyer(context),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -140,12 +140,12 @@ class MarketBuyOrderCardView extends StatelessWidget {
     );
   }
 
-  void _navigateToSteamUserDetail(BuildContext context) {
+  void _navigateToContactBuyer(BuildContext context) {
     if (buyOrder.user != null) {
       unawaited(
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ContactSellerView(steamUser: buyOrder.user!),
+            builder: (context) => ContactBuyerView(steamUser: buyOrder.user!),
           ),
         ),
       );
