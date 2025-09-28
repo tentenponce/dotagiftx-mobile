@@ -57,7 +57,7 @@ class DioLoggingInterceptor extends Interceptor {
 
     options.headers.addEntries([
       MapEntry('User-Agent', '$appName/$appVersion ($buildNumber)'),
-      MapEntry('X-Request-Id', const Uuid().v4()),
+      MapEntry('X-Request-Id', 'app-${const Uuid().v4()}'),
     ]);
 
     final reqUri = options.uri;
