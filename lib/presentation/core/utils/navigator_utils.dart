@@ -22,6 +22,23 @@ abstract final class NavigatorUtils {
     );
   }
 
+  static Future<T?> showPageModalBottomSheet<T>(
+    BuildContext context,
+    PageNamed page, {
+    Color backgroundColor = Colors.transparent,
+    bool isScrollControlled = false,
+  }) {
+    // no claim check in modal, since modal are being reused
+    return showModalBottomSheet<T>(
+      context: context,
+      backgroundColor: backgroundColor,
+      isScrollControlled: isScrollControlled,
+      builder: (ctx) {
+        return page as Widget;
+      },
+    );
+  }
+
   static void _claim(PageName pageName, Type type) {
     final existing = _owner[pageName];
     if (existing != null && existing != type) {
@@ -42,7 +59,12 @@ enum PageName {
   dotaItemDetail('dota-item-detail'),
   myListings('my-listings'),
   myOrders('my-orders'),
-  roadmap('roadmap');
+  roadmap('roadmap'),
+  contactBuyerProfile('contact-buyer-profile'),
+  contactSellerProfile('contact-seller-profile'),
+  completedItemProfile('completed-item-profile'),
+  cancelledItemProfile('cancelled-item-profile'),
+  deliveredItemProfile('delivered-item-profile');
 
   final String name;
 

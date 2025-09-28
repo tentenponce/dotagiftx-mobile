@@ -293,11 +293,15 @@ class _ContactSellerViewState extends State<ContactSellerView> {
 
   void _showWebviewBottomSheet(String url, String title) {
     unawaited(
-      showModalBottomSheet<void>(
-        context: context,
+      NavigatorUtils.showPageModalBottomSheet<void>(
+        context,
+        UserDetailWebviewView(
+          url: url,
+          title: title,
+          pageName: PageName.contactSellerProfile,
+        ),
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => UserDetailWebviewView(url: url, title: title),
       ),
     );
   }

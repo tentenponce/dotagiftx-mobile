@@ -16,7 +16,10 @@ class GenericErrorDialog extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      content: Text(I18n.of(context).genericErrorDialogContent),
+      content: Text(
+        I18n.of(context).genericErrorDialogContent,
+        style: const TextStyle(color: Colors.white),
+      ),
       actions: [
         TextButton(
           onPressed: () {
