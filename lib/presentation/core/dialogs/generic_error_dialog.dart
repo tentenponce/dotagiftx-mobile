@@ -1,9 +1,12 @@
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class GenericErrorDialog extends StatelessWidget {
-  const GenericErrorDialog({super.key});
+class GenericErrorDialog extends BasePageStatelessWidget {
+  const GenericErrorDialog({super.key})
+    : super(pageName: PageName.genericErrorDialog);
 
   @override
   Widget build(BuildContext context) {

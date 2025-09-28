@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart'
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/logout_dialog.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
@@ -200,59 +201,13 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   }
 
   Future<void> _showLogoutConfirmationDialog(BuildContext buildContext) {
-    return showDialog<void>(
-      context: buildContext,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              I18n.of(context).profileLoggedInLogoutConfirmTitle,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            content: Text(
-              I18n.of(context).profileLoggedInLogoutConfirmMessage,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            backgroundColor: AppColors.black,
-            titleTextStyle: const TextStyle(color: Colors.white),
-            contentTextStyle: const TextStyle(color: Colors.white),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  I18n.of(context).profileLoggedInLogoutConfirmCancelButton,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  unawaited(
-                    buildContext.read<HomeCubit>().profileCubit.logout(),
-                  );
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  I18n.of(context).profileLoggedInLogoutConfirmLogoutButton,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
+    return NavigatorUtils.showPageDialog<void>(
+      buildContext,
+      LogoutDialog(
+        onLogout: () {
+          unawaited(context.read<HomeCubit>().profileCubit.logout());
+        },
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/login_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
@@ -112,11 +113,11 @@ class ProfileNotLoginView extends StatelessWidget {
     String url,
     String title,
   ) async {
-    final query = await showModalBottomSheet<String>(
-      context: context,
+    final query = await NavigatorUtils.showPageModalBottomSheet<String>(
+      context,
+      LoginWebviewView(url: url, title: title),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => LoginWebviewView(url: url, title: title),
     );
 
     if (!StringUtils.isNullOrEmpty(query) && context.mounted) {

@@ -344,11 +344,11 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     BuildContext context,
     MarketListingModel listing,
   ) async {
-    final result = await showModalBottomSheet<bool>(
-      context: context,
+    final result = await NavigatorUtils.showPageModalBottomSheet<bool>(
+      context,
+      MyActiveListingDialogView(listing: listing),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (dialogContext) => MyActiveListingDialogView(listing: listing),
     );
 
     if ((result ?? false) && context.mounted) {
@@ -360,11 +360,11 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
     BuildContext context,
     MarketListingModel listing,
   ) async {
-    final result = await showModalBottomSheet<bool>(
-      context: context,
+    final result = await NavigatorUtils.showPageModalBottomSheet<bool>(
+      context,
+      ReservedItemDialogView(listing: listing),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (dialogContext) => ReservedItemDialogView(listing: listing),
     );
 
     if ((result ?? false) && context.mounted) {

@@ -447,11 +447,11 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
     BuildContext context,
     MarketListingModel listing,
   ) async {
-    final result = await showModalBottomSheet<bool>(
-      context: context,
+    final result = await NavigatorUtils.showPageModalBottomSheet<bool>(
+      context,
+      MyOrderDialogView(listing: listing),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (dialogContext) => MyOrderDialogView(listing: listing),
     );
 
     if ((result ?? false) && context.mounted) {

@@ -1,13 +1,16 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class ApiErrorDialog extends StatelessWidget {
+class ApiErrorDialog extends BasePageStatelessWidget {
   final String? code;
   final String? message;
 
-  const ApiErrorDialog({this.message, this.code, super.key});
+  const ApiErrorDialog({this.message, this.code, super.key})
+    : super(pageName: PageName.apiErrorDialog);
 
   @override
   Widget build(BuildContext context) {

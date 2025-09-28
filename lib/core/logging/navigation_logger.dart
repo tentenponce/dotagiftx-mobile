@@ -72,15 +72,21 @@ class NavigationLoggerImpl extends RouteObserver<ModalRoute<dynamic>>
       return;
     }
 
-    final settings = route.settings;
-    final screenName =
-        (settings.name?.isNotEmpty ?? false)
-            ? settings.name!
-            : route.runtimeType.toString();
+    final screenName = _getRoutePath(route);
+
+    if (screenName.isEmpty) {
+      _logger.log(
+        LogLevel.error,
+        'Screen name is empty: $screenName (${route.runtimeType})',
+        Exception('Screen name is empty'),
+        StackTrace.current,
+      );
+      return;
+    }
 
     // Try to get a meaningful screenClass; prefer what you injected at push time.
     var screenClass = route.runtimeType.toString();
-    final args = settings.arguments;
+    final args = route.settings.arguments;
     if (args is Map && args['screenClass'] is String) {
       screenClass = args['screenClass'] as String;
     }

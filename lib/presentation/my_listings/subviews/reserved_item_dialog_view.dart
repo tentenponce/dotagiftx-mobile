@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -15,10 +17,11 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ReservedItemDialogView extends StatelessWidget
+class ReservedItemDialogView extends BasePageStatelessWidget
     with ViewCubitMixin<ReservedItemDialogCubit> {
   final MarketListingModel listing;
-  const ReservedItemDialogView({required this.listing, super.key});
+  const ReservedItemDialogView({required this.listing, super.key})
+    : super(pageName: PageName.reservedItemDialog);
 
   @override
   Widget buildView(BuildContext context) {

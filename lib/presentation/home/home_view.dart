@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart';
@@ -18,8 +20,8 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeView extends StatelessWidget with ViewCubitMixin<HomeCubit> {
-  const HomeView({super.key});
+class HomeView extends BasePageStatelessWidget with ViewCubitMixin<HomeCubit> {
+  const HomeView({super.key}) : super(pageName: PageName.home);
 
   @override
   Widget buildView(BuildContext context) {
