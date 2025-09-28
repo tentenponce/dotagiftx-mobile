@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
+import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
@@ -44,6 +46,7 @@ class _DotaItemDetailView extends StatefulWidget {
 
 class _DotaItemDetailViewState extends State<_DotaItemDetailView>
     with SingleTickerProviderStateMixin {
+  final _appNavigationObserver = getIt<AppNavigationObserver>();
   late TabController _tabController;
   late ScrollController _scrollController;
   double _contentHeight = 550; // Default fallback height
@@ -323,9 +326,21 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
     _tabController = TabController(length: 2, vsync: this);
     _scrollController = ScrollController();
     _tabController.addListener(() {
-      cubit.onTabChanged(
-        _tabController.index == 0 ? MarketTab.offers : MarketTab.buyOrders,
-      );
+      MarketTab? marketTab;
+      if (_tabController.index == 0) {
+        marketTab = MarketTab.offers;
+      } else if (_tabController.index == 1) {
+        marketTab = MarketTab.buyOrders;
+      }
+
+      if (marketTab != null) {
+        cubit.onTabChanged(marketTab);
+
+        _appNavigationObserver.logNavigation(
+          screenName: marketTab.name,
+          screenClass: marketTab.name,
+        );
+      }
     });
     _scrollController.addListener(_onScroll);
   }

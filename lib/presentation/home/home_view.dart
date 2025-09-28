@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
@@ -33,6 +35,8 @@ class _HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends StateBase<_HomeView> {
+  final _appNavigationObserver = getIt<AppNavigationObserver>();
+
   int _currentIndex = 0;
 
   late final List<Widget> _pages;
@@ -59,8 +63,27 @@ class _HomeViewState extends StateBase<_HomeView> {
               currentIndex: _currentIndex,
               onTap: (index) {
                 setState(() {
-                  // TODO(tenten): add manual navigation logging
                   _currentIndex = index;
+
+                  // manually log to firebase analytics
+                  final screenClass = _pages[index].runtimeType.toString();
+                  var screenName = screenClass;
+
+                  switch (_pages[index]) {
+                    case HomeNavView():
+                      screenName = 'nav-home';
+                    case TreasuresNavView():
+                      screenName = 'nav-treasures';
+                    case HeroesNavView():
+                      screenName = 'nav-heroes';
+                    case ProfileNavView():
+                      screenName = 'nav-profile';
+                  }
+
+                  _appNavigationObserver.logNavigation(
+                    screenName: screenName,
+                    screenClass: screenClass,
+                  );
                 });
               },
               type: BottomNavigationBarType.fixed,

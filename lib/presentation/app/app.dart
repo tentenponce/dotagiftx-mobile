@@ -1,5 +1,4 @@
 import 'package:dotagiftx_mobile/core/logging/navigation_logger.dart';
-import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/app/viewmodels/app_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
@@ -27,9 +26,6 @@ class _App extends StatefulWidget {
 }
 
 class _AppState extends State<_App> {
-  final AppNavigationObserver _appNavigationObserver =
-      getIt<AppNavigationObserver>();
-
   final NavigationLogger _navigationLogger = getIt<NavigationLogger>();
 
   @override
@@ -38,7 +34,7 @@ class _AppState extends State<_App> {
       designSize: const Size(360, 640),
       minTextAdapt: true,
       child: MaterialApp(
-        navigatorObservers: [_navigationLogger, _appNavigationObserver],
+        navigatorObservers: [_navigationLogger],
         navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),
         localizationsDelegates: const [
           I18n.delegate,

@@ -1,3 +1,3 @@
-import 'package:flutter/material.dart';
-
-abstract class AppNavigationObserver extends RouteObserver<ModalRoute<dynamic>> {}
+abstract class AppNavigationObserver {
+  void logNavigation({required String screenName, required String screenClass});
+}

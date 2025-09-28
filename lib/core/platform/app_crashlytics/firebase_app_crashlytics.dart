@@ -1,7 +1,6 @@
 import 'package:dotagiftx_mobile/core/platform/app_crashlytics/app_crashlytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton(as: AppCrashlytics)
@@ -39,6 +38,6 @@ class AndroidIosAppCrashlyticsImpl extends BaseAppCrashlyticsImpl {
   }
 
   static bool _isFirebaseCrashlyticsAvailable() {
-    return kReleaseMode && Firebase.apps.isNotEmpty;
+    return Firebase.apps.isNotEmpty;
   }
 }

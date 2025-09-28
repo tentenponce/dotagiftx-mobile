@@ -13,7 +13,10 @@ abstract final class NavigatorUtils {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: page.pageName.name),
+        settings: RouteSettings(
+          name: page.pageName.name,
+          arguments: {'screenClass': page.runtimeType.toString()},
+        ),
         builder: (_) => page,
       ),
     );
