@@ -1,16 +1,18 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateful_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class UserDetailWebviewView extends StatefulWidget {
+class UserDetailWebviewView extends BasePageStatefulWidget {
   final String url;
   final String title;
 
   const UserDetailWebviewView({
+    required super.pageName,
     required this.url,
     required this.title,
     super.key,

@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/presentation/core/base/cubit_error_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/cubit_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/dialogs/api_error_dialog.dart';
 import 'package:dotagiftx_mobile/presentation/core/dialogs/generic_error_dialog.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -65,18 +66,17 @@ class _CubitProviderState<TCubit extends BaseCubit<dynamic>>
       _currentCubit
         ..showErrorDialog = () {
           unawaited(
-            showDialog(
-              context: context,
-              builder: (context) => const GenericErrorDialog(),
+            NavigatorUtils.showPageDialog<void>(
+              context,
+              const GenericErrorDialog(),
             ),
           );
         }
         ..showApiErrorDialog = (message, code) {
           unawaited(
-            showDialog(
-              context: context,
-              builder:
-                  (context) => ApiErrorDialog(message: message, code: code),
+            NavigatorUtils.showPageDialog<void>(
+              context,
+              ApiErrorDialog(message: message, code: code),
             ),
           );
         };

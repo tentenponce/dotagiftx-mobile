@@ -4,18 +4,21 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/contact_seller/subviews/contact_seller_guidelines_view.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateful_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
-class ContactSellerView extends StatefulWidget {
+class ContactSellerView extends BasePageStatefulWidget {
   final SteamUserModel steamUser;
 
-  const ContactSellerView({required this.steamUser, super.key});
+  const ContactSellerView({required this.steamUser, super.key})
+    : super(pageName: PageName.contactSeller);
 
   @override
   State<ContactSellerView> createState() => _ContactSellerViewState();
@@ -290,11 +293,15 @@ class _ContactSellerViewState extends State<ContactSellerView> {
 
   void _showWebviewBottomSheet(String url, String title) {
     unawaited(
-      showModalBottomSheet<void>(
-        context: context,
+      NavigatorUtils.showPageModalBottomSheet<void>(
+        context,
+        UserDetailWebviewView(
+          url: url,
+          title: title,
+          pageName: PageName.contactSellerProfile,
+        ),
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => UserDetailWebviewView(url: url, title: title),
       ),
     );
   }

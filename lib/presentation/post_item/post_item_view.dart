@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
@@ -17,10 +19,12 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PostItemView extends StatelessWidget with ViewCubitMixin<PostItemCubit> {
+class PostItemView extends BasePageStatelessWidget
+    with ViewCubitMixin<PostItemCubit> {
   final DotaItemModel? preselectDotaItem;
 
-  const PostItemView({super.key, this.preselectDotaItem});
+  const PostItemView({super.key, this.preselectDotaItem})
+    : super(pageName: PageName.postItem);
 
   @override
   Widget buildView(BuildContext context) {
@@ -148,14 +152,7 @@ class _PostItemViewState extends State<_PostItemView> {
             action: SnackBarAction(
               label: I18n.of(context).postItemViewSuccessPostAction,
               onPressed: () {
-                unawaited(
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (context) => const MyListingsView(),
-                    ),
-                  ),
-                );
+                unawaited(NavigatorUtils.push(context, const MyListingsView()));
               },
             ),
           ),

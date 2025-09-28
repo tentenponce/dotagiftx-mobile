@@ -2,16 +2,19 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/subviews/roadmap_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/viewmodels/roadmap_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RoadmapView extends StatelessWidget with ViewCubitMixin<RoadmapCubit> {
-  const RoadmapView({super.key});
+class RoadmapView extends BasePageStatelessWidget
+    with ViewCubitMixin<RoadmapCubit> {
+  const RoadmapView({super.key}) : super(pageName: PageName.roadmap);
 
   @override
   Widget buildView(BuildContext context) {

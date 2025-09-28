@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/contact_buyer/contact_buyer_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -143,10 +144,9 @@ class MarketBuyOrderCardView extends StatelessWidget {
   void _navigateToContactBuyer(BuildContext context) {
     if (buyOrder.user != null) {
       unawaited(
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ContactBuyerView(steamUser: buyOrder.user!),
-          ),
+        NavigatorUtils.push(
+          context,
+          ContactBuyerView(steamUser: buyOrder.user!),
         ),
       );
     }

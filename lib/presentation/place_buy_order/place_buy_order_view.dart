@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
 import 'package:dotagiftx_mobile/presentation/place_buy_order/states/place_buy_order_state.dart';
@@ -15,10 +17,11 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PlaceBuyOrderView extends StatelessWidget
+class PlaceBuyOrderView extends BasePageStatelessWidget
     with ViewCubitMixin<PlaceBuyOrderCubit> {
   final DotaItemModel item;
-  const PlaceBuyOrderView({required this.item, super.key});
+  const PlaceBuyOrderView({required this.item, super.key})
+    : super(pageName: PageName.placeBuyOrder);
 
   @override
   Widget buildView(BuildContext context) {
@@ -105,14 +108,7 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
             action: SnackBarAction(
               label: I18n.of(context).placeBuyOrderViewSuccessOrderAction,
               onPressed: () {
-                unawaited(
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (context) => const MyOrdersView(),
-                    ),
-                  ),
-                );
+                unawaited(NavigatorUtils.push(context, const MyOrdersView()));
               },
             ),
           ),
