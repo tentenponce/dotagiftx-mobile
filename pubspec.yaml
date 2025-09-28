@@ -1,7 +1,7 @@
 name: dotagiftx_mobile
 description: "mobile platform for https://dotagiftx.com"
 publish_to: 'none'
-version: 0.4.0+5
+version: 0.5.0+6
 
 environment:
   sdk: ^3.7.2
