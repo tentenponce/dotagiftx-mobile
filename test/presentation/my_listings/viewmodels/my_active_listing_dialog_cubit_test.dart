@@ -105,6 +105,7 @@ void main() {
           final exception = BadRequestException(
             error: DioException(requestOptions: RequestOptions()),
             apiErrorMessage: testApiErrorMessage,
+            statusCode: 400,
           );
           when(
             mockRemoveMyListingUsecase.remove(testMarketId),
@@ -129,6 +130,7 @@ void main() {
           // Arrange
           final exception = BadRequestException(
             error: DioException(requestOptions: RequestOptions()),
+            statusCode: 400,
           );
           when(
             mockRemoveMyListingUsecase.remove(testMarketId),
@@ -343,6 +345,7 @@ void main() {
           final exception = BadRequestException(
             error: DioException(requestOptions: RequestOptions()),
             apiErrorMessage: testApiErrorMessage,
+            statusCode: 400,
           );
           when(
             mockReserveMyListingUsecase.reserve(
@@ -374,6 +377,7 @@ void main() {
           // Arrange
           final exception = BadRequestException(
             error: DioException(requestOptions: RequestOptions()),
+            statusCode: 400,
           );
           when(
             mockReserveMyListingUsecase.reserve(

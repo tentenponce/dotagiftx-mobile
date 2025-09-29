@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dar
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
@@ -136,27 +137,26 @@ class CancelledItemView extends StatelessWidget {
             Positioned.fill(
               child: Material(
                 color: Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap:
                       () => unawaited(
-                        showModalBottomSheet<void>(
-                          context: context,
+                        NavigatorUtils.showPageModalBottomSheet<void>(
+                          context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          builder:
-                              (context) => UserDetailWebviewView(
-                                url:
-                                    RemoteConfigConstants.defaultSteamProfileUrl(
-                                      listing.partnerSteamId ?? '',
-                                    ),
-                                title:
-                                    I18n.of(
-                                      context,
-                                    ).cancelledItemViewViewBuyerProfile,
-                              ),
+                          UserDetailWebviewView(
+                            url: RemoteConfigConstants.defaultSteamProfileUrl(
+                              listing.partnerSteamId ?? '',
+                            ),
+                            title:
+                                I18n.of(
+                                  context,
+                                ).cancelledItemViewViewBuyerProfile,
+                            pageName: PageName.cancelledItemProfile,
+                          ),
                         ),
                       ),
-                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),

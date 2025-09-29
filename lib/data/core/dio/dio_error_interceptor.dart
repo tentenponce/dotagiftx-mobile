@@ -24,7 +24,11 @@ class DioErrorInterceptor extends Interceptor {
     if (statusCode >= 400 && statusCode < 500) {
       return switch (statusCode) {
         401 => UnauthorizedException(error: error),
-        _ => BadRequestException(error: error, apiErrorMessage: errorMessage),
+        _ => BadRequestException(
+          error: error,
+          apiErrorMessage: errorMessage,
+          statusCode: statusCode,
+        ),
       };
     } else if (statusCode >= 500 && statusCode < 600) {
       return ServerUnavailableException(error: error);

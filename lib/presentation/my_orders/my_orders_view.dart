@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/unknown_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/states/my_orders_state.dart';
@@ -20,8 +22,9 @@ import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MyOrdersView extends StatelessWidget with ViewCubitMixin<MyOrdersCubit> {
-  const MyOrdersView({super.key});
+class MyOrdersView extends BasePageStatelessWidget
+    with ViewCubitMixin<MyOrdersCubit> {
+  const MyOrdersView({super.key}) : super(pageName: PageName.myOrders);
 
   @override
   Widget buildView(BuildContext context) {
@@ -444,11 +447,11 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
     BuildContext context,
     MarketListingModel listing,
   ) async {
-    final result = await showModalBottomSheet<bool>(
-      context: context,
+    final result = await NavigatorUtils.showPageModalBottomSheet<bool>(
+      context,
+      MyOrderDialogView(listing: listing),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (dialogContext) => MyOrderDialogView(listing: listing),
     );
 
     if ((result ?? false) && context.mounted) {

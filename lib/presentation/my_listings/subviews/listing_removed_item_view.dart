@@ -1,13 +1,9 @@
-import 'dart:async';
-
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
-import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
-import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/rarity_text_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -22,147 +18,112 @@ class ListingRemovedItemView extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Stack(
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.darkGrey,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    // Item Image
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: DotagiftxImageView(
-                        imageUrl: listing.item?.image ?? '',
-                        rarity: listing.item?.rarity ?? '',
-                        width: 60,
-                        height: 60,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.darkGrey,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                // Item Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: DotagiftxImageView(
+                    imageUrl: listing.item?.image ?? '',
+                    rarity: listing.item?.rarity ?? '',
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+                const SizedBox(width: 12),
 
-                    // Item Details
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                // Item Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        listing.item?.name ??
+                            I18n.of(context).reservedItemViewUnknownItem,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
                         children: [
                           Text(
-                            listing.item?.name ??
-                                I18n.of(context).reservedItemViewUnknownItem,
+                            listing.item?.hero ?? '',
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              color: AppColors.grey,
+                              fontSize: 14,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Text(
-                                listing.item?.hero ?? '',
-                                style: const TextStyle(
-                                  color: AppColors.grey,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              if (listing.item?.hero?.isNotEmpty ?? false)
-                                const SizedBox(width: 4),
-                              RarityTextView(
-                                rarity: listing.item?.rarity ?? '',
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text(
-                                I18n.of(
-                                  context,
-                                ).listingRemovedItemViewListingRemoved,
-                                style: const TextStyle(
-                                  color: AppColors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                DateFormatUtils.formatDateAgo(
-                                  listing.updatedAt ?? '',
-                                ),
-                                style: const TextStyle(
-                                  color: AppColors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          // notes
-                          if (!StringUtils.isNullOrEmpty(listing.notes))
-                            Text(
-                              listing.notes!,
-                              style: const TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 12,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
+                          if (listing.item?.hero?.isNotEmpty ?? false)
+                            const SizedBox(width: 4),
+                          RarityTextView(rarity: listing.item?.rarity ?? ''),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // Price
-                    Text(
-                      '\$${NumberFormatUtils.formatDecimal(listing.price, 2)}',
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 4),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            I18n.of(
+                              context,
+                            ).listingRemovedItemViewListingRemoved,
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            DateFormatUtils.formatDateAgo(
+                              listing.updatedAt ?? '',
+                            ),
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // InkWell overlay (foreground)
-            Positioned.fill(
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap:
-                      () => unawaited(
-                        showModalBottomSheet<void>(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder:
-                              (context) => UserDetailWebviewView(
-                                url:
-                                    RemoteConfigConstants.defaultSteamProfileUrl(
-                                      listing.partnerSteamId ?? '',
-                                    ),
-                                title:
-                                    I18n.of(
-                                      context,
-                                    ).completedItemViewViewSellerProfile,
-                              ),
+                      const SizedBox(height: 4),
+                      // notes
+                      if (!StringUtils.isNullOrEmpty(listing.notes))
+                        Text(
+                          listing.notes!,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                  borderRadius: BorderRadius.circular(8),
+                    ],
+                  ),
                 ),
-              ),
+
+                const SizedBox(width: 12),
+
+                // Price
+                Text(
+                  '\$${NumberFormatUtils.formatDecimal(listing.price, 2)}',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

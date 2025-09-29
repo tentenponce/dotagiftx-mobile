@@ -3,17 +3,20 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateful_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class LoginWebviewView extends StatefulWidget {
+class LoginWebviewView extends BasePageStatefulWidget {
   final String url;
   final String title;
 
-  const LoginWebviewView({required this.url, required this.title, super.key});
+  const LoginWebviewView({required this.url, required this.title, super.key})
+    : super(pageName: PageName.loginWebview);
 
   @override
   State<LoginWebviewView> createState() => _LoginWebviewViewState();

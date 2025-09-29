@@ -8,6 +8,7 @@ abstract final class ApiConstants {
   static const String querySortHighest = 'highest';
   static const String querySortBest = 'best';
   static const String querySortUpdatedAtDesc = 'updated_at:desc';
+  static const String querySortCreatedAtDesc = 'created_at:desc';
 
   static const String queryIndexItemId = 'item_id';
   static const String queryIndexUserId = 'user_id';

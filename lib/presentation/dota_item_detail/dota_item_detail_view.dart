@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
+import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/dota_item_detail_state.dart';
@@ -11,18 +15,19 @@ import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/buy_orde
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/dota_item_market_detail_subview.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_listing_filter_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/offers_list_view.dart';
+import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/post_item_and_place_order_buttons_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/buy_orders_list_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/dota_item_detail_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/viewmodels/offers_list_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DotaItemDetailView extends StatelessWidget
+class DotaItemDetailView extends BasePageStatelessWidget
     with ViewCubitMixin<DotaItemDetailCubit> {
   final DotaItemModel item;
-  const DotaItemDetailView({required this.item, super.key});
+  const DotaItemDetailView({required this.item, super.key})
+    : super(pageName: PageName.dotaItemDetail);
 
   @override
   Widget buildView(BuildContext context) {
@@ -41,6 +46,7 @@ class _DotaItemDetailView extends StatefulWidget {
 
 class _DotaItemDetailViewState extends State<_DotaItemDetailView>
     with SingleTickerProviderStateMixin {
+  final _appNavigationObserver = getIt<AppNavigationObserver>();
   late TabController _tabController;
   late ScrollController _scrollController;
   double _contentHeight = 550; // Default fallback height
@@ -172,78 +178,8 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                       child: Column(
                         children: [
                           // Action Buttons
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    unawaited(
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => const RoadmapView(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.black,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    I18n.of(
-                                      context,
-                                    ).dotaItemDetailPostItemButton,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    unawaited(
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => const RoadmapView(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppColors.primary,
-                                    side: const BorderSide(
-                                      color: AppColors.primary,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    I18n.of(
-                                      context,
-                                    ).dotaItemDetailBuyOrderButton,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          PostItemAndPlaceOrderButtonsView(
+                            dotaItem: widget.item,
                           ),
                           const SizedBox(height: 16),
                           // Tab Bar with Dynamic Counts
@@ -390,9 +326,21 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
     _tabController = TabController(length: 2, vsync: this);
     _scrollController = ScrollController();
     _tabController.addListener(() {
-      cubit.onTabChanged(
-        _tabController.index == 0 ? MarketTab.offers : MarketTab.buyOrders,
-      );
+      MarketTab? marketTab;
+      if (_tabController.index == 0) {
+        marketTab = MarketTab.offers;
+      } else if (_tabController.index == 1) {
+        marketTab = MarketTab.buyOrders;
+      }
+
+      if (marketTab != null) {
+        cubit.onTabChanged(marketTab);
+
+        _appNavigationObserver.logNavigation(
+          screenName: marketTab.name,
+          screenClass: marketTab.name,
+        );
+      }
     });
     _scrollController.addListener(_onScroll);
   }

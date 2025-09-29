@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/core/infrastructure/environment_variables.dart'
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/package_info_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 class DioLoggingInterceptor extends Interceptor {
   static const keysToMask = <String>[
@@ -56,6 +57,7 @@ class DioLoggingInterceptor extends Interceptor {
 
     options.headers.addEntries([
       MapEntry('User-Agent', '$appName/$appVersion ($buildNumber)'),
+      MapEntry('X-Request-Id', 'app-${const Uuid().v4()}'),
     ]);
 
     final reqUri = options.uri;

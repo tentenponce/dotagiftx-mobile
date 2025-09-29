@@ -4,12 +4,16 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textfield_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,6 +55,39 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
         foregroundColor: Colors.white,
         scrolledUnderElevation: 0,
         surfaceTintColor: AppColors.black,
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
+        actions: [
+          BlocBuilder<ProfileCubit, ProfileState>(
+            bloc: context.read<HomeCubit>().profileCubit,
+            buildWhen: (previous, current) => previous.user != current.user,
+            builder: (context, state) {
+              return state.user != null
+                  ? OutlinedButton(
+                    onPressed: () {
+                      unawaited(
+                        NavigatorUtils.push(context, const PostItemView()),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: const BorderSide(color: AppColors.primary),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      I18n.of(context).homeNavPostItemButton,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  )
+                  : const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
