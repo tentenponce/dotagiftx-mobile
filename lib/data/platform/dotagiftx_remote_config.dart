@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/hero_model.dart';
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
+import 'package:dotagiftx_mobile/domain/models/theme_model.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
 import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,8 @@ abstract interface class DotagiftxRemoteConfig {
   Future<Iterable<HeroModel>> getHeroes();
 
   Future<Iterable<RoadmapModel>> getRoadmap();
+
+  Future<ThemeModel> getTheme();
 
   Future<int> getTokenRotationSeconds();
 
@@ -77,6 +80,12 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
     }
 
     return RemoteConfigConstants.defaultRoadmap;
+  }
+
+  @override
+  Future<ThemeModel> getTheme() {
+    // TODO: implement getTheme
+    throw UnimplementedError();
   }
 
   @override
