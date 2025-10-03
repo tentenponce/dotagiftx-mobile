@@ -1,4 +1,6 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/heroes_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/hero_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_hero_card_view.dart';
@@ -25,57 +27,51 @@ class _HeroesNavViewState extends State<HeroesNavView> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bgColor = colorScheme.surface;
+    final fgColor = colorScheme.onSurface;
+
     final heroesCubit = context.read<HomeCubit>().heroesCubit;
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: BlocBuilder<HeroesCubit, HeroesState>(
           bloc: heroesCubit,
           builder: (context, state) {
-            return Text(I18n.of(context).homeNavHeroes(state.heroes.length));
+            return Text(
+              I18n.of(context).homeNavHeroes(state.heroes.length),
+              style: AppTextStyles.defaultTextStyle(context),
+            );
           },
         ),
-        backgroundColor: AppColors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: bgColor,
+        foregroundColor: fgColor,
         scrolledUnderElevation: 0,
-        surfaceTintColor: AppColors.black,
+        surfaceTintColor: bgColor,
       ),
       body: Column(
         children: [
           // Search Field
           Container(
             padding: const EdgeInsets.all(16),
-            child: TextField(
+            child: AppTextField(
               controller: _searchController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: I18n.of(context).heroesSearchHint,
-                hintStyle: const TextStyle(color: AppColors.grey),
-                prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-                suffixIcon:
-                    _showClearButton
-                        ? IconButton(
-                          icon: const Icon(Icons.clear, color: AppColors.grey),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {
-                              _showClearButton = false;
-                            });
-                            heroesCubit.searchHero('');
-                          },
-                        )
-                        : null,
-                filled: true,
-                fillColor: AppColors.darkGrey,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-              ),
+              hintText: I18n.of(context).heroesSearchHint,
+              prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+              suffixIcon:
+                  _showClearButton
+                      ? IconButton(
+                        icon: const Icon(Icons.clear, color: AppColors.grey),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _showClearButton = false;
+                          });
+                          heroesCubit.searchHero('');
+                        },
+                      )
+                      : null,
+
               onChanged: (value) {
                 setState(() {
                   _showClearButton = value.isNotEmpty;
@@ -122,26 +118,28 @@ class _HeroesNavViewState extends State<HeroesNavView> {
                       ),
                     ),
                     // Top shadow when scrolled
-                    if (_isScrolled)
-                      Positioned(
+                    AnimatedOpacity(
+                      opacity: _isScrolled ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 250),
+                      child: Positioned(
                         top: 0,
                         left: 0,
                         right: 0,
                         child: Container(
-                          height: 20,
+                          height: 10,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                AppColors.black.withValues(alpha: 0.8),
-                                AppColors.black.withValues(alpha: 0.4),
+                                AppColors.black.withValues(alpha: 0.2),
                                 AppColors.black.withValues(alpha: 0.0),
                               ],
                             ),
                           ),
                         ),
                       ),
+                    ),
                   ],
                 );
               },

@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
@@ -28,7 +29,9 @@ class AppTextField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: AppColors.grey),
+        hintStyle: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(color: AppColors.grey),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         filled: true,
@@ -42,7 +45,7 @@ class AppTextField extends StatelessWidget {
           vertical: 12,
         ),
       ),
-      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+      style: AppTextStyles.defaultTextStyle(context),
     );
   }
 }
