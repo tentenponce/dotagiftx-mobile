@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class _SearchCatalogTextfieldViewState
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: TextField(
+      child: AppTextField(
         controller: widget.controller,
         onChanged: (value) {
           setState(() {
@@ -46,29 +47,15 @@ class _SearchCatalogTextfieldViewState
           });
           unawaited(context.read<HomeCubit>().searchCatalog(query: value));
         },
-        decoration: InputDecoration(
-          hintText: I18n.of(context).homeSearchHint(_displayHintText),
-          hintStyle: const TextStyle(color: AppColors.grey),
-          prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-          suffixIcon:
-              _showClearButton
-                  ? IconButton(
-                    icon: const Icon(Icons.clear, color: AppColors.grey),
-                    onPressed: _clearSearch,
-                  )
-                  : null,
-          filled: true,
-          fillColor: AppColors.darkGrey,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
-        style: const TextStyle(color: Colors.white),
+        hintText: I18n.of(context).homeSearchHint(_displayHintText),
+        prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+        suffixIcon:
+            _showClearButton
+                ? IconButton(
+                  icon: const Icon(Icons.clear, color: AppColors.grey),
+                  onPressed: _clearSearch,
+                )
+                : null,
       ),
     );
   }

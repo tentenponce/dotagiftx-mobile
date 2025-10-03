@@ -1,12 +1,13 @@
 import 'package:dotagiftx_mobile/core/logging/navigation_logger.dart';
 import 'package:dotagiftx_mobile/di/dependency_injection.dart';
+import 'package:dotagiftx_mobile/presentation/app/models/app_state.dart';
 import 'package:dotagiftx_mobile/presentation/app/viewmodels/app_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/home/home_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
@@ -36,31 +37,57 @@ class _AppState extends State<_App> {
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       minTextAdapt: true,
-      child: MaterialApp(
-        navigatorObservers: [_navigationLogger],
-        navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),
-        localizationsDelegates: const [
-          I18n.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: I18n.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-          textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
-          useMaterial3: true,
-        ),
-        onGenerateRoute:
-            (settings) => null, // to trigger onGenerateInitialRoutes
-        onGenerateInitialRoutes:
-            (_) => [
-              MaterialPageRoute(
-                settings: NavigatorUtils.buildRouteSettings(initialPage),
-                builder: (_) => initialPage,
-              ),
+      child: BlocBuilder<AppCubit, AppState>(
+        buildWhen:
+            (previous, current) =>
+                previous.seedColor != current.seedColor ||
+                previous.brightness != current.brightness,
+        builder: (context, state) {
+          // final seedColor = state.seedColor?.toColor() ?? AppColors.primary;
+          // final brightness =
+          //     state.brightness?.toBrightness() ?? Brightness.dark;
+
+          const seedColor = Color.fromRGBO(41, 38, 56, 1);
+          const brightness = Brightness.light;
+
+          print('state.seedColor: ${state.seedColor}');
+          print('state.brightness: ${state.brightness}');
+
+          print('seedColor: $seedColor');
+          print('brightness: $brightness');
+
+          return MaterialApp(
+            navigatorObservers: [_navigationLogger],
+            navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),
+            localizationsDelegates: const [
+              I18n.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
             ],
+            supportedLocales: I18n.delegate.supportedLocales,
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: seedColor,
+                brightness: brightness,
+              ),
+              textTheme: GoogleFonts.interTextTheme(
+                Theme.of(context).textTheme,
+              ),
+              useMaterial3: true,
+            ),
+            onGenerateRoute:
+                (settings) => null, // to trigger onGenerateInitialRoutes
+            onGenerateInitialRoutes:
+                (_) => [
+                  MaterialPageRoute(
+                    settings: NavigatorUtils.buildRouteSettings(initialPage),
+                    builder: (_) => initialPage,
+                  ),
+                ],
+          );
+        },
       ),
     );
   }

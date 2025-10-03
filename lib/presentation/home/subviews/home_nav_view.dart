@@ -5,6 +5,7 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
@@ -47,14 +48,17 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bgColor = colorScheme.surface;
+    final fgColor = colorScheme.onSurface;
+
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: Text(I18n.of(context).homeHome),
-        backgroundColor: AppColors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: bgColor,
+        foregroundColor: fgColor,
         scrolledUnderElevation: 0,
-        surfaceTintColor: AppColors.black,
         actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
         actions: [
           BlocBuilder<ProfileCubit, ProfileState>(
@@ -62,15 +66,15 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
             buildWhen: (previous, current) => previous.user != current.user,
             builder: (context, state) {
               return state.user != null
-                  ? OutlinedButton(
+                  ? AppOutlineButton(
                     onPressed: () {
                       unawaited(
                         NavigatorUtils.push(context, const PostItemView()),
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(color: AppColors.primary),
+                      foregroundColor: colorScheme.primary,
+                      side: BorderSide(color: colorScheme.primary),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 8,
