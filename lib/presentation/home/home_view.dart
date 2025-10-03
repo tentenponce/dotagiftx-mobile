@@ -6,6 +6,7 @@ import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
@@ -92,6 +93,8 @@ class _HomeViewState extends StateBase<_HomeView> {
                   Theme.of(context).colorScheme.surfaceContainerHigh,
               selectedItemColor: Theme.of(context).colorScheme.onSurface,
               unselectedItemColor: Theme.of(context).colorScheme.onSurface,
+              selectedLabelStyle: AppTextStyles.defaultTextStyle(context),
+              unselectedLabelStyle: AppTextStyles.defaultTextStyle(context),
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
