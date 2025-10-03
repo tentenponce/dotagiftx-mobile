@@ -4,7 +4,9 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
@@ -55,7 +57,10 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text(I18n.of(context).homeHome),
+        title: Text(
+          I18n.of(context).homeHome,
+          style: AppTextStyles.defaultTextStyle(context),
+        ),
         backgroundColor: bgColor,
         foregroundColor: fgColor,
         scrolledUnderElevation: 0,
@@ -85,7 +90,9 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                     ),
                     child: Text(
                       I18n.of(context).homeNavPostItemButton,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.defaultTextStyle(
+                        context,
+                      ).copyWith(fontWeight: FontWeight.bold),
                     ),
                   )
                   : const SizedBox.shrink();
@@ -169,14 +176,16 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: ElevatedButton(
+                            child: AppElevatedButton(
+                              width: double.infinity,
                               onPressed:
                                   () => _scrollToSection(
                                     I18n.of(context).homeNewBuyOrders,
                                   ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.darkGrey,
-                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    colorScheme.surfaceContainerHigh,
+                                foregroundColor: colorScheme.onSurface,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
@@ -184,19 +193,24 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: Text(I18n.of(context).homeNewBuyOrders),
+                              child: Text(
+                                I18n.of(context).homeNewBuyOrders,
+                                style: AppTextStyles.defaultTextStyle(context),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: ElevatedButton(
+                            child: AppElevatedButton(
+                              width: double.infinity,
                               onPressed:
                                   () => _scrollToSection(
                                     I18n.of(context).homeNewSellListings,
                                   ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.darkGrey,
-                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    colorScheme.surfaceContainerHigh,
+                                foregroundColor: colorScheme.onSurface,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
@@ -204,7 +218,10 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: Text(I18n.of(context).homeNewSellListings),
+                              child: Text(
+                                I18n.of(context).homeNewSellListings,
+                                style: AppTextStyles.defaultTextStyle(context),
+                              ),
                             ),
                           ),
                         ],
@@ -240,26 +257,28 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                             ),
                           ),
                           // Top scroll shadow
-                          if (_isScrolled)
-                            Positioned(
+                          AnimatedOpacity(
+                            opacity: _isScrolled ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 250),
+                            child: Positioned(
                               top: 0,
                               left: 0,
                               right: 0,
                               child: Container(
-                                height: 20,
+                                height: 10,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                     colors: [
-                                      AppColors.black.withValues(alpha: 0.8),
-                                      AppColors.black.withValues(alpha: 0.4),
+                                      AppColors.black.withValues(alpha: 0.2),
                                       AppColors.black.withValues(alpha: 0.0),
                                     ],
                                   ),
                                 ),
                               ),
                             ),
+                          ),
                         ],
                       ),
                     ),
@@ -293,11 +312,9 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }

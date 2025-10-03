@@ -56,7 +56,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       extendBody: false,
       resizeToAvoidBottomInset: false,
       body: SafeArea(

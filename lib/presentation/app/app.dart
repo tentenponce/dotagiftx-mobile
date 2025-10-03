@@ -7,11 +7,11 @@ import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/home/home_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class App extends StatelessWidget with ViewCubitMixin<AppCubit> {
   const App({super.key});
@@ -56,6 +56,13 @@ class _AppState extends State<_App> {
           print('seedColor: $seedColor');
           print('brightness: $brightness');
 
+          SystemChrome.setSystemUIOverlayStyle(
+            const SystemUiOverlayStyle(
+              systemNavigationBarColor: seedColor,
+              systemNavigationBarIconBrightness: brightness,
+            ),
+          );
+
           return MaterialApp(
             navigatorObservers: [_navigationLogger],
             navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),
@@ -71,9 +78,6 @@ class _AppState extends State<_App> {
               colorScheme: ColorScheme.fromSeed(
                 seedColor: seedColor,
                 brightness: brightness,
-              ),
-              textTheme: GoogleFonts.interTextTheme(
-                Theme.of(context).textTheme,
               ),
               useMaterial3: true,
             ),

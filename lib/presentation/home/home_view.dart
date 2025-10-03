@@ -6,7 +6,6 @@ import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
@@ -51,7 +50,7 @@ class _HomeViewState extends StateBase<_HomeView> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.8),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 5,
               offset: const Offset(0, -2),
             ),
@@ -89,9 +88,10 @@ class _HomeViewState extends StateBase<_HomeView> {
                 });
               },
               type: BottomNavigationBarType.fixed,
-              backgroundColor: AppColors.darkGrey,
-              selectedItemColor: Colors.white,
-              unselectedItemColor: AppColors.grey,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHigh,
+              selectedItemColor: Theme.of(context).colorScheme.onSurface,
+              unselectedItemColor: Theme.of(context).colorScheme.onSurface,
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
