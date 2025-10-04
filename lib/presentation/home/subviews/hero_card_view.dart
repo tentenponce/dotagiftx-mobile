@@ -19,7 +19,7 @@ class HeroCardView extends StatelessWidget {
           // Card content (background)
           DecoratedBox(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: Theme.of(context).colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: Theme.of(

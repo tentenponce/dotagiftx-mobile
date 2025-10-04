@@ -28,7 +28,7 @@ class TreasureCardView extends StatelessWidget {
           // Card content (background)
           DecoratedBox(
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
+              color: colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(12),
               border: Border(
                 bottom: borderSide,

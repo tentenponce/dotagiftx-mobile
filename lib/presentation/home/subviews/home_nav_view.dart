@@ -183,8 +183,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                                     I18n.of(context).homeNewBuyOrders,
                                   ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    colorScheme.surfaceContainerHigh,
+                                backgroundColor: colorScheme.surfaceContainer,
                                 foregroundColor: colorScheme.onSurface,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,
@@ -208,8 +207,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                                     I18n.of(context).homeNewSellListings,
                                   ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    colorScheme.surfaceContainerHigh,
+                                backgroundColor: colorScheme.surfaceContainer,
                                 foregroundColor: colorScheme.onSurface,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,

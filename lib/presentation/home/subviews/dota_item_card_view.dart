@@ -27,7 +27,7 @@ class DotaItemCardView extends StatelessWidget {
             // Card content (background)
             DecoratedBox(
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest,
+                color: colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
@@ -83,7 +83,7 @@ class DotaItemCardView extends StatelessWidget {
                     Text(
                       '\$${NumberFormatUtils.formatDecimal(item.lowestAsk, 2)}',
                       style: AppTextStyles.defaultTextStyle(context).copyWith(
-                        color: colorScheme.primary,
+                        color: colorScheme.onSurface,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

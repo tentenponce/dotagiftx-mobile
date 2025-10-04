@@ -89,8 +89,7 @@ class _HomeViewState extends StateBase<_HomeView> {
                 });
               },
               type: BottomNavigationBarType.fixed,
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHigh,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
               selectedItemColor: Theme.of(context).colorScheme.onSurface,
               unselectedItemColor: Theme.of(context).colorScheme.onSurface,
               selectedLabelStyle: AppTextStyles.defaultTextStyle(context),
