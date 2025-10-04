@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/data/core/constants/user_subscription_constants.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -22,11 +23,9 @@ class UserSubscriptionBadgeView extends StatelessWidget {
       ),
       child: Text(
         _getUserBadge(context),
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: fontSize ?? 10,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: fontSize ?? 10, fontWeight: FontWeight.bold),
       ),
     );
   }

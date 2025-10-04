@@ -48,9 +48,9 @@ class _AppState extends State<_App> {
           // final brightness =
           //     state.brightness?.toBrightness() ?? Brightness.dark;
 
-          // const seedColor = Color.fromRGBO(41, 38, 56, 1);
-          const seedColor = AppColors.aqua;
-          const brightness = Brightness.light;
+          // const seedColor = Color.fromRGBO(121, 109, 185, 1);
+          const seedColor = AppColors.primary;
+          const brightness = Brightness.dark;
 
           print('state.seedColor: ${state.seedColor}');
           print('state.brightness: ${state.brightness}');

@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/user_model.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/logout_dialog.dart';
@@ -29,22 +30,30 @@ class ProfileLoggedInView extends StatefulWidget {
 class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bgColor = colorScheme.surface;
+    final fgColor = colorScheme.onSurface;
+    final primary = colorScheme.primary;
+
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text(I18n.of(context).profileLoggedInTitle),
-        backgroundColor: AppColors.black,
-        foregroundColor: Colors.white,
+        title: Text(
+          I18n.of(context).profileLoggedInTitle,
+          style: AppTextStyles.defaultTextStyle(context),
+        ),
+        backgroundColor: bgColor,
+        foregroundColor: fgColor,
         scrolledUnderElevation: 0,
-        surfaceTintColor: AppColors.black,
+        surfaceTintColor: bgColor,
         actions: [
-          OutlinedButton(
+          AppOutlineButton(
             onPressed: () {
               unawaited(_showLogoutConfirmationDialog(context));
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.dirtyWhite,
-              side: const BorderSide(color: AppColors.dirtyWhite),
+              foregroundColor: primary,
+              side: BorderSide(color: primary),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -52,7 +61,9 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
             ),
             child: Text(
               I18n.of(context).profileLoggedInLogoutButton,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(width: 16),
@@ -76,12 +87,12 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: AppColors.grey.withValues(alpha: 0.3),
+                    color: colorScheme.surfaceDim.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.person,
-                    color: AppColors.grey,
+                    color: colorScheme.onSurface,
                     size: 60,
                   ),
                 ),
@@ -90,11 +101,9 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
               // User Name
               Text(
                 widget.user.name ?? I18n.of(context).profileNavUnknownUser,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(fontSize: 24, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
                 maxLines: 2,
               ),
@@ -116,14 +125,18 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
                 I18n.of(context).profileLoggedInJoinedDate(
                   DateFormatUtils.formatDateAgo(widget.user.createdAt ?? ''),
                 ),
-                style: const TextStyle(color: AppColors.grey, fontSize: 14),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(fontSize: 14),
               ),
               const SizedBox(height: 12),
 
               // Stats Row
               Text(
                 _buildStatsText(context),
-                style: const TextStyle(color: AppColors.grey, fontSize: 14),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(fontSize: 14),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
@@ -167,23 +180,27 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
     IconData icon,
     PageNamed page,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SizedBox(
       width: double.infinity,
       height: 72,
-      child: OutlinedButton.icon(
+      child: ElevatedButton.icon(
         onPressed: () {
           unawaited(NavigatorUtils.push(context, page));
         },
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.dirtyWhite,
-          side: const BorderSide(color: AppColors.dirtyWhite),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.surfaceContainer,
+          foregroundColor: colorScheme.onSurface,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         icon: Icon(icon, size: 24),
         label: Text(
           label,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 18, fontWeight: FontWeight.w500),
         ),
       ),
     );

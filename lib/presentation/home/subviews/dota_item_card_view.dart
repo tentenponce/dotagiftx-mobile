@@ -83,7 +83,7 @@ class DotaItemCardView extends StatelessWidget {
                     Text(
                       '\$${NumberFormatUtils.formatDecimal(item.lowestAsk, 2)}',
                       style: AppTextStyles.defaultTextStyle(context).copyWith(
-                        color: colorScheme.onSurface,
+                        color: colorScheme.primary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
