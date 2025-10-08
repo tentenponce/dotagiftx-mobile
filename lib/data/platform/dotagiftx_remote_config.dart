@@ -14,6 +14,8 @@ import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
 abstract interface class DotagiftxRemoteConfig {
+  Future<String?> getBackgroundImageUrl();
+
   Future<String> getDotagiftxImageBaseUrl();
 
   Future<Iterable<HeroModel>> getHeroes();
@@ -38,6 +40,15 @@ class DotagiftxRemoteConfigImpl implements DotagiftxRemoteConfig {
     this._appRemoteConfig,
     this._environmentVariables,
   );
+
+  @override
+  Future<String?> getBackgroundImageUrl() async {
+    final backgroundImageUrl = await _appRemoteConfig.tryGetData<String>(
+      RemoteConfigConstants.keyBackgroundImageUrl,
+    );
+
+    return backgroundImageUrl;
+  }
 
   @override
   Future<String> getDotagiftxImageBaseUrl() async {

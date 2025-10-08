@@ -7,6 +7,7 @@ import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 
 abstract final class RemoteConfigConstants {
   static const String keyDotagiftxImageBaseUrl = 'dotagiftx_image_base_url';
+  static const String keyBackgroundImageUrl = 'background_image_url';
   static const String keyTreasures = 'treasures';
   static const String keyRoadmap = 'roadmap';
   static const String keyHeroes = 'heroes';

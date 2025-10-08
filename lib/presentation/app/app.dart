@@ -3,12 +3,10 @@ import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/app/models/app_state.dart';
 import 'package:dotagiftx_mobile/presentation/app/viewmodels/app_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/home/home_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,8 +46,8 @@ class _AppState extends State<_App> {
           // final brightness =
           //     state.brightness?.toBrightness() ?? Brightness.dark;
 
-          // const seedColor = Color.fromRGBO(121, 109, 185, 1);
-          const seedColor = AppColors.primary;
+          const seedColor = Color.fromRGBO(121, 109, 185, 1);
+          //   const seedColor = Color.fromRGBO(199, 145, 35, 1);
           const brightness = Brightness.dark;
 
           print('state.seedColor: ${state.seedColor}');
@@ -57,13 +55,6 @@ class _AppState extends State<_App> {
 
           print('seedColor: $seedColor');
           print('brightness: $brightness');
-
-          SystemChrome.setSystemUIOverlayStyle(
-            const SystemUiOverlayStyle(
-              systemNavigationBarColor: seedColor,
-              systemNavigationBarIconBrightness: brightness,
-            ),
-          );
 
           return MaterialApp(
             navigatorObservers: [_navigationLogger],
