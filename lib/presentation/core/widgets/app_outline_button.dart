@@ -70,20 +70,35 @@ class _AppOutlineButtonState extends State<AppOutlineButton> {
                     ? SizedBox(
                       width: widget.width,
                       height: widget.height,
-                      child: OutlinedButton(
-                        style: buttonStyle,
-                        onPressed: null,
-                        child: widget.child,
-                      ),
+                      child:
+                          widget.icon != null
+                              ? OutlinedButton.icon(
+                                style: buttonStyle,
+                                onPressed: null,
+                                label: widget.child,
+                              )
+                              : OutlinedButton(
+                                style: buttonStyle,
+                                onPressed: null,
+                                child: widget.child,
+                              ),
                     )
                     : SizedBox(
                       width: widget.width,
                       height: widget.height,
-                      child: OutlinedButton(
-                        style: buttonStyle,
-                        onPressed: () => widget.onPressed?.call(),
-                        child: widget.child,
-                      ),
+                      child:
+                          widget.icon != null
+                              ? OutlinedButton.icon(
+                                style: buttonStyle,
+                                onPressed: () => widget.onPressed?.call(),
+                                icon: widget.icon,
+                                label: widget.child,
+                              )
+                              : OutlinedButton(
+                                style: buttonStyle,
+                                onPressed: () => widget.onPressed?.call(),
+                                child: widget.child,
+                              ),
                     ),
           ),
         ),

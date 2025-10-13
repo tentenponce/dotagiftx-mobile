@@ -8,6 +8,7 @@ import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/home_app_bar.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/logout_dialog.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
@@ -31,21 +32,15 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final bgColor = colorScheme.surface;
-    final fgColor = colorScheme.onSurface;
     final primary = colorScheme.primary;
 
     return Scaffold(
-      backgroundColor: bgColor,
-      appBar: AppBar(
+      backgroundColor: colorScheme.surface,
+      appBar: HomeAppBar(
         title: Text(
           I18n.of(context).profileLoggedInTitle,
           style: AppTextStyles.defaultTextStyle(context),
         ),
-        backgroundColor: bgColor,
-        foregroundColor: fgColor,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: bgColor,
         actions: [
           AppOutlineButton(
             onPressed: () {
@@ -66,7 +61,6 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
               ).copyWith(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
-          const SizedBox(width: 16),
         ],
       ),
       body: SingleChildScrollView(
