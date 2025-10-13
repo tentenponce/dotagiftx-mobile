@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/place_buy_order/place_buy_order_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -17,7 +19,8 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: ElevatedButton(
+          child: AppElevatedButton(
+            width: double.infinity,
             onPressed: () {
               unawaited(
                 NavigatorUtils.push(
@@ -27,8 +30,7 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.black,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               padding: const EdgeInsets.symmetric(vertical: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -36,21 +38,23 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
             ),
             child: Text(
               I18n.of(context).dotaItemDetailPostItemButton,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: OutlinedButton(
+          child: AppOutlineButton(
+            width: double.infinity,
             onPressed: () {
               unawaited(
                 NavigatorUtils.push(context, PlaceBuyOrderView(item: dotaItem)),
               );
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.primary,
-              side: const BorderSide(color: AppColors.primary),
+              side: BorderSide(color: Theme.of(context).colorScheme.primary),
               padding: const EdgeInsets.symmetric(vertical: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -58,7 +62,9 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
             ),
             child: Text(
               I18n.of(context).dotaItemDetailBuyOrderButton,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontWeight: FontWeight.bold),
             ),
           ),
         ),

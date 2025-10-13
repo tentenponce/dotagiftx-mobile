@@ -23,9 +23,13 @@ class UserSubscriptionBadgeView extends StatelessWidget {
       ),
       child: Text(
         _getUserBadge(context),
-        style: AppTextStyles.defaultTextStyle(
-          context,
-        ).copyWith(fontSize: fontSize ?? 10, fontWeight: FontWeight.bold),
+        style: AppTextStyles.defaultTextStyle(context).copyWith(
+          fontSize: fontSize ?? 10,
+          fontWeight: FontWeight.bold,
+          color:
+              Colors
+                  .white, // always white, since badge is always on dark background
+        ),
       ),
     );
   }

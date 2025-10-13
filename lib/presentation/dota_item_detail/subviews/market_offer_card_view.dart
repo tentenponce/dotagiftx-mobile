@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/contact_seller/contact_seller_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -19,6 +20,7 @@ class MarketOfferCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: ClipRRect(
@@ -28,7 +30,7 @@ class MarketOfferCardView extends StatelessWidget {
             // Card content (background)
             DecoratedBox(
               decoration: BoxDecoration(
-                color: AppColors.darkGrey,
+                color: colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Container(
@@ -73,8 +75,9 @@ class MarketOfferCardView extends StatelessWidget {
                                   offer.user?.name ?? '',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ).copyWith(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -104,8 +107,10 @@ class MarketOfferCardView extends StatelessWidget {
                                       ),
                                     )
                                     : '',
-                                style: const TextStyle(
-                                  color: AppColors.grey,
+                                style: AppTextStyles.defaultTextStyle(
+                                  context,
+                                ).copyWith(
+                                  color: colorScheme.onSurfaceVariant,
                                   fontSize: 14,
                                 ),
                               ),
@@ -128,10 +133,10 @@ class MarketOfferCardView extends StatelessWidget {
                     // Price
                     Text(
                       '\$${offer.price?.toStringAsFixed(2) ?? '0.00'}',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: AppTextStyles.defaultTextStyle(context).copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
                       ),
                     ),
                   ],

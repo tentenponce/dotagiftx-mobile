@@ -7,16 +7,17 @@ class ShimmerMarketListingCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppColors.darkGrey,
+        color: colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Shimmer.fromColors(
-          baseColor: AppColors.darkGrey,
+          baseColor: colorScheme.surfaceContainer,
           highlightColor: AppColors.grey.withValues(alpha: 0.5),
           child: Row(
             children: [
