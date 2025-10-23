@@ -6,8 +6,10 @@ import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
 import 'package:dotagiftx_mobile/presentation/contact_seller/subviews/contact_seller_guidelines_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateful_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_detail_webview_view.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
@@ -31,37 +33,37 @@ class _ContactSellerViewState extends State<ContactSellerView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       extendBody: false,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: AppColors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
         scrolledUnderElevation: 0,
-        surfaceTintColor: AppColors.black,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           I18n.of(context).contactSellerViewTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.close, color: Colors.white),
+          icon: Icon(
+            Icons.close,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
         actions: [
-          ElevatedButton(
+          AppElevatedButton(
             onPressed:
                 () => _showWebviewBottomSheet(
                   widget.steamUser.url ?? '',
                   I18n.of(context).contactSellerViewSteamProfileButton,
                 ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -69,7 +71,11 @@ class _ContactSellerViewState extends State<ContactSellerView> {
             ),
             child: Text(
               I18n.of(context).contactSellerViewSteamProfileButton,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: AppTextStyles.defaultTextStyle(context).copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -149,17 +155,19 @@ class _ContactSellerViewState extends State<ContactSellerView> {
   }
 
   Widget _buildActionButton(String label, VoidCallback onPressed) {
-    return ElevatedButton(
+    return AppElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.darkGrey,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: 12, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -239,12 +247,11 @@ class _ContactSellerViewState extends State<ContactSellerView> {
 
           // User Name
           Text(
-            widget.steamUser.name ?? 'Unknown User',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-            ),
+            widget.steamUser.name ??
+                I18n.of(context).contactSellerViewUnknownUser,
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 24, fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
             maxLines: 2,
           ),
@@ -266,14 +273,18 @@ class _ContactSellerViewState extends State<ContactSellerView> {
             I18n.of(context).contactSellerViewJoinedDate(
               DateFormatUtils.formatDateAgo(widget.steamUser.createdAt ?? ''),
             ),
-            style: const TextStyle(color: AppColors.grey, fontSize: 14),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 14, color: AppColors.grey),
           ),
           const SizedBox(height: 12),
 
           // Stats Row
           Text(
             _buildStatsText(),
-            style: const TextStyle(color: AppColors.grey, fontSize: 14),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 14, color: AppColors.grey),
             textAlign: TextAlign.center,
           ),
         ],

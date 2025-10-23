@@ -60,6 +60,7 @@
     "contactSellerViewSteamInventoryButton": "Steam Inventory",
     "contactSellerViewSteamRepButton": "SteamRep",
     "contactSellerViewDotabuffButton": "Dotabuff",
+    "contactSellerViewUnknownUser": "Unknown User",
     "contactSellerViewGuidelinesTitle": "Guides for buying Giftables",
     "contactSellerViewGuideline1Prefix": "Always check the item or set availability on seller's Dota 2 ",
     "contactSellerViewGuideline1Suffix": ".",

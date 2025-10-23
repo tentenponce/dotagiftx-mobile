@@ -40,7 +40,7 @@ class PostItemAndPlaceOrderButtonsView extends StatelessWidget {
               I18n.of(context).dotaItemDetailPostItemButton,
               style: AppTextStyles.defaultTextStyle(
                 context,
-              ).copyWith(fontWeight: FontWeight.bold),
+              ).copyWith(fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ),
         ),
