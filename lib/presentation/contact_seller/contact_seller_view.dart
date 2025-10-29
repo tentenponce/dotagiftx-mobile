@@ -113,27 +113,6 @@ class _ContactSellerViewState extends State<ContactSellerView> {
                 ],
               ),
             ),
-            // Top shadow when scrolled
-            if (_isScrolled)
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.black.withValues(alpha: 0.8),
-                        AppColors.black.withValues(alpha: 0.4),
-                        AppColors.black.withValues(alpha: 0.0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
       ),
