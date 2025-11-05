@@ -37,13 +37,26 @@ class AppTextField extends StatelessWidget {
       enabled: enabled,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: AppTextStyles.defaultTextStyle(
-          context,
-        ).copyWith(color: AppColors.grey),
+        hintStyle: AppTextStyles.defaultTextStyle(context).copyWith(
+          color:
+              enabled == false
+                  ? AppColors.grey.withValues(alpha: 0.5)
+                  : AppColors.grey,
+        ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surfaceContainer,
+        filled: enabled ?? true,
+        fillColor:
+            enabled == false
+                ? AppColors.darkGrey.withValues(alpha: 0.5)
+                : Theme.of(context).colorScheme.surfaceContainer,
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: AppColors.grey.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -54,7 +67,9 @@ class AppTextField extends StatelessWidget {
         ),
         error: error,
       ),
-      style: AppTextStyles.defaultTextStyle(context),
+      style: AppTextStyles.defaultTextStyle(context).copyWith(
+        color: enabled == false ? AppColors.grey.withValues(alpha: 0.5) : null,
+      ),
     );
   }
 }

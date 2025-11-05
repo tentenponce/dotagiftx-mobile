@@ -1,5 +1,5 @@
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +11,16 @@ class GenericErrorDialog extends BasePageStatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.darkGrey,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: Text(
         I18n.of(context).genericErrorDialogTitle,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontWeight: FontWeight.bold),
       ),
       content: Text(
         I18n.of(context).genericErrorDialogContent,
-        style: const TextStyle(color: Colors.white),
+        style: AppTextStyles.defaultTextStyle(context),
       ),
       actions: [
         TextButton(
@@ -30,10 +29,9 @@ class GenericErrorDialog extends BasePageStatelessWidget {
           },
           child: Text(
             I18n.of(context).genericErrorDialogOk,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontWeight: FontWeight.bold),
           ),
         ),
       ],
