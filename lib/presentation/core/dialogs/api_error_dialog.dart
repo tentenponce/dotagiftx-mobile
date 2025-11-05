@@ -1,6 +1,6 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +15,16 @@ class ApiErrorDialog extends BasePageStatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.darkGrey,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: Text(
         I18n.of(context).apiErrorDialogTitle,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontWeight: FontWeight.w600),
       ),
       content: Text(
         '${StringUtils.isNullOrEmpty(message) ? '' : '$message '}(${StringUtils.isNullOrEmpty(code) ? '0' : code})',
-        style: const TextStyle(color: Colors.white),
+        style: AppTextStyles.defaultTextStyle(context),
       ),
       actions: [
         TextButton(
@@ -34,10 +33,9 @@ class ApiErrorDialog extends BasePageStatelessWidget {
           },
           child: Text(
             I18n.of(context).apiErrorDialogOk,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ),
       ],

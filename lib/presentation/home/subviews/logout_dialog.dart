@@ -1,5 +1,5 @@
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -14,33 +14,31 @@ class LogoutDialog extends BasePageStatelessWidget {
     return AlertDialog(
       title: Text(
         I18n.of(context).profileLoggedInLogoutConfirmTitle,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: 24, fontWeight: FontWeight.w600),
       ),
       content: Text(
         I18n.of(context).profileLoggedInLogoutConfirmMessage,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: 14, fontWeight: FontWeight.w400),
       ),
-      backgroundColor: AppColors.black,
-      titleTextStyle: const TextStyle(color: Colors.white),
-      contentTextStyle: const TextStyle(color: Colors.white),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      titleTextStyle: AppTextStyles.defaultTextStyle(
+        context,
+      ).copyWith(color: Theme.of(context).colorScheme.onSurface),
+      contentTextStyle: AppTextStyles.defaultTextStyle(
+        context,
+      ).copyWith(color: Theme.of(context).colorScheme.onSurface),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
             I18n.of(context).profileLoggedInLogoutConfirmCancelButton,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 14, fontWeight: FontWeight.w400),
           ),
         ),
         TextButton(
@@ -50,11 +48,9 @@ class LogoutDialog extends BasePageStatelessWidget {
           },
           child: Text(
             I18n.of(context).profileLoggedInLogoutConfirmLogoutButton,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
           ),
         ),
       ],
