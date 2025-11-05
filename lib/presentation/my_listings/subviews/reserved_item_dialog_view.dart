@@ -254,13 +254,22 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                                             : _notesController.text.trim(),
                                   ),
                             ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          side: const BorderSide(color: Colors.red, width: 1),
+                          elevation: 0,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.cancel,
                               size: 20,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Colors.red,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -271,6 +280,7 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                                 context,
                               ).copyWith(
                                 fontSize: 14,
+                                color: Colors.red,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -293,6 +303,19 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                     builder: (context, state) {
                       return AppOutlineButton(
                         isLoading: state.isDeliverItemLoading,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onSurface,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            width: 1,
+                          ),
+                          elevation: 0,
+                        ),
                         onPressed:
                             () => unawaited(
                               context
@@ -311,7 +334,7 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                             Icon(
                               Icons.assignment_turned_in,
                               size: 20,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -321,7 +344,7 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                               style: AppTextStyles.defaultTextStyle(
                                 context,
                               ).copyWith(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
