@@ -3,7 +3,9 @@ import 'package:dotagiftx_mobile/di/dependency_injection.dart';
 import 'package:dotagiftx_mobile/presentation/app/models/app_state.dart';
 import 'package:dotagiftx_mobile/presentation/app/viewmodels/app_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/utils/theme_ext.dart';
 import 'package:dotagiftx_mobile/presentation/home/home_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -42,20 +44,9 @@ class _AppState extends State<_App> {
                 previous.seedColor != current.seedColor ||
                 previous.brightness != current.brightness,
         builder: (context, state) {
-          // final seedColor = state.seedColor?.toColor() ?? AppColors.primary;
-          // final brightness =
-          //     state.brightness?.toBrightness() ?? Brightness.dark;
-
-          const seedColor = Color.fromRGBO(121, 109, 185, 1);
-          // const seedColor = Colors.blue;
-          // const seedColor = AppColors.primary;
-          const brightness = Brightness.dark;
-
-          print('state.seedColor: ${state.seedColor}');
-          print('state.brightness: ${state.brightness}');
-
-          print('seedColor: $seedColor');
-          print('brightness: $brightness');
+          final seedColor = state.seedColor?.toColor() ?? AppColors.primary;
+          final brightness =
+              state.brightness?.toBrightness() ?? Brightness.dark;
 
           return MaterialApp(
             navigatorObservers: [_navigationLogger],
