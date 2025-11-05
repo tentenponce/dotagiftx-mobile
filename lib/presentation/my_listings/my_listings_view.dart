@@ -9,6 +9,7 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/unknown_history_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/states/my_listings_state.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/subviews/cancelled_item_view.dart';
@@ -78,44 +79,26 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
             // Search Field
             Container(
               padding: const EdgeInsets.all(16),
-              child: TextField(
+              child: AppTextField(
                 controller: _searchController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: I18n.of(context).myListingsSearchHint,
-                  hintStyle: const TextStyle(color: AppColors.grey),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.grey),
-                  suffixIcon:
-                      _showClearButton
-                          ? IconButton(
-                            icon: const Icon(
-                              Icons.clear,
-                              color: AppColors.grey,
-                            ),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _showClearButton = false;
-                              });
-                              unawaited(
-                                context.read<MyListingsCubit>().searchListings(
-                                  '',
-                                ),
-                              );
-                            },
-                          )
-                          : null,
-                  filled: true,
-                  fillColor: AppColors.darkGrey,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
+                prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+                suffixIcon:
+                    _showClearButton
+                        ? IconButton(
+                          icon: const Icon(Icons.clear, color: AppColors.grey),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _showClearButton = false;
+                            });
+                            unawaited(
+                              context.read<MyListingsCubit>().searchListings(
+                                '',
+                              ),
+                            );
+                          },
+                        )
+                        : null,
                 onChanged: (value) {
                   setState(() {
                     _showClearButton = value.isNotEmpty;
@@ -141,27 +124,6 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                       builder: _buildBody,
                     ),
                   ),
-                  // Top scroll shadow
-                  if (_isScrolled)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 20,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              AppColors.black.withValues(alpha: 0.8),
-                              AppColors.black.withValues(alpha: 0.4),
-                              AppColors.black.withValues(alpha: 0.0),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -221,7 +183,7 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                       !StringUtils.isNullOrEmpty(searchQuery)
                           ? I18n.of(context).myListingsNoSearchListingsTitle
                           : I18n.of(context).myListingsNoActiveListings,
-                      style: const TextStyle(
+                      style: AppTextStyles.defaultTextStyle(context).copyWith(
                         color: AppColors.grey,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -236,10 +198,9 @@ class _MyListingsViewContentState extends State<_MyListingsViewContent> {
                           : I18n.of(
                             context,
                           ).myListingsNoActiveListingsDescription,
-                      style: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 14,
-                      ),
+                      style: AppTextStyles.defaultTextStyle(
+                        context,
+                      ).copyWith(color: AppColors.grey, fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
                   ],

@@ -9,6 +9,8 @@ class AppTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool? showClearButton;
+  final int? maxLines;
+  final bool? enabled;
   final void Function()? onClear;
 
   const AppTextField({
@@ -19,6 +21,8 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.showClearButton,
     this.onClear,
+    this.maxLines,
+    this.enabled,
     super.key,
   });
 
@@ -27,6 +31,8 @@ class AppTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       onChanged: onChanged,
+      maxLines: maxLines,
+      enabled: enabled,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTextStyles.defaultTextStyle(

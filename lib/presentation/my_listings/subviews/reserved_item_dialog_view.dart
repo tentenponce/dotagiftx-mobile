@@ -6,10 +6,12 @@ import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/states/reserved_item_dialog_state.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/viewmodels/reserved_item_dialog_cubit.dart';
@@ -49,9 +51,9 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
-      decoration: const BoxDecoration(
-        color: AppColors.black,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -65,15 +67,17 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
               children: [
                 Text(
                   I18n.of(context).reservedItemDialogViewTitle,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.defaultTextStyle(
+                    context,
+                  ).copyWith(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                  icon: Icon(
+                    Icons.close,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: 28,
+                  ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
@@ -101,26 +105,25 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                     children: [
                       Text(
                         widget.listing.item?.name ?? '',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: AppTextStyles.defaultTextStyle(
+                          context,
+                        ).copyWith(fontSize: 20, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
                           Text(
                             I18n.of(context).myActiveListingDialogViewStatus,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16,
-                            ),
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(fontSize: 16),
                           ),
                           const SizedBox(width: 2),
                           Text(
                             I18n.of(context).toReceiveItemViewReserved,
-                            style: const TextStyle(
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(
                               color: AppColors.purple,
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -136,10 +139,9 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                             2,
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
-                        ),
+                        style: AppTextStyles.defaultTextStyle(
+                          context,
+                        ).copyWith(fontSize: 16),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -148,25 +150,24 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                             widget.listing.updatedAt ?? '',
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
-                        ),
+                        style: AppTextStyles.defaultTextStyle(
+                          context,
+                        ).copyWith(fontSize: 16),
                       ),
                       if (!StringUtils.isNullOrEmpty(widget.listing.notes)) ...[
                         const SizedBox(height: 8),
                         Text(
                           I18n.of(context).reservedItemDialogViewBuyerNotes,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppTextStyles.defaultTextStyle(
+                            context,
+                          ).copyWith(fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           widget.listing.notes!,
-                          style: const TextStyle(
+                          style: AppTextStyles.defaultTextStyle(
+                            context,
+                          ).copyWith(
                             color: AppColors.grey,
                             fontSize: 14,
                             fontStyle: FontStyle.italic,
@@ -192,33 +193,18 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                       I18n.of(
                         context,
                       ).reservedItemDialogViewBuyerSteamProfileUrl,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
+                      style: AppTextStyles.defaultTextStyle(
+                        context,
+                      ).copyWith(fontSize: 14),
                     ),
                     const SizedBox(height: 8),
-                    TextField(
-                      style: const TextStyle(color: Colors.white),
+                    AppTextField(
                       controller: TextEditingController(
                         text: RemoteConfigConstants.defaultSteamProfileUrl(
                           widget.listing.partnerSteamId ?? '',
                         ),
                       ),
                       maxLines: 2,
-                      decoration: InputDecoration(
-                        hintStyle: const TextStyle(color: AppColors.grey),
-                        filled: true,
-                        fillColor: AppColors.darkGrey,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
                       enabled: false,
                     ),
                   ],
@@ -226,28 +212,16 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                 const SizedBox(height: 24),
                 Text(
                   I18n.of(context).reservedItemDialogViewActionNotes,
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  style: AppTextStyles.defaultTextStyle(
+                    context,
+                  ).copyWith(fontSize: 14),
                 ),
                 const SizedBox(height: 8),
-                TextField(
+                AppTextField(
                   controller: _notesController,
-                  style: const TextStyle(color: Colors.white),
                   maxLines: 3,
-                  decoration: InputDecoration(
-                    hintStyle: const TextStyle(color: AppColors.grey),
-                    hintText:
-                        I18n.of(context).reservedItemDialogViewActionNotesHint,
-                    filled: true,
-                    fillColor: AppColors.darkGrey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
+                  hintText:
+                      I18n.of(context).reservedItemDialogViewActionNotesHint,
                 ),
               ],
             ),
@@ -280,29 +254,22 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                                             : _notesController.text.trim(),
                                   ),
                             ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          side: const BorderSide(color: Colors.white, width: 1),
-                          elevation: 0,
-                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.cancel,
                               size: 20,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
                             Text(
                               I18n.of(
                                 context,
                               ).reservedItemDialogViewCancelButton,
-                              style: const TextStyle(
+                              style: AppTextStyles.defaultTextStyle(
+                                context,
+                              ).copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -341,17 +308,19 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.assignment_turned_in,
                               size: 20,
-                              color: AppColors.primary,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
                             Text(
                               I18n.of(
                                 context,
                               ).reservedItemDialogViewDeliverButton,
-                              style: const TextStyle(
+                              style: AppTextStyles.defaultTextStyle(
+                                context,
+                              ).copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -370,14 +339,18 @@ class _ReservedItemDialogViewState extends State<_ReservedItemDialogView> {
               const SizedBox(height: 16),
               Text(
                 _cancelReservationError!,
-                style: const TextStyle(color: Colors.red),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(color: Colors.red),
               ),
             ],
             if (!StringUtils.isNullOrEmpty(_deliverItemError)) ...[
               const SizedBox(height: 16),
               Text(
                 _deliverItemError!,
-                style: const TextStyle(color: Colors.red),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(color: Colors.red),
               ),
             ],
           ],

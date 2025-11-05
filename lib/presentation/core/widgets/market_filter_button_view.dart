@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:flutter/material.dart';
 
 class MarketFilterButtonView extends StatelessWidget {
@@ -19,7 +20,7 @@ class MarketFilterButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected = currentFilter == filter;
 
-    return ElevatedButton(
+    return AppElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
         backgroundColor:

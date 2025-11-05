@@ -1,6 +1,7 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -21,7 +22,7 @@ class UnknownHistoryItemView extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: AppColors.darkGrey,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Padding(
@@ -51,8 +52,10 @@ class UnknownHistoryItemView extends StatelessWidget {
                             child: Text(
                               listing.item?.name ??
                                   I18n.of(context).reservedItemViewUnknownItem,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: AppTextStyles.defaultTextStyle(
+                                context,
+                              ).copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -74,10 +77,9 @@ class UnknownHistoryItemView extends StatelessWidget {
                         children: [
                           Text(
                             listing.item?.hero ?? '',
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 14,
-                            ),
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(color: AppColors.grey, fontSize: 14),
                           ),
                           if (listing.item?.hero?.isNotEmpty ?? false)
                             const SizedBox(width: 4),
@@ -90,20 +92,18 @@ class UnknownHistoryItemView extends StatelessWidget {
                         children: [
                           Text(
                             I18n.of(context).unknownHistoryItemViewUnknown,
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 12,
-                            ),
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(color: AppColors.grey, fontSize: 12),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             DateFormatUtils.formatDateAgo(
                               listing.updatedAt ?? '',
                             ),
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 12,
-                            ),
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(color: AppColors.grey, fontSize: 12),
                           ),
                         ],
                       ),
@@ -112,7 +112,9 @@ class UnknownHistoryItemView extends StatelessWidget {
                       if (!StringUtils.isNullOrEmpty(listing.notes))
                         Text(
                           listing.notes!,
-                          style: const TextStyle(
+                          style: AppTextStyles.defaultTextStyle(
+                            context,
+                          ).copyWith(
                             color: AppColors.grey,
                             fontSize: 12,
                             fontStyle: FontStyle.italic,
@@ -127,8 +129,8 @@ class UnknownHistoryItemView extends StatelessWidget {
                 // Price
                 Text(
                   '\$${NumberFormatUtils.formatDecimal(listing.price, 2)}',
-                  style: const TextStyle(
-                    color: AppColors.primary,
+                  style: AppTextStyles.defaultTextStyle(context).copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
