@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
@@ -47,22 +48,23 @@ class _PostItemViewState extends State<_PostItemView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        surfaceTintColor: AppColors.black,
-        backgroundColor: AppColors.black,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           I18n.of(context).postItemViewTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
       body: SafeArea(
@@ -79,7 +81,7 @@ class _PostItemViewState extends State<_PostItemView> {
                 margin: const EdgeInsets.only(bottom: 24),
                 child: Text(
                   I18n.of(context).postItemViewDescription,
-                  style: const TextStyle(
+                  style: AppTextStyles.defaultTextStyle(context).copyWith(
                     color: AppColors.grey,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -174,7 +176,7 @@ class _PostItemViewState extends State<_PostItemView> {
       child: Text(
         I18n.of(context).postItemViewExpirationDate,
         textAlign: TextAlign.center,
-        style: const TextStyle(
+        style: AppTextStyles.defaultTextStyle(context).copyWith(
           color: Colors.red,
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -205,25 +207,17 @@ class _PostItemViewState extends State<_PostItemView> {
               FocusScope.of(context).unfocus();
               unawaited(context.read<PostItemCubit>().postItem());
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0,
-            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.check, size: 20),
+                const Icon(Icons.check, size: 20, color: Colors.white),
                 const SizedBox(width: 8),
                 Text(
                   I18n.of(context).postItemViewPostButton,
-                  style: const TextStyle(
+                  style: AppTextStyles.defaultTextStyle(context).copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ],

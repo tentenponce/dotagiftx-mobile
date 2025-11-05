@@ -1,6 +1,7 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -12,7 +13,12 @@ class AppTextField extends StatelessWidget {
   final int? maxLines;
   final bool? enabled;
   final Widget? error;
+  final FocusNode? focusNode;
+  final void Function()? onTap;
   final void Function()? onClear;
+  final OutlineInputBorder? border;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextField({
     this.controller,
@@ -22,17 +28,26 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.showClearButton,
     this.error,
+    this.focusNode,
+    this.onTap,
     this.onClear,
     this.maxLines,
     this.enabled,
+    this.border,
+    this.keyboardType,
+    this.inputFormatters,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: focusNode,
       controller: controller,
       onChanged: onChanged,
+      onTap: onTap,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       maxLines: maxLines,
       enabled: enabled,
       decoration: InputDecoration(
@@ -57,10 +72,12 @@ class AppTextField extends StatelessWidget {
             width: 1,
           ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
+        border:
+            border ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 12,
