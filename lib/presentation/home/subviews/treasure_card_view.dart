@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,8 @@ class TreasureCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final borderSide = BorderSide(
       color: RarityUtils.getRarityColor(treasure.rarity) ?? Colors.transparent,
       width: 1,
@@ -26,7 +28,7 @@ class TreasureCardView extends StatelessWidget {
           // Card content (background)
           DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.darkGrey,
+              color: colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(12),
               border: Border(
                 bottom: borderSide,
@@ -65,26 +67,22 @@ class TreasureCardView extends StatelessWidget {
                                 fit: BoxFit.cover,
                               )
                               : Assets.images.treasures.values
-                                  .firstWhereOrNull(
-                                    (element) => element.keyName.contains(
-                                      treasure.image ?? '',
-                                    ),
-                                  )
-                                  ?.image(
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return ColoredBox(
-                                        color: AppColors.grey.withValues(
-                                          alpha: 0.3,
+                                      .firstWhereOrNull(
+                                        (element) => element.keyName.contains(
+                                          treasure.image ?? '',
                                         ),
-                                        child: const Icon(
-                                          Icons.inventory,
-                                          color: AppColors.grey,
-                                          size: 40,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                      )
+                                      ?.image(
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return _brokenImage(context);
+                                        },
+                                      ) ??
+                                  _brokenImage(context),
                     ),
                   ),
                 ),
@@ -101,11 +99,9 @@ class TreasureCardView extends StatelessWidget {
                         Text(
                           treasure.name ?? '',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: AppTextStyles.defaultTextStyle(
+                            context,
+                          ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -128,6 +124,14 @@ class TreasureCardView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _brokenImage(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return ColoredBox(
+      color: colorScheme.surfaceDim.withValues(alpha: 0.3),
+      child: Icon(Icons.broken_image, color: colorScheme.onSurface, size: 40),
     );
   }
 }

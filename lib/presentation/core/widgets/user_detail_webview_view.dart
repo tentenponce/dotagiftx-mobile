@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateful_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _UserDetailWebviewViewState extends State<UserDetailWebviewView> {
                 Expanded(
                   child: Text(
                     widget.title,
-                    style: const TextStyle(
+                    style: AppTextStyles.defaultTextStyle(context).copyWith(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,

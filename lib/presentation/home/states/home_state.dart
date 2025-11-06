@@ -17,5 +17,6 @@ abstract class HomeState with _$HomeState {
     @Default([]) List<DotaItemModel> searchResults,
     @Default(0) int totalSearchResultsCount,
     @Default('') String currentSearchQuery,
+    @Default(null) String? backgroundImageUrl,
   }) = _HomeState;
 }

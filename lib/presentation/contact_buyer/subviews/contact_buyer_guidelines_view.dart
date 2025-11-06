@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -19,11 +20,9 @@ class ContactBuyerGuidelinesView extends StatelessWidget {
       children: [
         Text(
           I18n.of(context).contactBuyerViewGuidelinesTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16),
 
@@ -52,11 +51,16 @@ class _GuidelineItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('• ', style: TextStyle(color: Colors.white, fontSize: 14)),
+        Text(
+          '• ',
+          style: AppTextStyles.defaultTextStyle(context).copyWith(fontSize: 14),
+        ),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 14),
           ),
         ),
       ],

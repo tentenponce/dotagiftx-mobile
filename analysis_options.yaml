@@ -12,6 +12,7 @@ analyzer:
     - lib/**/*.g.dart
     - lib/**/*.gr.dart
     - lib/**/generated/**
+    - lib/generated/**
     - lib/**/*.auto_mappr.dart
     - test/**/*.config.dart
     - lib/**/*.freezed.dart

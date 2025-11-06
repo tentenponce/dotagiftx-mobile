@@ -5,7 +5,10 @@ import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/subviews/roadmap_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/viewmodels/roadmap_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -33,21 +36,22 @@ class _RoadmapViewState extends State<_RoadmapView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        surfaceTintColor: AppColors.black,
-        backgroundColor: AppColors.black,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           I18n.of(context).roadmapViewTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -67,7 +71,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.darkGrey,
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: AppColors.grey.withValues(alpha: 0.3),
@@ -79,8 +83,8 @@ class _RoadmapViewState extends State<_RoadmapView> {
                   children: [
                     Text(
                       I18n.of(context).roadmapViewUpcomingFeatures,
-                      style: const TextStyle(
-                        color: AppColors.primary,
+                      style: AppTextStyles.defaultTextStyle(context).copyWith(
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 24,
                         fontWeight: FontWeight.w700,
                       ),
@@ -88,7 +92,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
                     const SizedBox(height: 8),
                     Text(
                       I18n.of(context).roadmapViewDescription,
-                      style: const TextStyle(
+                      style: AppTextStyles.defaultTextStyle(context).copyWith(
                         color: AppColors.grey,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -129,7 +133,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.darkGrey,
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.grey.withValues(alpha: 0.3),
@@ -141,9 +145,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.lightbulb_outline,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
                 size: 24,
               ),
               const SizedBox(width: 12),
@@ -151,11 +155,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
                 child: Text(
                   I18n.of(context).roadmapViewSuggestion,
                   maxLines: 2,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppTextStyles.defaultTextStyle(
+                    context,
+                  ).copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -163,7 +165,7 @@ class _RoadmapViewState extends State<_RoadmapView> {
           const SizedBox(height: 12),
           Text(
             I18n.of(context).roadmapViewSuggestionDescription,
-            style: const TextStyle(
+            style: AppTextStyles.defaultTextStyle(context).copyWith(
               color: AppColors.grey,
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -173,64 +175,29 @@ class _RoadmapViewState extends State<_RoadmapView> {
           const SizedBox(height: 16),
 
           // Text Field
-          TextField(
+          AppTextField(
             controller: _suggestionController,
             maxLines: 4,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
-            decoration: InputDecoration(
-              hintText: I18n.of(context).roadmapViewSuggestionHint,
-              hintStyle: const TextStyle(color: AppColors.grey, fontSize: 14),
-              filled: true,
-              fillColor: AppColors.black,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: AppColors.grey.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(
-                  color: AppColors.primary,
-                  width: 2,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: AppColors.grey.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-              ),
-              contentPadding: const EdgeInsets.all(16),
-            ),
+            hintText: I18n.of(context).roadmapViewSuggestionHint,
           ),
           const SizedBox(height: 16),
 
           // Submit Button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: AppElevatedButton(
               onPressed: () {
                 if (_suggestionController.text.trim().isNotEmpty) {
                   _submitSuggestion();
                 }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
+              width: double.infinity,
               child: Text(
                 I18n.of(context).roadmapViewSubmitSuggestionButton,
-                style: const TextStyle(
+                style: AppTextStyles.defaultTextStyle(context).copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -250,9 +217,9 @@ class _RoadmapViewState extends State<_RoadmapView> {
       SnackBar(
         content: Text(
           I18n.of(context).roadmapViewSubmitSuggestionSuccess,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: AppTextStyles.defaultTextStyle(context).copyWith(fontSize: 14),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

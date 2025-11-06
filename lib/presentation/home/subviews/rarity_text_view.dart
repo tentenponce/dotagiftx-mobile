@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +28,9 @@ class RarityTextView extends StatelessWidget {
 
     return Text(
       StringUtils.capitalizeEachWord(rarity),
-      style: TextStyle(
-        color: textColor,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-      ),
+      style: AppTextStyles.defaultTextStyle(
+        context,
+      ).copyWith(color: textColor, fontSize: fontSize, fontWeight: fontWeight),
     );
   }
 }

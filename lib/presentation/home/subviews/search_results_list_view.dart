@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
@@ -72,8 +73,9 @@ class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
                                   const SizedBox(height: 16),
                                   Text(
                                     I18n.of(context).homeSearchResultsEmpty,
-                                    style: const TextStyle(
-                                      color: AppColors.grey,
+                                    style: AppTextStyles.defaultTextStyle(
+                                      context,
+                                    ).copyWith(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -83,10 +85,9 @@ class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
                                     I18n.of(
                                       context,
                                     ).homeSearchResultsEmptyDescription,
-                                    style: const TextStyle(
-                                      color: AppColors.grey,
-                                      fontSize: 14,
-                                    ),
+                                    style: AppTextStyles.defaultTextStyle(
+                                      context,
+                                    ).copyWith(fontSize: 14),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -198,11 +199,9 @@ class _SearchResultsListViewState extends StateBase<SearchResultsListView> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
+import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_new_buy_orders_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_new_sell_listings_usecase.dart';
@@ -26,6 +27,7 @@ import 'home_cubit_test.mocks.dart';
   MockSpec<GetNewSellListingsUsecase>(),
   MockSpec<SearchCatalogUsecase>(),
   MockSpec<DebouncerUtils>(),
+  MockSpec<DotagiftxRemoteConfig>(),
 ])
 void main() {
   group(HomeCubit, () {
@@ -38,7 +40,7 @@ void main() {
     late MockGetNewSellListingsUsecase mockGetNewSellListingsUsecase;
     late MockSearchCatalogUsecase mockSearchCatalogUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
-
+    late MockDotagiftxRemoteConfig mockDotagiftxRemoteConfig;
     // Test data
     const testDotaItem1 = DotaItemModel(
       id: '1',
@@ -77,7 +79,7 @@ void main() {
       mockGetNewSellListingsUsecase = MockGetNewSellListingsUsecase();
       mockSearchCatalogUsecase = MockSearchCatalogUsecase();
       mockDebouncerUtils = MockDebouncerUtils();
-
+      mockDotagiftxRemoteConfig = MockDotagiftxRemoteConfig();
       when(mockDebouncerUtils.run(any)).thenAnswer((invocation) async {
         final callback =
             invocation.positionalArguments[0] as Future<void> Function();
@@ -96,6 +98,7 @@ void main() {
         mockGetNewSellListingsUsecase,
         mockSearchCatalogUsecase,
         mockDebouncerUtils,
+        mockDotagiftxRemoteConfig,
       );
     }
 
@@ -126,6 +129,22 @@ void main() {
           verify(mockGetNewSellListingsUsecase.get()).called(greaterThan(0));
         },
       );
+
+      test('should get background image url', () async {
+        when(
+          mockDotagiftxRemoteConfig.getBackgroundImageUrl(),
+        ).thenAnswer((_) async => 'test_background_image_url');
+
+        final homeCubit = createUnitToTest();
+
+        await Future<void>.delayed(Duration.zero);
+
+        verify(mockDotagiftxRemoteConfig.getBackgroundImageUrl()).called(1);
+        expect(
+          homeCubit.state.backgroundImageUrl,
+          equals('test_background_image_url'),
+        );
+      });
     });
 
     group('searchCatalog', () {

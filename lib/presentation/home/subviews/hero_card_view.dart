@@ -1,5 +1,7 @@
+import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/hero_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class HeroCardView extends StatelessWidget {
@@ -17,10 +19,12 @@ class HeroCardView extends StatelessWidget {
           // Card content (background)
           DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.darkGrey,
+              color: Theme.of(context).colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.grey.withValues(alpha: 0.3),
+                color: Theme.of(
+                  context,
+                ).colorScheme.surfaceDim.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -44,31 +48,15 @@ class HeroCardView extends StatelessWidget {
                         topRight: Radius.circular(12),
                       ),
                       child:
-                          hero.heroImage != null
+                          !StringUtils.isNullOrEmpty(hero.heroImage)
                               ? Image.network(
                                 hero.heroImage!,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return ColoredBox(
-                                    color: AppColors.grey.withValues(
-                                      alpha: 0.3,
-                                    ),
-                                    child: const Icon(
-                                      Icons.person,
-                                      color: AppColors.grey,
-                                      size: 40,
-                                    ),
-                                  );
+                                  return _brokenImage(context);
                                 },
                               )
-                              : ColoredBox(
-                                color: AppColors.grey.withValues(alpha: 0.3),
-                                child: const Icon(
-                                  Icons.person,
-                                  color: AppColors.grey,
-                                  size: 40,
-                                ),
-                              ),
+                              : _brokenImage(context),
                     ),
                   ),
                 ),
@@ -89,9 +77,10 @@ class HeroCardView extends StatelessWidget {
                           child: Text(
                             hero.name ?? '',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
                             maxLines: 2,
@@ -117,6 +106,13 @@ class HeroCardView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _brokenImage(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceDim.withValues(alpha: 0.3),
+      child: const Icon(Icons.person, color: AppColors.grey, size: 40),
     );
   }
 }

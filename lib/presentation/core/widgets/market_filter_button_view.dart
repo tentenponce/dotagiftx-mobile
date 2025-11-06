@@ -1,3 +1,5 @@
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:flutter/material.dart';
 
 class MarketFilterButtonView extends StatelessWidget {
@@ -18,22 +20,27 @@ class MarketFilterButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected = currentFilter == filter;
 
-    return ElevatedButton(
+    return AppElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
         backgroundColor:
             isSelected
-                ? const Color.fromARGB(255, 214, 214, 214)
-                : Colors.transparent,
+                ? Theme.of(context).colorScheme.surfaceContainerHighest
+                : Theme.of(context).colorScheme.surface,
         foregroundColor:
             isSelected
-                ? Colors.black
-                : const Color.fromARGB(255, 214, 214, 214),
+                ? Theme.of(context).colorScheme.onSurface
+                : Theme.of(context).colorScheme.surface,
         side: const BorderSide(color: Color.fromRGBO(81, 81, 81, 1), width: 1),
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       ),
-      child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+      child: Text(
+        label,
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

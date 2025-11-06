@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/offer_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_offer_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/shimmer_market_listing_card_view.dart';
@@ -49,7 +50,9 @@ class _OffersListViewState extends State<OffersListView> {
                 const SizedBox(height: 16),
                 Text(
                   I18n.of(context).offersEmpty,
-                  style: const TextStyle(color: AppColors.grey, fontSize: 16),
+                  style: AppTextStyles.defaultTextStyle(
+                    context,
+                  ).copyWith(color: AppColors.grey, fontSize: 16),
                 ),
               ],
             ),

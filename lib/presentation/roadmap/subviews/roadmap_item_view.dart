@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -26,15 +27,17 @@ class RoadmapItemView extends StatelessWidget {
                     decoration: BoxDecoration(
                       color:
                           item.isCompleted
-                              ? AppColors.primary
+                              ? Theme.of(context).colorScheme.primary
                               : item.isActive
-                              ? AppColors.primary.withValues(alpha: 0.2)
-                              : AppColors.darkGrey,
+                              ? Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.2)
+                              : Theme.of(context).colorScheme.surfaceContainer,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color:
                             item.isCompleted || item.isActive
-                                ? AppColors.primary
+                                ? Theme.of(context).colorScheme.primary
                                 : AppColors.grey.withValues(alpha: 0.3),
                         width: 2,
                       ),
@@ -45,7 +48,7 @@ class RoadmapItemView extends StatelessWidget {
                           item.isCompleted
                               ? Colors.white
                               : item.isActive
-                              ? AppColors.primary
+                              ? Theme.of(context).colorScheme.primary
                               : AppColors.grey,
                       size: 24,
                     ),
@@ -60,7 +63,9 @@ class RoadmapItemView extends StatelessWidget {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              AppColors.primary.withValues(alpha: 0.6),
+                              Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.6),
                               AppColors.grey.withValues(alpha: 0.3),
                             ],
                           ),
@@ -76,12 +81,14 @@ class RoadmapItemView extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.darkGrey,
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color:
                           item.isActive
-                              ? AppColors.primary.withValues(alpha: 0.5)
+                              ? Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.5)
                               : AppColors.grey.withValues(alpha: 0.3),
                       width: 1,
                     ),
@@ -94,8 +101,9 @@ class RoadmapItemView extends StatelessWidget {
                           Expanded(
                             child: Text(
                               item.title,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: AppTextStyles.defaultTextStyle(
+                                context,
+                              ).copyWith(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -108,13 +116,17 @@ class RoadmapItemView extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.2),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
                                 I18n.of(context).roadmapItemViewInProgress,
-                                style: const TextStyle(
-                                  color: AppColors.primary,
+                                style: AppTextStyles.defaultTextStyle(
+                                  context,
+                                ).copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -132,7 +144,9 @@ class RoadmapItemView extends StatelessWidget {
                               ),
                               child: Text(
                                 I18n.of(context).roadmapItemViewCompleted,
-                                style: const TextStyle(
+                                style: AppTextStyles.defaultTextStyle(
+                                  context,
+                                ).copyWith(
                                   color: AppColors.rare,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -144,7 +158,7 @@ class RoadmapItemView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         item.description,
-                        style: const TextStyle(
+                        style: AppTextStyles.defaultTextStyle(context).copyWith(
                           color: AppColors.grey,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,

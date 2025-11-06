@@ -1,6 +1,7 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/market_listing_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -29,7 +30,7 @@ class MyActiveListingItemView extends StatelessWidget {
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                color: AppColors.darkGrey,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
@@ -61,8 +62,9 @@ class MyActiveListingItemView extends StatelessWidget {
                                       I18n.of(
                                         context,
                                       ).myActiveListingItemViewUnknownItem,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ).copyWith(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -84,10 +86,9 @@ class MyActiveListingItemView extends StatelessWidget {
                             children: [
                               Text(
                                 listing.item?.hero ?? '',
-                                style: const TextStyle(
-                                  color: AppColors.grey,
-                                  fontSize: 14,
-                                ),
+                                style: AppTextStyles.defaultTextStyle(
+                                  context,
+                                ).copyWith(color: AppColors.grey, fontSize: 14),
                               ),
                               if (listing.item?.hero?.isNotEmpty ?? false)
                                 const SizedBox(width: 4),
@@ -107,7 +108,9 @@ class MyActiveListingItemView extends StatelessWidget {
                                   I18n.of(
                                     context,
                                   ).myActiveListingItemViewListedDate,
-                                  style: const TextStyle(
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ).copyWith(
                                     color: AppColors.lightGreen,
                                     fontSize: 12,
                                   ),
@@ -116,7 +119,9 @@ class MyActiveListingItemView extends StatelessWidget {
                                   DateFormatUtils.formatDateAgo(
                                     listing.createdAt!,
                                   ),
-                                  style: const TextStyle(
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ).copyWith(
                                     color: AppColors.grey,
                                     fontSize: 12,
                                   ),
@@ -132,8 +137,8 @@ class MyActiveListingItemView extends StatelessWidget {
                     // Price
                     Text(
                       '\$${NumberFormatUtils.formatDecimal(listing.price, 2)}',
-                      style: const TextStyle(
-                        color: AppColors.primary,
+                      style: AppTextStyles.defaultTextStyle(context).copyWith(
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

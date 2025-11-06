@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
+import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_new_buy_orders_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_new_sell_listings_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_trending_usecase.dart';
@@ -26,6 +27,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
   final GetNewSellListingsUsecase _getNewSellListingsUsecase;
   final SearchCatalogUsecase _searchCatalogUsecase;
   final DebouncerUtils _debouncerUtils;
+  final DotagiftxRemoteConfig _dotagiftxRemoteConfig;
 
   int _currentSearchPage = 1;
 
@@ -39,6 +41,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     this._getNewSellListingsUsecase,
     this._searchCatalogUsecase,
     this._debouncerUtils,
+    this._dotagiftxRemoteConfig,
   ) : super(const HomeState());
 
   @override
@@ -50,6 +53,7 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
     unawaited(_getTrendingItems());
     unawaited(_getNewBuyOrders());
     unawaited(_getNewSellListings());
+    unawaited(_getBackgroundImageUrl());
   }
 
   Future<void> loadMoreSearchResults() async {
@@ -131,6 +135,12 @@ class HomeCubit extends BaseCubit<HomeState> with CubitErrorMixin<HomeState> {
       );
       emit(state.copyWith(loadingSearchResults: false));
     });
+  }
+
+  Future<void> _getBackgroundImageUrl() async {
+    final backgroundImageUrl =
+        await _dotagiftxRemoteConfig.getBackgroundImageUrl();
+    emit(state.copyWith(backgroundImageUrl: backgroundImageUrl));
   }
 
   Future<void> _getNewBuyOrders() async {

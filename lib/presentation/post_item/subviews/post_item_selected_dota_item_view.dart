@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -31,19 +32,19 @@ class PostItemSelectedDotaItemView extends StatelessWidget {
                     children: [
                       Text(
                         state.selectedItem?.origin ?? '',
-                        style: const TextStyle(color: Colors.white),
+                        style: AppTextStyles.defaultTextStyle(context),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         StringUtils.capitalizeEachWord(
                           state.selectedItem?.rarity ?? '',
                         ),
-                        style: TextStyle(
+                        style: AppTextStyles.defaultTextStyle(context).copyWith(
                           color:
                               RarityUtils.getRarityColor(
                                 state.selectedItem?.rarity,
                               ) ??
-                              Colors.white,
+                              Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -51,7 +52,7 @@ class PostItemSelectedDotaItemView extends StatelessWidget {
                         children: [
                           Text(
                             I18n.of(context).postItemViewSelectedItemStartingAt,
-                            style: const TextStyle(color: Colors.white),
+                            style: AppTextStyles.defaultTextStyle(context),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -63,7 +64,7 @@ class PostItemSelectedDotaItemView extends StatelessWidget {
                                 : I18n.of(
                                   context,
                                 ).postItemViewSelectedItemNoStartingAt,
-                            style: const TextStyle(color: Colors.white),
+                            style: AppTextStyles.defaultTextStyle(context),
                           ),
                         ],
                       ),
@@ -74,7 +75,7 @@ class PostItemSelectedDotaItemView extends StatelessWidget {
                             I18n.of(
                               context,
                             ).postItemViewSelectedItemRequestToBuyAt,
-                            style: const TextStyle(color: Colors.white),
+                            style: AppTextStyles.defaultTextStyle(context),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -86,7 +87,9 @@ class PostItemSelectedDotaItemView extends StatelessWidget {
                                 : I18n.of(
                                   context,
                                 ).postItemViewSelectedItemNoRequestToBuyAt,
-                            style: const TextStyle(color: AppColors.tealAccent),
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(color: AppColors.tealAccent),
                           ),
                         ],
                       ),

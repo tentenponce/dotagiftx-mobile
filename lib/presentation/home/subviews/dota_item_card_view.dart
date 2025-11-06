@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -16,6 +16,8 @@ class DotaItemCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: ClipRRect(
@@ -25,7 +27,7 @@ class DotaItemCardView extends StatelessWidget {
             // Card content (background)
             DecoratedBox(
               decoration: BoxDecoration(
-                color: AppColors.darkGrey,
+                color: colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
@@ -51,8 +53,9 @@ class DotaItemCardView extends StatelessWidget {
                         children: [
                           Text(
                             item.name ?? '',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: AppTextStyles.defaultTextStyle(
+                              context,
+                            ).copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -64,10 +67,9 @@ class DotaItemCardView extends StatelessWidget {
                             children: [
                               Text(
                                 item.hero ?? '',
-                                style: const TextStyle(
-                                  color: AppColors.grey,
-                                  fontSize: 14,
-                                ),
+                                style: AppTextStyles.defaultTextStyle(
+                                  context,
+                                ).copyWith(fontSize: 14),
                               ),
                               const SizedBox(width: 4),
                               RarityTextView(rarity: item.rarity ?? ''),
@@ -80,8 +82,8 @@ class DotaItemCardView extends StatelessWidget {
                     // Price
                     Text(
                       '\$${NumberFormatUtils.formatDecimal(item.lowestAsk, 2)}',
-                      style: const TextStyle(
-                        color: AppColors.primary,
+                      style: AppTextStyles.defaultTextStyle(context).copyWith(
+                        color: colorScheme.primary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

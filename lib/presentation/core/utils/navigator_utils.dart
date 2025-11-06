@@ -7,10 +7,8 @@ abstract final class NavigatorUtils {
   static final Logger _logger = getIt<Logger>();
 
   static RouteSettings buildRouteSettings(PageNamed page, {String? prefix}) {
-    return RouteSettings(
-      name: '${prefix ?? ''}${page.pageName.name}',
-      arguments: {'screenClass': page.runtimeType.toString()},
-    );
+    final name = '${prefix ?? ''}${page.pageName.name}';
+    return RouteSettings(name: name, arguments: {'screenClass': name});
   }
 
   static Future<T?> push<T>(BuildContext context, PageNamed page) {
