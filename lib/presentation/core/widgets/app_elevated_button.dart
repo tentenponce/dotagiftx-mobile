@@ -95,7 +95,7 @@ class _AppElevatedButtonState extends State<AppElevatedButton> {
     return widget.style ??
         ElevatedButton.styleFrom(
           backgroundColor: colorScheme.primary,
-          foregroundColor: colorScheme.onPrimary,
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           side: BorderSide(color: colorScheme.primary, width: 1),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
@@ -43,19 +43,22 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        surfaceTintColor: AppColors.black,
-        backgroundColor: AppColors.black,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           I18n.of(context).placeBuyOrderViewTitle(widget.item.name ?? ''),
-          style: const TextStyle(
-            color: Colors.white,
+          style: AppTextStyles.defaultTextStyle(context).copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -123,7 +126,7 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
       child: Text(
         I18n.of(context).placeBuyOrderViewExpirationDate,
         textAlign: TextAlign.center,
-        style: const TextStyle(
+        style: AppTextStyles.defaultTextStyle(context).copyWith(
           color: Colors.red,
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -155,15 +158,6 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
               FocusScope.of(context).unfocus();
               unawaited(context.read<PlaceBuyOrderCubit>().placeBuyOrder());
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0,
-            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -171,9 +165,10 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
                 const SizedBox(width: 8),
                 Text(
                   I18n.of(context).placeBuyOrderViewPlaceOrderButton,
-                  style: const TextStyle(
+                  style: AppTextStyles.defaultTextStyle(context).copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ],

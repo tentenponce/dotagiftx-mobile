@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class PlaceBuyOrderGuidelinesView extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
-        color: AppColors.darkGrey,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.grey.withValues(alpha: 0.3),
@@ -23,23 +24,33 @@ class PlaceBuyOrderGuidelinesView extends StatelessWidget {
         children: [
           Text(
             I18n.of(context).placeBuyOrderViewGuidelinesTitle,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
-          _buildGuideItem(I18n.of(context).placeBuyOrderViewGuideline1),
-          _buildGuideItem(I18n.of(context).placeBuyOrderViewGuideline2),
-          _buildGuideItem(I18n.of(context).placeBuyOrderViewGuideline3),
-          _buildGuideItem(I18n.of(context).placeBuyOrderViewGuideline4),
+          _buildGuideItem(
+            context,
+            I18n.of(context).placeBuyOrderViewGuideline1,
+          ),
+          _buildGuideItem(
+            context,
+            I18n.of(context).placeBuyOrderViewGuideline2,
+          ),
+          _buildGuideItem(
+            context,
+            I18n.of(context).placeBuyOrderViewGuideline3,
+          ),
+          _buildGuideItem(
+            context,
+            I18n.of(context).placeBuyOrderViewGuideline4,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildGuideItem(String text) {
+  Widget _buildGuideItem(BuildContext context, String text) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -57,7 +68,7 @@ class PlaceBuyOrderGuidelinesView extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
+              style: AppTextStyles.defaultTextStyle(context).copyWith(
                 color: AppColors.grey,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
