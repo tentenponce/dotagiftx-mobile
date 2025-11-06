@@ -45,7 +45,8 @@ class _AppState extends State<_App> {
                 previous.brightness != current.brightness,
         builder: (context, state) {
           final seedColor = state.seedColor?.toColor() ?? AppColors.primary;
-          const brightness = Brightness.dark;
+          final brightness =
+              state.brightness?.toBrightness() ?? Brightness.dark;
 
           return MaterialApp(
             navigatorObservers: [_navigationLogger],
