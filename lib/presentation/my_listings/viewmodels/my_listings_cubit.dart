@@ -139,6 +139,7 @@ class MyListingsCubit extends BaseCubit<MyListingsState>
   }
 
   Future<void> _getMarketSummary() async {
+    // TODO(tenten): this is ignored by now, to clarify with kudarap
     await cubitHandler(
       _getMarketSummaryUsecase.get,
       (response) async => emit(state.copyWith(marketSummary: response)),
