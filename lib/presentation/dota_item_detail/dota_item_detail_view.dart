@@ -237,7 +237,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                           ),
                           const SizedBox(height: 12),
                           // Filter Buttons
-                          const MarketListingFilterButtonsView(),
+                          MarketListingFilterButtonsView(
+                            appNavigationObserver: _appNavigationObserver,
+                          ),
                         ],
                       ),
                     ),

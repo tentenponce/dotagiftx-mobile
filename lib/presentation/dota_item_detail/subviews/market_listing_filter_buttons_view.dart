@@ -1,3 +1,4 @@
+import 'package:dotagiftx_mobile/core/platform/app_navigation_observer/app_navigation_observer.dart';
 import 'package:dotagiftx_mobile/data/core/constants/api_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/market_filter_button_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
@@ -11,7 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MarketListingFilterButtonsView extends StatelessWidget {
-  const MarketListingFilterButtonsView({super.key});
+  final AppNavigationObserver appNavigationObserver;
+  const MarketListingFilterButtonsView({
+    required this.appNavigationObserver,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,11 @@ class MarketListingFilterButtonsView extends StatelessWidget {
                 context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
                   ApiConstants.querySortHighest,
                 );
+
+                appNavigationObserver.logNavigation(
+                  screenName: 'buy-orders-filter-highest-price',
+                  screenClass: 'buy-orders-filter-highest-price',
+                );
               },
             ),
             MarketFilterButtonView(
@@ -57,6 +67,11 @@ class MarketListingFilterButtonsView extends StatelessWidget {
                 context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
                   ApiConstants.querySortRecent,
                 );
+
+                appNavigationObserver.logNavigation(
+                  screenName: 'buy-orders-filter-recent',
+                  screenClass: 'buy-orders-filter-recent',
+                );
               },
             ),
             MarketFilterButtonView(
@@ -66,6 +81,11 @@ class MarketListingFilterButtonsView extends StatelessWidget {
               onTap: () {
                 context.read<DotaItemDetailCubit>().buyOrdersListCubit.sortBy(
                   ApiConstants.querySortBest,
+                );
+
+                appNavigationObserver.logNavigation(
+                  screenName: 'buy-orders-filter-best',
+                  screenClass: 'buy-orders-filter-best',
                 );
               },
             ),
@@ -90,6 +110,11 @@ class MarketListingFilterButtonsView extends StatelessWidget {
                 context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
                   ApiConstants.querySortLowest,
                 );
+
+                appNavigationObserver.logNavigation(
+                  screenName: 'offers-filter-lowest-price',
+                  screenClass: 'offers-filter-lowest-price',
+                );
               },
             ),
             const SizedBox(width: 8),
@@ -101,6 +126,11 @@ class MarketListingFilterButtonsView extends StatelessWidget {
                 context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
                   ApiConstants.querySortRecent,
                 );
+
+                appNavigationObserver.logNavigation(
+                  screenName: 'offers-filter-recent',
+                  screenClass: 'offers-filter-recent',
+                );
               },
             ),
             const SizedBox(width: 8),
@@ -111,6 +141,11 @@ class MarketListingFilterButtonsView extends StatelessWidget {
               onTap: () {
                 context.read<DotaItemDetailCubit>().offersListCubit.sortBy(
                   ApiConstants.querySortBest,
+                );
+
+                appNavigationObserver.logNavigation(
+                  screenName: 'offers-filter-best',
+                  screenClass: 'offers-filter-best',
                 );
               },
             ),
