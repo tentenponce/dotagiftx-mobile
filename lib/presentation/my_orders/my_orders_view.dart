@@ -152,13 +152,10 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
                   BlocBuilder<MyOrdersCubit, MyOrdersState>(
                     buildWhen:
                         (previous, current) =>
-                            previous.marketSummary != current.marketSummary ||
                             previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myOrdersToReceiveButton(
-                          state.marketSummary?.toReceiveOrders ?? 0,
-                        ),
+                        label: I18n.of(context).myOrdersToReceiveButton,
                         filter:
                             ApiConstants.queryMarketStatusReserved.toString(),
                         currentFilter: state.status.toString(),
@@ -173,13 +170,10 @@ class _MyOrdersViewContentState extends State<_MyOrdersViewContent> {
                   BlocBuilder<MyOrdersCubit, MyOrdersState>(
                     buildWhen:
                         (previous, current) =>
-                            previous.marketSummary != current.marketSummary ||
                             previous.status != current.status,
                     builder: (context, state) {
                       return MarketFilterButtonView(
-                        label: I18n.of(context).myOrdersCompletedButton(
-                          state.marketSummary?.completedOrders ?? 0,
-                        ),
+                        label: I18n.of(context).myOrdersCompletedButton,
                         filter:
                             ApiConstants.queryMarketStatusCompleted.toString(),
                         currentFilter: state.status.toString(),

@@ -36,15 +36,10 @@ class MyListingsFilterButtonsView extends StatelessWidget {
             },
           ),
           BlocBuilder<MyListingsCubit, MyListingsState>(
-            buildWhen:
-                (previous, current) =>
-                    previous.marketSummary != current.marketSummary ||
-                    previous.status != current.status,
+            buildWhen: (previous, current) => previous.status != current.status,
             builder: (context, state) {
               return MarketFilterButtonView(
-                label: I18n.of(context).myListingsReservedButton(
-                  state.marketSummary?.reservedListings ?? 0,
-                ),
+                label: I18n.of(context).myListingsReservedButton,
                 filter: ApiConstants.queryMarketStatusReserved.toString(),
                 currentFilter: state.status.toString(),
                 onTap: () {
@@ -56,15 +51,10 @@ class MyListingsFilterButtonsView extends StatelessWidget {
             },
           ),
           BlocBuilder<MyListingsCubit, MyListingsState>(
-            buildWhen:
-                (previous, current) =>
-                    previous.marketSummary != current.marketSummary ||
-                    previous.status != current.status,
+            buildWhen: (previous, current) => previous.status != current.status,
             builder: (context, state) {
               return MarketFilterButtonView(
-                label: I18n.of(context).myListingsDeliveredButton(
-                  state.marketSummary?.deliveredListings ?? 0,
-                ),
+                label: I18n.of(context).myListingsDeliveredButton,
                 filter: ApiConstants.queryMarketStatusSold.toString(),
                 currentFilter: state.status.toString(),
                 onTap: () {
