@@ -61,28 +61,24 @@ class TreasureCardView extends StatelessWidget {
                         topRight: Radius.circular(12),
                       ),
                       child:
-                          !StringUtils.isNullOrEmpty(treasure.imageUrl)
+                          Assets.images.treasures.values
+                              .firstWhereOrNull(
+                                (element) => element.keyName.contains(
+                                  treasure.image ?? '',
+                                ),
+                              )
+                              ?.image(
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return _brokenImage(context);
+                                },
+                              ) ??
+                          (!StringUtils.isNullOrEmpty(treasure.imageUrl)
                               ? Image.network(
                                 treasure.imageUrl!,
                                 fit: BoxFit.cover,
                               )
-                              : Assets.images.treasures.values
-                                      .firstWhereOrNull(
-                                        (element) => element.keyName.contains(
-                                          treasure.image ?? '',
-                                        ),
-                                      )
-                                      ?.image(
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return _brokenImage(context);
-                                        },
-                                      ) ??
-                                  _brokenImage(context),
+                              : _brokenImage(context)),
                     ),
                   ),
                 ),

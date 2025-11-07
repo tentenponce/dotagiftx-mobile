@@ -61,6 +61,11 @@ abstract final class RemoteConfigConstants {
   static const String defaultMiddlemanUrl = 'https://dotagiftx.com/middleman';
   static const Iterable<TreasureModel> defaultTreasures = [
     TreasureModel(
+      name: "Cosmic 2025 Heroes' Hoard",
+      image: 'cosmic_2025_heroes_hoard.png',
+      rarity: 'mythical',
+    ),
+    TreasureModel(
       name: "Spring 2025 Heroes' Hoard",
       image: 'spring_2024_heroes_hoard.png',
       rarity: 'mythical',
