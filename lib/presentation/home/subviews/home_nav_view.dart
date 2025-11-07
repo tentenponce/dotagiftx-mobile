@@ -9,7 +9,6 @@ import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
-import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_app_bar.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_background_view.dart';
@@ -17,7 +16,6 @@ import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textf
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -63,8 +61,7 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
           style: AppTextStyles.defaultTextStyle(context),
         ),
         actions: [
-          BlocBuilder<ProfileCubit, ProfileState>(
-            bloc: context.read<HomeCubit>().profileCubit,
+          BlocBuilder<HomeCubit, HomeState>(
             buildWhen: (previous, current) => previous.user != current.user,
             builder: (context, state) {
               return state.user != null

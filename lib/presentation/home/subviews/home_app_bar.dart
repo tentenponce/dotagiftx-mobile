@@ -4,7 +4,13 @@ import 'package:flutter/services.dart';
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
   final List<Widget>? actions;
-  const HomeAppBar({required this.title, this.actions, super.key});
+  final Widget? leading;
+  const HomeAppBar({
+    required this.title,
+    this.actions,
+    this.leading,
+    super.key,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -13,6 +19,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: title,
+      leading: leading,
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.transparent,
       scrolledUnderElevation: 0,

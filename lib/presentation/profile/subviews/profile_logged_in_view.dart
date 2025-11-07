@@ -10,9 +10,9 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.
 import 'package:dotagiftx_mobile/presentation/core/widgets/user_subscription_badge_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_app_bar.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/logout_dialog.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
 import 'package:dotagiftx_mobile/presentation/my_orders/my_orders_view.dart';
+import 'package:dotagiftx_mobile/presentation/profile/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/roadmap/roadmap_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/cupertino.dart';
@@ -165,7 +165,7 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
   void initState() {
     super.initState();
 
-    context.read<HomeCubit>().profileCubit.initProfileLoggedInView();
+    context.read<ProfileCubit>().initProfileLoggedInView();
   }
 
   Widget _buildButton(
@@ -216,7 +216,7 @@ class _ProfileLoggedInViewState extends State<ProfileLoggedInView> {
       buildContext,
       LogoutDialog(
         onLogout: () {
-          unawaited(context.read<HomeCubit>().profileCubit.logout());
+          unawaited(context.read<ProfileCubit>().logout());
         },
       ),
     );

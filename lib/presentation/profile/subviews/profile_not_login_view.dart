@@ -8,15 +8,15 @@ import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.da
 import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_app_bar.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/login_webview_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/profile/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/assets/assets.gen.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileNotLoginView extends StatelessWidget {
-  const ProfileNotLoginView({super.key});
+  final bool? showBackButton;
+  const ProfileNotLoginView({this.showBackButton = true, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +29,16 @@ class ProfileNotLoginView extends StatelessWidget {
           I18n.of(context).loginNavLogin,
           style: AppTextStyles.defaultTextStyle(context),
         ),
+        leading:
+            showBackButton ?? true
+                ? IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+                : null,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -55,7 +65,6 @@ class ProfileNotLoginView extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 BlocBuilder<ProfileCubit, ProfileState>(
-                  bloc: context.read<HomeCubit>().profileCubit,
                   builder: (context, state) {
                     return state.loadingLogin
                         ? const Center(child: CircularProgressIndicator())
@@ -66,10 +75,7 @@ class ProfileNotLoginView extends StatelessWidget {
                             unawaited(
                               _showWebviewBottomSheet(
                                 context,
-                                context
-                                    .read<HomeCubit>()
-                                    .profileCubit
-                                    .getLoginUrl(),
+                                context.read<ProfileCubit>().getLoginUrl(),
                                 I18n.of(context).loginWebviewTitle,
                               ),
                             );
@@ -131,7 +137,7 @@ class ProfileNotLoginView extends StatelessWidget {
     );
 
     if (!StringUtils.isNullOrEmpty(query) && context.mounted) {
-      unawaited(context.read<HomeCubit>().profileCubit.login(query!));
+      unawaited(context.read<ProfileCubit>().login(query!));
     }
   }
 }

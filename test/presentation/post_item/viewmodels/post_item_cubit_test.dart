@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
 import 'package:dotagiftx_mobile/data/core/dio/api_exceptions.dart';
+import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/domain/core/domain_exceptions.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_items_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/post_listing_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
@@ -20,6 +22,7 @@ import 'post_item_cubit_test.mocks.dart';
   MockSpec<DotagiftxUnauthApi>(),
   MockSpec<GetDotaItemsUsecase>(),
   MockSpec<PostListingUsecase>(),
+  MockSpec<ListenLocalStorage>(),
 ])
 void main() {
   group(PostItemCubit, () {
@@ -27,6 +30,7 @@ void main() {
     late MockDotagiftxUnauthApi mockDotagiftxUnauthApi;
     late MockGetDotaItemsUsecase mockGetDotaItemsUsecase;
     late MockPostListingUsecase mockPostListingUsecase;
+    late MockListenLocalStorage mockListenLocalStorage;
     late bool showSuccessPostCalled;
     late bool showInvalidQuantityErrorCalled;
     late int setQuantityValue;
@@ -76,11 +80,22 @@ void main() {
     const testItems = [testItem1, testItem2, testItem3];
     const testApiErrorMessage = 'API Error: Test error message';
 
+    const testUserModel = UserModel(
+      name: 'Test User',
+      url: 'https://steamcommunity.com/profiles/12345',
+      avatar: 'https://example.com/avatar.png',
+      createdAt: '2024-01-01T00:00:00Z',
+      marketStats: MarketStats(live: 5, reserved: 2, sold: 10, bidCompleted: 3),
+      subscription: 1,
+      subscribedAt: '2024-01-01T00:00:00Z',
+    );
+
     setUp(() {
       mockLogger = MockLogger();
       mockDotagiftxUnauthApi = MockDotagiftxUnauthApi();
       mockGetDotaItemsUsecase = MockGetDotaItemsUsecase();
       mockPostListingUsecase = MockPostListingUsecase();
+      mockListenLocalStorage = MockListenLocalStorage();
       showSuccessPostCalled = false;
       showInvalidQuantityErrorCalled = false;
       setQuantityValue = 0;
@@ -92,6 +107,7 @@ void main() {
         mockGetDotaItemsUsecase,
         mockDotagiftxUnauthApi,
         mockPostListingUsecase,
+        mockListenLocalStorage,
       );
 
       // Set up callback functions
@@ -107,6 +123,18 @@ void main() {
 
       return cubit;
     }
+
+    test('should listen user if logged in', () async {
+      when(
+        mockListenLocalStorage.listenUser(),
+      ).thenAnswer((_) => Stream.value(testUserModel));
+
+      final cubit = createUnitToTest();
+      await Future<void>.delayed(Duration.zero);
+
+      verify(mockListenLocalStorage.listenUser()).called(1);
+      expect(cubit.state.isUserLoggedIn, isTrue);
+    });
 
     group('logger', () {
       test('should return the injected logger', () {

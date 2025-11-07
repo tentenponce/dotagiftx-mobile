@@ -98,7 +98,13 @@ class _AppElevatedButtonState extends State<AppElevatedButton> {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          side: BorderSide(color: colorScheme.primary, width: 1),
+          side: BorderSide(
+            color:
+                widget.isDisabled ?? false
+                    ? colorScheme.surface
+                    : colorScheme.primary,
+            width: 1,
+          ),
           elevation: 0,
         );
   }
