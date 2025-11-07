@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/data/api/dotagiftx_unauth_api.dart';
+import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/domain/core/domain_exceptions.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_dota_items_usecase.dart';
@@ -22,6 +23,8 @@ class PostItemCubit extends BaseCubit<PostItemState>
   final DotagiftxUnauthApi _dotagiftxUnauthApi;
   final GetDotaItemsUsecase _getDotaItemsUsecase;
   final PostListingUsecase _postListingUsecase;
+  final ListenLocalStorage _listenLocalStorage;
+
   List<DotaItemModel> _items = [];
 
   String _price = '';
@@ -32,6 +35,7 @@ class PostItemCubit extends BaseCubit<PostItemState>
     this._getDotaItemsUsecase,
     this._dotagiftxUnauthApi,
     this._postListingUsecase,
+    this._listenLocalStorage,
   ) : super(const PostItemState());
 
   @override
@@ -78,6 +82,7 @@ class PostItemCubit extends BaseCubit<PostItemState>
   @override
   Future<void> init() async {
     unawaited(_getDotaItems());
+    _listenUserIfLoggedIn();
   }
 
   Future<void> postItem() async {
@@ -168,5 +173,11 @@ class PostItemCubit extends BaseCubit<PostItemState>
       emit(state.copyWith(items: _items));
     });
     emit(state.copyWith(isGetItemsLoading: false));
+  }
+
+  void _listenUserIfLoggedIn() {
+    _listenLocalStorage.listenUser().listen((user) {
+      emit(state.copyWith(isUserLoggedIn: user != null));
+    });
   }
 }

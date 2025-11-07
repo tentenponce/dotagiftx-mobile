@@ -1,6 +1,5 @@
 // coverage: ignore-file
 
-import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/widget_size.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +36,7 @@ class _AppElevatedButtonState extends State<AppElevatedButton> {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = _buttonStyle();
+    final buttonStyle = _buttonStyle(Theme.of(context).colorScheme);
 
     return Stack(
       children: [
@@ -92,14 +91,20 @@ class _AppElevatedButtonState extends State<AppElevatedButton> {
     );
   }
 
-  ButtonStyle? _buttonStyle() {
+  ButtonStyle? _buttonStyle(ColorScheme colorScheme) {
     return widget.style ??
         ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.black,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          side: const BorderSide(color: AppColors.primary, width: 1),
+          side: BorderSide(
+            color:
+                widget.isDisabled ?? false
+                    ? colorScheme.surface
+                    : colorScheme.primary,
+            width: 1,
+          ),
           elevation: 0,
         );
   }

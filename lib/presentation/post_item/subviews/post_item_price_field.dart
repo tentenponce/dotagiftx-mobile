@@ -1,4 +1,6 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -25,18 +27,16 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
           children: [
             Text(
               I18n.of(context).postItemViewTextFieldPrice,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontSize: 16, fontWeight: FontWeight.w500),
             ),
-            const Text(
+            Text(
               ' *',
-              style: TextStyle(
-                color: Colors.red,
+              style: AppTextStyles.defaultTextStyle(context).copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
+                color: Colors.red,
               ),
             ),
           ],
@@ -51,7 +51,7 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
                         previous.isPriceErrorRequired !=
                         current.isPriceErrorRequired,
                 builder: (context, state) {
-                  return TextField(
+                  return AppTextField(
                     controller: _priceController,
                     onChanged:
                         (value) => context.read<PostItemCubit>().price = value,
@@ -64,30 +64,15 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
                       ),
                     ],
                     maxLines: 1,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                    decoration: InputDecoration(
-                      hintStyle: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 14,
-                      ),
-                      filled: true,
-                      fillColor: AppColors.darkGrey,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      error:
-                          state.isPriceErrorRequired
-                              ? Text(
-                                I18n.of(context).postItemViewPriceErrorRequired,
-                                style: const TextStyle(color: Colors.red),
-                              )
-                              : null,
-                    ),
+                    error:
+                        state.isPriceErrorRequired
+                            ? Text(
+                              I18n.of(context).postItemViewPriceErrorRequired,
+                              style: AppTextStyles.defaultTextStyle(
+                                context,
+                              ).copyWith(color: Colors.red),
+                            )
+                            : null,
                   );
                 },
               ),
@@ -97,7 +82,9 @@ class _PostItemPriceFieldState extends State<PostItemPriceField> {
         const SizedBox(height: 4),
         Text(
           I18n.of(context).postItemViewTextFieldPriceDescription,
-          style: const TextStyle(color: AppColors.grey, fontSize: 12),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(color: AppColors.grey, fontSize: 12),
         ),
       ],
     );

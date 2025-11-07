@@ -1,4 +1,6 @@
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -23,38 +25,19 @@ class _PostItemNoteFieldState extends State<PostItemNoteField> {
         children: [
           Text(
             I18n.of(context).postItemViewTextFieldNotes,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: AppTextField(
                   controller: _notesController,
                   onChanged:
                       (value) => context.read<PostItemCubit>().notes = value,
                   maxLines: 4,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                  decoration: InputDecoration(
-                    hintStyle: const TextStyle(
-                      color: AppColors.grey,
-                      fontSize: 14,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.darkGrey,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -62,7 +45,9 @@ class _PostItemNoteFieldState extends State<PostItemNoteField> {
           const SizedBox(height: 4),
           Text(
             I18n.of(context).postItemViewTextFieldNotesDescription,
-            style: const TextStyle(color: AppColors.grey, fontSize: 12),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(color: AppColors.grey, fontSize: 12),
           ),
         ],
       ),

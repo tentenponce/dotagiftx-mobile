@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
 import 'package:flutter/material.dart';
@@ -46,28 +47,30 @@ class DotaItemMarketDetailSubview extends StatelessWidget {
               // Collection/Source Info
               Text(
                 _getItemSource(),
-                style: TextStyle(
+                style: AppTextStyles.defaultTextStyle(context).copyWith(
                   color: rarityColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
               const SizedBox(height: 12),
 
               // Hero Info
               Row(
                 children: [
-                  const Text(
+                  Text(
                     'Hero: ',
-                    style: TextStyle(color: AppColors.grey, fontSize: 16),
+                    style: AppTextStyles.defaultTextStyle(
+                      context,
+                    ).copyWith(color: AppColors.grey, fontSize: 16),
                   ),
                   Text(
                     item.hero ?? '',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppTextStyles.defaultTextStyle(
+                      context,
+                    ).copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -76,7 +79,9 @@ class DotaItemMarketDetailSubview extends StatelessWidget {
               // Stats Row
               Text(
                 '• ${item.reservedCount} Reserved • ${item.soldCount} Delivered',
-                style: const TextStyle(color: AppColors.grey, fontSize: 14),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(color: AppColors.grey, fontSize: 14),
               ),
             ],
           ),

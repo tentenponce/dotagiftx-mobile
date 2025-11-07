@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/data/core/constants/verified_inventory_constants.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/date_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class _ItemVerificationIconViewState extends State<ItemVerificationIconView> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.dirtyWhite,
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: SizedBox(
@@ -135,16 +136,14 @@ class _ItemVerificationIconViewState extends State<ItemVerificationIconView> {
                       Text(
                         title,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: AppColors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyles.defaultTextStyle(
+                          context,
+                        ).copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         description,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: AppColors.black),
+                        style: AppTextStyles.defaultTextStyle(context),
                       ),
                     ],
                   ),

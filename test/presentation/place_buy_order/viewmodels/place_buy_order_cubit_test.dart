@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/place_buy_order_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/place_buy_order/viewmodels/place_buy_order_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,11 +12,16 @@ import 'package:mockito/mockito.dart';
 
 import 'place_buy_order_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<Logger>(), MockSpec<PlaceBuyOrderUsecase>()])
+@GenerateNiceMocks([
+  MockSpec<Logger>(),
+  MockSpec<PlaceBuyOrderUsecase>(),
+  MockSpec<ListenLocalStorage>(),
+])
 void main() {
   group(PlaceBuyOrderCubit, () {
     late MockLogger mockLogger;
     late MockPlaceBuyOrderUsecase mockPlaceBuyOrderUsecase;
+    late MockListenLocalStorage mockListenLocalStorage;
     late bool showSuccessOrderCalled;
 
     // Test data
@@ -43,14 +50,29 @@ void main() {
 
     const testApiErrorMessage = 'API Error: Test error message';
 
+    const testUserModel = UserModel(
+      name: 'Test User',
+      url: 'https://steamcommunity.com/profiles/12345',
+      avatar: 'https://example.com/avatar.png',
+      createdAt: '2024-01-01T00:00:00Z',
+      marketStats: MarketStats(live: 5, reserved: 2, sold: 10, bidCompleted: 3),
+      subscription: 1,
+      subscribedAt: '2024-01-01T00:00:00Z',
+    );
+
     setUp(() {
       mockLogger = MockLogger();
       mockPlaceBuyOrderUsecase = MockPlaceBuyOrderUsecase();
+      mockListenLocalStorage = MockListenLocalStorage();
       showSuccessOrderCalled = false;
     });
 
     PlaceBuyOrderCubit createUnitToTest() {
-      final cubit = PlaceBuyOrderCubit(mockLogger, mockPlaceBuyOrderUsecase);
+      final cubit = PlaceBuyOrderCubit(
+        mockLogger,
+        mockPlaceBuyOrderUsecase,
+        mockListenLocalStorage,
+      );
 
       // Set up callback functions
       cubit.showSuccessOrder = () {
@@ -59,6 +81,19 @@ void main() {
 
       return cubit;
     }
+
+    test('should listen user if logged in', () async {
+      when(
+        mockListenLocalStorage.listenUser(),
+      ).thenAnswer((_) => Stream.value(testUserModel));
+
+      final cubit = createUnitToTest();
+
+      await Future<void>.delayed(Duration.zero);
+
+      verify(mockListenLocalStorage.listenUser()).called(1);
+      expect(cubit.state.isUserLoggedIn, isTrue);
+    });
 
     group('logger', () {
       test('should return the injected logger', () {

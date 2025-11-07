@@ -4,15 +4,18 @@ import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/state_base.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_outline_button.dart';
 import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
-import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/dota_item_card_view.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/home_app_bar.dart';
+import 'package:dotagiftx_mobile/presentation/home/subviews/home_background_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_catalog_textfield_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/search_results_list_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/shimmer_item_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/post_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -47,30 +50,32 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.black,
-      appBar: AppBar(
-        title: Text(I18n.of(context).homeHome),
-        backgroundColor: AppColors.black,
-        foregroundColor: Colors.white,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: AppColors.black,
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
+      extendBodyBehindAppBar: true,
+      backgroundColor: colorScheme.surface,
+      appBar: HomeAppBar(
+        title: Text(
+          I18n.of(context).homeHome,
+          style: AppTextStyles.defaultTextStyle(context),
+        ),
         actions: [
-          BlocBuilder<ProfileCubit, ProfileState>(
-            bloc: context.read<HomeCubit>().profileCubit,
+          BlocBuilder<HomeCubit, HomeState>(
             buildWhen: (previous, current) => previous.user != current.user,
             builder: (context, state) {
               return state.user != null
-                  ? OutlinedButton(
+                  ? AppOutlineButton(
                     onPressed: () {
                       unawaited(
                         NavigatorUtils.push(context, const PostItemView()),
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(color: AppColors.primary),
+                      foregroundColor: Theme.of(context).colorScheme.primary,
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 8,
@@ -81,7 +86,9 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
                     ),
                     child: Text(
                       I18n.of(context).homeNavPostItemButton,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.defaultTextStyle(
+                        context,
+                      ).copyWith(fontWeight: FontWeight.bold),
                     ),
                   )
                   : const SizedBox.shrink();
@@ -89,182 +96,198 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Search Field
-          SearchCatalogTextfieldView(controller: _searchController),
+      body: HomeBackgroundView(
+        child: Column(
+          children: [
+            // Search Field
+            SearchCatalogTextfieldView(controller: _searchController),
 
-          // Main content
-          Expanded(
-            child: BlocBuilder<HomeCubit, HomeState>(
-              builder: (context, state) {
-                if (state.searchResults.isNotEmpty ||
-                    !StringUtils.isNullOrEmpty(state.currentSearchQuery) ||
-                    state.loadingSearchResults) {
-                  return SearchResultsListView(
-                    searchResults: state.searchResults,
-                    onRefresh:
-                        () async => context.read<HomeCubit>().searchCatalog(
-                          query: _searchController.text,
-                        ),
-                    isLoading: state.loadingSearchResults,
-                    totalSearchResultsCount: state.totalSearchResultsCount,
-                    loadingMoreResults: state.loadingMoreSearchResults,
-                  );
-                }
+            // Main content
+            Expanded(
+              child: BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) {
+                  if (state.searchResults.isNotEmpty ||
+                      !StringUtils.isNullOrEmpty(state.currentSearchQuery) ||
+                      state.loadingSearchResults) {
+                    return SearchResultsListView(
+                      searchResults: state.searchResults,
+                      onRefresh:
+                          () async => context.read<HomeCubit>().searchCatalog(
+                            query: _searchController.text,
+                          ),
+                      isLoading: state.loadingSearchResults,
+                      totalSearchResultsCount: state.totalSearchResultsCount,
+                      loadingMoreResults: state.loadingMoreSearchResults,
+                    );
+                  }
 
-                // Combine all sections into a flat list
-                final sectionEntries = <HomeSectionEntry>[];
-                var currentIndex = 0;
+                  // Combine all sections into a flat list
+                  final sectionEntries = <HomeSectionEntry>[];
+                  var currentIndex = 0;
 
-                void addSection(
-                  String title,
-                  Iterable<DotaItemModel> items, {
-                  required bool isLoading,
-                }) {
-                  sectionIndexMap[title] = currentIndex;
-                  sectionEntries.add(SectionHeaderEntry(title));
-                  currentIndex++;
+                  void addSection(
+                    String title,
+                    Iterable<DotaItemModel> items, {
+                    required bool isLoading,
+                  }) {
+                    sectionIndexMap[title] = currentIndex;
+                    sectionEntries.add(SectionHeaderEntry(title));
+                    currentIndex++;
 
-                  if (isLoading) {
-                    // Add shimmer items when loading
-                    for (var i = 0; i < 5; i++) {
-                      sectionEntries.add(ShimmerEntry());
-                      currentIndex++;
-                    }
-                  } else {
-                    // Add actual items
-                    for (final item in items) {
-                      sectionEntries.add(ItemEntry(item));
-                      currentIndex++;
+                    if (isLoading) {
+                      // Add shimmer items when loading
+                      for (var i = 0; i < 5; i++) {
+                        sectionEntries.add(ShimmerEntry());
+                        currentIndex++;
+                      }
+                    } else {
+                      // Add actual items
+                      for (final item in items) {
+                        sectionEntries.add(ItemEntry(item));
+                        currentIndex++;
+                      }
                     }
                   }
-                }
 
-                addSection(
-                  I18n.of(context).homeTrending,
-                  state.trendingItems,
-                  isLoading: state.loadingTrendingItems,
-                );
-                addSection(
-                  I18n.of(context).homeNewBuyOrders,
-                  state.newBuyOrderItems,
-                  isLoading: state.loadingNewBuyOrderItems,
-                );
-                addSection(
-                  I18n.of(context).homeNewSellListings,
-                  state.newSellListingItems,
-                  isLoading: state.loadingNewSellListingItems,
-                );
+                  addSection(
+                    I18n.of(context).homeTrending,
+                    state.trendingItems,
+                    isLoading: state.loadingTrendingItems,
+                  );
+                  addSection(
+                    I18n.of(context).homeNewBuyOrders,
+                    state.newBuyOrderItems,
+                    isLoading: state.loadingNewBuyOrderItems,
+                  );
+                  addSection(
+                    I18n.of(context).homeNewSellListings,
+                    state.newSellListingItems,
+                    isLoading: state.loadingNewSellListingItems,
+                  );
 
-                return Column(
-                  children: [
-                    // Navigation Buttons
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed:
-                                  () => _scrollToSection(
-                                    I18n.of(context).homeNewBuyOrders,
+                  return Column(
+                    children: [
+                      // Navigation Buttons
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: AppElevatedButton(
+                                width: double.infinity,
+                                onPressed:
+                                    () => _scrollToSection(
+                                      I18n.of(context).homeNewBuyOrders,
+                                    ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.surfaceContainer,
+                                  foregroundColor: colorScheme.onSurface,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
                                   ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.darkGrey,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                child: Text(
+                                  I18n.of(context).homeNewBuyOrders,
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ),
                                 ),
                               ),
-                              child: Text(I18n.of(context).homeNewBuyOrders),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed:
-                                  () => _scrollToSection(
-                                    I18n.of(context).homeNewSellListings,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: AppElevatedButton(
+                                width: double.infinity,
+                                onPressed:
+                                    () => _scrollToSection(
+                                      I18n.of(context).homeNewSellListings,
+                                    ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.surfaceContainer,
+                                  foregroundColor: colorScheme.onSurface,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
                                   ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.darkGrey,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                child: Text(
+                                  I18n.of(context).homeNewSellListings,
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ),
                                 ),
                               ),
-                              child: Text(I18n.of(context).homeNewSellListings),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
-                    // Lazy-loaded main content with scroll shadow
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          RefreshIndicator(
-                            onRefresh:
-                                () async => context.read<HomeCubit>().init(),
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              controller: _scrollController,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
+                      // Lazy-loaded main content with scroll shadow
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            RefreshIndicator(
+                              onRefresh:
+                                  () async => context.read<HomeCubit>().init(),
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                controller: _scrollController,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                itemCount: sectionEntries.length,
+                                itemBuilder: (context, index) {
+                                  final entry = sectionEntries[index];
+                                  if (entry is SectionHeaderEntry) {
+                                    return _buildSectionHeader(entry.title);
+                                  } else if (entry is ItemEntry) {
+                                    return DotaItemCardView(item: entry.item);
+                                  } else if (entry is ShimmerEntry) {
+                                    return const ShimmerItemCardView();
+                                  } else {
+                                    return const SizedBox.shrink();
+                                  }
+                                },
                               ),
-                              itemCount: sectionEntries.length,
-                              itemBuilder: (context, index) {
-                                final entry = sectionEntries[index];
-                                if (entry is SectionHeaderEntry) {
-                                  return _buildSectionHeader(entry.title);
-                                } else if (entry is ItemEntry) {
-                                  return DotaItemCardView(item: entry.item);
-                                } else if (entry is ShimmerEntry) {
-                                  return const ShimmerItemCardView();
-                                } else {
-                                  return const SizedBox.shrink();
-                                }
-                              },
                             ),
-                          ),
-                          // Top scroll shadow
-                          if (_isScrolled)
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      AppColors.black.withValues(alpha: 0.8),
-                                      AppColors.black.withValues(alpha: 0.4),
-                                      AppColors.black.withValues(alpha: 0.0),
-                                    ],
+                            // Top scroll shadow
+                            AnimatedOpacity(
+                              opacity: _isScrolled ? 1.0 : 0.0,
+                              duration: const Duration(milliseconds: 250),
+                              child: Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        AppColors.black.withValues(alpha: 0.2),
+                                        AppColors.black.withValues(alpha: 0.0),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -289,11 +312,9 @@ class _HomeNavViewState extends StateBase<HomeNavView> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+        style: AppTextStyles.defaultTextStyle(
+          context,
+        ).copyWith(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }

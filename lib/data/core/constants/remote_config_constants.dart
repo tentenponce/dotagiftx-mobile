@@ -1,13 +1,25 @@
+import 'dart:ui';
+
 import 'package:dotagiftx_mobile/domain/models/roadmap_model.dart';
+import 'package:dotagiftx_mobile/domain/models/theme_model.dart';
 import 'package:dotagiftx_mobile/domain/models/treasure_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
 
 abstract final class RemoteConfigConstants {
   static const String keyDotagiftxImageBaseUrl = 'dotagiftx_image_base_url';
+  static const String keyBackgroundImageUrl = 'background_image_url';
   static const String keyTreasures = 'treasures';
   static const String keyRoadmap = 'roadmap';
+  static const String keyHeroes = 'heroes';
+  static const String keyTheme = 'theme';
   static const String keyTokenRotationSeconds = 'token_rotation_seconds';
 
   static const int defaultTokenRotationSeconds = 270;
+
+  static final ThemeModel defaultTheme = ThemeModel(
+    seedColor: AppColors.primary.toString(),
+    brightness: Brightness.dark.name,
+  );
 
   static const Iterable<RoadmapModel> defaultRoadmap = [
     RoadmapModel(
@@ -48,6 +60,11 @@ abstract final class RemoteConfigConstants {
 
   static const String defaultMiddlemanUrl = 'https://dotagiftx.com/middleman';
   static const Iterable<TreasureModel> defaultTreasures = [
+    TreasureModel(
+      name: "Cosmic 2025 Heroes' Hoard",
+      image: 'cosmic_2025_heroes_hoard.png',
+      rarity: 'mythical',
+    ),
     TreasureModel(
       name: "Spring 2025 Heroes' Hoard",
       image: 'spring_2024_heroes_hoard.png',

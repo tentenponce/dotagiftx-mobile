@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/market_buy_order_card_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/subviews/shimmer_market_listing_card_view.dart';
@@ -49,7 +50,9 @@ class _BuyOrdersListViewState extends State<BuyOrdersListView> {
                 const SizedBox(height: 16),
                 Text(
                   I18n.of(context).buyOrdersEmpty,
-                  style: const TextStyle(color: AppColors.grey, fontSize: 16),
+                  style: AppTextStyles.defaultTextStyle(
+                    context,
+                  ).copyWith(color: AppColors.grey, fontSize: 16),
                 ),
               ],
             ),

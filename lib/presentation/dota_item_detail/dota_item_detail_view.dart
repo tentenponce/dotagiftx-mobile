@@ -6,6 +6,7 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/measure_size_view.dart';
 import 'package:dotagiftx_mobile/presentation/dota_item_detail/states/buy_orders_list_state.dart';
@@ -56,7 +57,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       extendBody: false,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -90,8 +91,8 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                 slivers: [
                   // Main collapsing header with item details
                   SliverAppBar(
-                    backgroundColor: AppColors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                     scrolledUnderElevation: 0,
                     surfaceTintColor: Colors.transparent,
                     automaticallyImplyLeading: false,
@@ -125,8 +126,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                               Expanded(
                                 child: Text(
                                   widget.item.name ?? '',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: AppTextStyles.defaultTextStyle(
+                                    context,
+                                  ).copyWith(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -149,7 +151,9 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                 // Gradient overlay that fades to black when collapsed
                                 Positioned.fill(
                                   child: Container(
-                                    color: AppColors.black.withAlpha(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceDim.withAlpha(
                                       (255 * 1.0 * (1 - t)).toInt(),
                                     ),
                                   ),
@@ -169,7 +173,7 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                     toolbarHeight:
                         130, // Increased to accommodate filter buttons
                     flexibleSpace: Container(
-                      color: AppColors.black,
+                      color: Theme.of(context).colorScheme.surface,
                       padding: const EdgeInsets.only(
                         left: 16,
                         right: 16,
@@ -199,10 +203,15 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                                         .buyOrdersListCubit,
                                 builder: (context, buyOrdersState) {
                                   return TabBar(
+                                    labelStyle: AppTextStyles.defaultTextStyle(
+                                      context,
+                                    ),
                                     controller: _tabController,
-                                    labelColor: Colors.white,
+                                    labelColor:
+                                        Theme.of(context).colorScheme.onSurface,
                                     unselectedLabelColor: AppColors.grey,
-                                    indicatorColor: AppColors.primary,
+                                    indicatorColor:
+                                        Theme.of(context).colorScheme.primary,
                                     tabs: [
                                       Tab(
                                         text: I18n.of(
@@ -228,82 +237,61 @@ class _DotaItemDetailViewState extends State<_DotaItemDetailView>
                           ),
                           const SizedBox(height: 12),
                           // Filter Buttons
-                          const MarketListingFilterButtonsView(),
+                          MarketListingFilterButtonsView(
+                            appNavigationObserver: _appNavigationObserver,
+                          ),
                         ],
                       ),
                     ),
                   ),
 
                   // Dynamic Tab Content as Slivers
-                  BlocBuilder<DotaItemDetailCubit, DotaItemDetailState>(
-                    buildWhen:
-                        (previous, current) => current.tab != previous.tab,
-                    builder: (context, state) {
-                      switch (state.tab) {
-                        case MarketTab.offers:
-                          // Offers Tab Content with bottom padding for navigation bar
-                          return SliverToBoxAdapter(
-                            child: ConstrainedBox(
+                  SliverToBoxAdapter(
+                    child: BlocBuilder<
+                      DotaItemDetailCubit,
+                      DotaItemDetailState
+                    >(
+                      buildWhen:
+                          (previous, current) => current.tab != previous.tab,
+                      builder: (context, state) {
+                        switch (state.tab) {
+                          case MarketTab.offers:
+                            // Offers Tab Content with bottom padding for navigation bar
+                            return ConstrainedBox(
                               constraints: BoxConstraints(
                                 minHeight:
-                                    MediaQuery.of(context).size.height * 0.75,
+                                    MediaQuery.of(context).size.height * 0.65,
                               ),
                               child: Container(
-                                color: AppColors.black,
+                                color: Theme.of(context).colorScheme.surface,
                                 padding: EdgeInsets.only(
                                   bottom: MediaQuery.of(context).padding.bottom,
                                 ),
                                 child: const OffersListView(),
                               ),
-                            ),
-                          );
-                        case MarketTab.buyOrders:
-                          // Buy Orders Tab Content with bottom padding for navigation bar
-                          return SliverToBoxAdapter(
-                            child: ConstrainedBox(
+                            );
+                          case MarketTab.buyOrders:
+                            // Buy Orders Tab Content with bottom padding for navigation bar
+                            return ConstrainedBox(
                               constraints: BoxConstraints(
                                 minHeight:
-                                    MediaQuery.of(context).size.height * 0.75,
+                                    MediaQuery.of(context).size.height * 0.65,
                               ),
                               child: Container(
-                                color: AppColors.black,
+                                color: Theme.of(context).colorScheme.surface,
                                 padding: EdgeInsets.only(
                                   bottom: MediaQuery.of(context).padding.bottom,
                                 ),
                                 child: const BuyOrdersListView(),
                               ),
-                            ),
-                          );
-                      }
-                    },
+                            );
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-            // Top scroll shadow for offers section
-            if (_isScrolled && _tabController.index == 0)
-              Positioned(
-                top:
-                    kToolbarHeight +
-                    MediaQuery.of(context).padding.top +
-                    170, // After all pinned content including filter buttons
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.black.withValues(alpha: 0.8),
-                        AppColors.black.withValues(alpha: 0.4),
-                        AppColors.black.withValues(alpha: 0.0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

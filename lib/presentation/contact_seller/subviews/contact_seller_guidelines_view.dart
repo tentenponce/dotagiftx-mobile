@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/data/core/constants/remote_config_constants.dart';
 import 'package:dotagiftx_mobile/domain/models/steam_user_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +22,13 @@ class ContactSellerGuidelinesView extends StatelessWidget {
       children: [
         Text(
           I18n.of(context).contactSellerViewGuidelinesTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16),
 
-        _buildGuidelineItem([
+        _buildGuidelineItem(context, [
           _TextSegment(
             text: I18n.of(context).contactSellerViewGuideline1Prefix,
           ),
@@ -50,7 +49,7 @@ class ContactSellerGuidelinesView extends StatelessWidget {
         ]),
         const SizedBox(height: 12),
 
-        _buildGuidelineItem([
+        _buildGuidelineItem(context, [
           _TextSegment(text: I18n.of(context).contactSellerViewGuideline2),
         ]),
         const SizedBox(height: 12),
@@ -58,7 +57,7 @@ class ContactSellerGuidelinesView extends StatelessWidget {
         _GuidelineItem(text: I18n.of(context).contactSellerViewGuideline3),
         const SizedBox(height: 12),
 
-        _buildGuidelineItem([
+        _buildGuidelineItem(context, [
           _TextSegment(
             text: I18n.of(context).contactSellerViewGuideline4Prefix,
           ),
@@ -96,7 +95,7 @@ class ContactSellerGuidelinesView extends StatelessWidget {
         ]),
         const SizedBox(height: 12),
 
-        _buildGuidelineItem([
+        _buildGuidelineItem(context, [
           _TextSegment(
             text: I18n.of(context).contactSellerViewGuideline5Prefix,
           ),
@@ -117,21 +116,29 @@ class ContactSellerGuidelinesView extends StatelessWidget {
     );
   }
 
-  Widget _buildGuidelineItem(List<_TextSegment> segments) {
+  Widget _buildGuidelineItem(
+    BuildContext context,
+    List<_TextSegment> segments,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('• ', style: TextStyle(color: Colors.white, fontSize: 14)),
+        Text(
+          '• ',
+          style: AppTextStyles.defaultTextStyle(context).copyWith(fontSize: 14),
+        ),
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontSize: 14),
               children:
                   segments.map((segment) {
                     if (segment.isLink) {
                       return TextSpan(
                         text: segment.text,
-                        style: const TextStyle(
+                        style: AppTextStyles.defaultTextStyle(context).copyWith(
                           color: Colors.blue,
                           fontSize: 14,
                           decoration: TextDecoration.underline,
@@ -164,11 +171,16 @@ class _GuidelineItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('• ', style: TextStyle(color: Colors.white, fontSize: 14)),
+        Text(
+          '• ',
+          style: AppTextStyles.defaultTextStyle(context).copyWith(fontSize: 14),
+        ),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            style: AppTextStyles.defaultTextStyle(
+              context,
+            ).copyWith(fontSize: 14),
           ),
         ),
       ],

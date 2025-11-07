@@ -44,7 +44,7 @@ abstract interface class DotagiftxUnauthApi {
     @Query('sort') String sort,
   );
 
-  @GET('stats/market_summary')
+  @GET('stats/market_summary_v2')
   Future<MarketSummaryResponse> getPartnerMarketSummary(
     @Query('partner_steam_id') String partnerSteamId,
   );
@@ -52,7 +52,7 @@ abstract interface class DotagiftxUnauthApi {
   @GET('/catalogs_trend')
   Future<CatalogResponse> getTrendingCatalogs();
 
-  @GET('stats/market_summary')
+  @GET('stats/market_summary_v2')
   Future<MarketSummaryResponse> getUserMarketSummary(
     @Query('user_id') String userId,
     @Query('index') String? index,

@@ -10,13 +10,13 @@ class ShimmerOrderItemView extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppColors.darkGrey,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Shimmer.fromColors(
-          baseColor: AppColors.darkGrey,
+          baseColor: Theme.of(context).colorScheme.surfaceContainer,
           highlightColor: AppColors.grey.withValues(alpha: 0.5),
           child: Row(
             children: [

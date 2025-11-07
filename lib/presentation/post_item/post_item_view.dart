@@ -4,6 +4,7 @@ import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_page_stateless_widget.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/app_elevated_button.dart';
 import 'package:dotagiftx_mobile/presentation/my_listings/my_listings_view.dart';
@@ -15,6 +16,7 @@ import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_price
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_quantity_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/subviews/post_item_selected_dota_item_view.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/profile/profile_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,22 +49,23 @@ class _PostItemViewState extends State<_PostItemView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        surfaceTintColor: AppColors.black,
-        backgroundColor: AppColors.black,
+        surfaceTintColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           I18n.of(context).postItemViewTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.defaultTextStyle(
+            context,
+          ).copyWith(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
       body: SafeArea(
@@ -79,7 +82,7 @@ class _PostItemViewState extends State<_PostItemView> {
                 margin: const EdgeInsets.only(bottom: 24),
                 child: Text(
                   I18n.of(context).postItemViewDescription,
-                  style: const TextStyle(
+                  style: AppTextStyles.defaultTextStyle(context).copyWith(
                     color: AppColors.grey,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -117,8 +120,12 @@ class _PostItemViewState extends State<_PostItemView> {
               // Notes field
               const PostItemNoteField(),
 
+              _buildUserNotLoggedInMessage(context),
+
               // Post button
               _buildPostButton(context),
+
+              const SizedBox(height: 16),
 
               // Expiration date
               _buildExpirationDate(context),
@@ -174,7 +181,7 @@ class _PostItemViewState extends State<_PostItemView> {
       child: Text(
         I18n.of(context).postItemViewExpirationDate,
         textAlign: TextAlign.center,
-        style: const TextStyle(
+        style: AppTextStyles.defaultTextStyle(context).copyWith(
           color: Colors.red,
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -184,46 +191,46 @@ class _PostItemViewState extends State<_PostItemView> {
   }
 
   Widget _buildPostButton(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 20, bottom: 10),
       child: BlocBuilder<PostItemCubit, PostItemState>(
         buildWhen:
             (previous, current) =>
-                previous.isPostItemLoading != current.isPostItemLoading,
+                previous.isPostItemLoading != current.isPostItemLoading ||
+                previous.isUserLoggedIn != current.isUserLoggedIn,
         builder: (context, state) {
           return AppElevatedButton(
             isLoading: state.isPostItemLoading,
-            onPressed: () {
-              unawaited(
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                ),
-              );
-              FocusScope.of(context).unfocus();
-              unawaited(context.read<PostItemCubit>().postItem());
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0,
-            ),
+            isDisabled: !state.isUserLoggedIn,
+            onPressed:
+                state.isUserLoggedIn
+                    ? () {
+                      unawaited(
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        ),
+                      );
+                      FocusScope.of(context).unfocus();
+                      unawaited(context.read<PostItemCubit>().postItem());
+                    }
+                    : null,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.check, size: 20),
+                Icon(
+                  Icons.check,
+                  size: 20,
+                  color: state.isUserLoggedIn ? Colors.white : AppColors.grey,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   I18n.of(context).postItemViewPostButton,
-                  style: const TextStyle(
+                  style: AppTextStyles.defaultTextStyle(context).copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color: state.isUserLoggedIn ? Colors.white : AppColors.grey,
                   ),
                 ),
               ],
@@ -231,6 +238,52 @@ class _PostItemViewState extends State<_PostItemView> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildUserNotLoggedInMessage(BuildContext context) {
+    return BlocBuilder<PostItemCubit, PostItemState>(
+      buildWhen:
+          (previous, current) =>
+              previous.isUserLoggedIn != current.isUserLoggedIn,
+      builder: (context, state) {
+        return state.isUserLoggedIn
+            ? const SizedBox.shrink()
+            : Container(
+              margin: const EdgeInsets.only(bottom: 4, top: 16),
+              alignment: Alignment.center,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  unawaited(
+                    NavigatorUtils.push(
+                      context,
+                      ProfileView(
+                        loginSuccess: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    children: [
+                      const Icon(Icons.warning_amber, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        I18n.of(context).postItemViewUserNotLoggedInMessage,
+                        style: AppTextStyles.defaultTextStyle(
+                          context,
+                        ).copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+      },
     );
   }
 }

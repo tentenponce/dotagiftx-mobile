@@ -1,6 +1,8 @@
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_colors.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
+import 'package:dotagiftx_mobile/presentation/core/widgets/app_text_field.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/states/post_item_state.dart';
 import 'package:dotagiftx_mobile/presentation/post_item/viewmodels/post_item_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
@@ -30,14 +32,16 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
           children: [
             Text(
               I18n.of(context).postItemViewItemName,
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontSize: 14),
             ),
-            const Text(
+            Text(
               ' *',
-              style: TextStyle(
-                color: Colors.red,
+              style: AppTextStyles.defaultTextStyle(context).copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
+                color: Colors.red,
               ),
             ),
           ],
@@ -62,7 +66,7 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
                       previous.isItemErrorRequired !=
                       current.isItemErrorRequired,
               builder:
-                  (context, state) => TextField(
+                  (context, state) => AppTextField(
                     focusNode: _itemSearchFocusNode,
                     controller: _itemSearchController,
                     onChanged: context.read<PostItemCubit>().filterItems,
@@ -73,64 +77,51 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
                         );
                       }
                     },
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: I18n.of(context).postItemViewItemHint,
-                      hintStyle: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 14,
-                      ),
-                      filled: true,
-                      fillColor: AppColors.darkGrey,
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            _itemSearchFocusNode.hasFocus
-                                ? const BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  topRight: Radius.circular(12),
-                                )
-                                : BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      error:
-                          state.isItemErrorRequired &&
-                                  !_itemSearchFocusNode.hasFocus
-                              ? Text(
-                                I18n.of(context).postItemViewItemErrorRequired,
-                                style: const TextStyle(color: Colors.red),
+                    hintText: I18n.of(context).postItemViewItemHint,
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          _itemSearchFocusNode.hasFocus
+                              ? const BorderRadius.only(
+                                topLeft: Radius.circular(12),
+                                topRight: Radius.circular(12),
                               )
-                              : null,
-                      suffixIcon: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
-                              onTap: () {
-                                context
-                                    .read<PostItemCubit>()
-                                    .clearSelectedItem();
-                                _itemSearchController.clear();
-                              },
-                              child: const Icon(
-                                Icons.clear,
-                                color: AppColors.grey,
-                                size: 20,
-                              ),
+                              : BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    error:
+                        state.isItemErrorRequired &&
+                                !_itemSearchFocusNode.hasFocus
+                            ? Text(
+                              I18n.of(context).postItemViewItemErrorRequired,
+                              style: AppTextStyles.defaultTextStyle(
+                                context,
+                              ).copyWith(color: Colors.red),
+                            )
+                            : null,
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              context.read<PostItemCubit>().clearSelectedItem();
+                              _itemSearchController.clear();
+                            },
+                            child: const Icon(
+                              Icons.clear,
+                              color: AppColors.grey,
+                              size: 20,
                             ),
                           ),
-                          const Icon(
-                            Icons.keyboard_arrow_down,
-                            color: AppColors.grey,
-                            size: 24,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: AppColors.grey,
+                          size: 24,
+                        ),
+                      ],
                     ),
                   ),
             ),
@@ -176,9 +167,9 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
                   !state.isGetItemsLoading
                       ? const BoxConstraints(maxHeight: 200)
                       : null,
-              decoration: const BoxDecoration(
-                color: AppColors.darkGrey,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
                 ),
@@ -197,10 +188,9 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
                       ? Center(
                         child: Text(
                           I18n.of(context).postItemViewItemNoResults,
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 14,
-                          ),
+                          style: AppTextStyles.defaultTextStyle(
+                            context,
+                          ).copyWith(color: AppColors.grey, fontSize: 14),
                         ),
                       )
                       : ListView.builder(
@@ -251,11 +241,11 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
         ),
       ),
       child: Shimmer.fromColors(
-        baseColor: AppColors.darkGrey,
+        baseColor: Theme.of(context).colorScheme.surfaceContainer,
         highlightColor: AppColors.grey.withValues(alpha: 0.5),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.darkGrey,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius:
                 (end ?? false)
                     ? const BorderRadius.only(
@@ -280,17 +270,17 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
             children: [
               Text(
                 '${item.hero ?? 'Unknown'} - ${item.name ?? 'Unknown'}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppTextStyles.defaultTextStyle(
+                  context,
+                ).copyWith(fontSize: 14, fontWeight: FontWeight.w500),
               ),
               if (item.hero != null) ...[
                 const SizedBox(height: 2),
                 Text(
                   item.hero!,
-                  style: const TextStyle(color: AppColors.grey, fontSize: 12),
+                  style: AppTextStyles.defaultTextStyle(
+                    context,
+                  ).copyWith(color: AppColors.grey, fontSize: 12),
                 ),
               ],
             ],
@@ -305,11 +295,9 @@ class _PostItemDotaItemFieldState extends State<PostItemDotaItemField> {
             ),
             child: Text(
               item.rarity!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.defaultTextStyle(
+                context,
+              ).copyWith(fontSize: 10, fontWeight: FontWeight.w500),
             ),
           ),
       ],

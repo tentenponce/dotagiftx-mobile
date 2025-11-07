@@ -1,5 +1,6 @@
 import 'package:dotagiftx_mobile/core/utils/string_utils.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/number_format_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/rarity_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
@@ -23,14 +24,15 @@ class PlaceBuyOrderDotaItemView extends StatelessWidget {
             children: [
               Text(
                 item.origin ?? '',
-                style: const TextStyle(color: Colors.white),
+                style: AppTextStyles.defaultTextStyle(context),
               ),
               const SizedBox(height: 4),
               Text(
                 StringUtils.capitalizeEachWord(item.rarity ?? ''),
-                style: TextStyle(
+                style: AppTextStyles.defaultTextStyle(context).copyWith(
                   color:
-                      RarityUtils.getRarityColor(item.rarity) ?? Colors.white,
+                      RarityUtils.getRarityColor(item.rarity) ??
+                      Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 4),
@@ -38,7 +40,7 @@ class PlaceBuyOrderDotaItemView extends StatelessWidget {
                 children: [
                   Text(
                     I18n.of(context).playBuyOrderDotaItemViewLowestPrice,
-                    style: const TextStyle(color: Colors.white),
+                    style: AppTextStyles.defaultTextStyle(context),
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -47,7 +49,7 @@ class PlaceBuyOrderDotaItemView extends StatelessWidget {
                         : I18n.of(
                           context,
                         ).playBuyOrderDotaItemViewNoLowestPrice,
-                    style: const TextStyle(color: Colors.white),
+                    style: AppTextStyles.defaultTextStyle(context),
                   ),
                 ],
               ),
