@@ -1,4 +1,5 @@
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'home_state.freezed.dart';
@@ -18,5 +19,6 @@ abstract class HomeState with _$HomeState {
     @Default(0) int totalSearchResultsCount,
     @Default('') String currentSearchQuery,
     @Default(null) String? backgroundImageUrl,
+    @Default(null) UserModel? user,
   }) = _HomeState;
 }

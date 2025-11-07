@@ -15,7 +15,8 @@ import 'package:injectable/injectable.dart';
 @injectable
 class ProfileCubit extends BaseCubit<ProfileState>
     with CubitErrorMixin<ProfileState> {
-  late final void Function() navigateToHome;
+  late final void Function() loginSuccess;
+  late final void Function() logoutSuccess;
 
   final Logger _logger;
   final EnvironmentVariables _environmentVariables;
@@ -42,9 +43,22 @@ class ProfileCubit extends BaseCubit<ProfileState>
 
   @override
   Future<void> init() async {
-    _listenLocalStorage.listenUser().listen((user) {
-      emit(state.copyWith(user: user));
-    });
+    emit(state.copyWith(isLoadingUser: true));
+    _listenLocalStorage.listenUser().listen(
+      (user) {
+        emit(state.copyWith(user: user, isLoadingUser: false));
+      },
+      // ignore: inference_failure_on_untyped_parameter
+      onError: (e, st) {
+        _logger.log(
+          LogLevel.error,
+          'Error getting user',
+          e,
+          st is StackTrace ? st : StackTrace.current,
+        );
+        emit(state.copyWith(user: null, isLoadingUser: false));
+      },
+    );
   }
 
   void initProfileLoggedInView() {
@@ -59,7 +73,7 @@ class ProfileCubit extends BaseCubit<ProfileState>
     emit(state.copyWith(loadingLogin: true));
     await cubitHandler(() => _loginUsecase(openid), (user) async {
       emit(state.copyWith(user: user));
-      navigateToHome();
+      loginSuccess();
     });
 
     emit(state.copyWith(loadingLogin: false));
@@ -69,7 +83,7 @@ class ProfileCubit extends BaseCubit<ProfileState>
     emit(state.copyWith(loadingLogout: true));
     await cubitHandler(_logoutUsecase.call, (_) async {
       emit(state.copyWith(user: null));
-      navigateToHome();
+      logoutSuccess();
     });
 
     emit(state.copyWith(loadingLogout: false));

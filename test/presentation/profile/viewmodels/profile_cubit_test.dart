@@ -8,8 +8,7 @@ import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_user_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/login_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/logout_usecase.dart';
-import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/profile/viewmodels/profile_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -32,7 +31,8 @@ void main() {
     late MockLogoutUsecase mockLogoutUsecase;
     late MockListenLocalStorage mockListenLocalStorage;
     late MockGetUserUsecase mockGetUserUsecase;
-    late bool navigateToHomeCalled;
+    late bool loginSuccessCalled;
+    late bool logoutSuccessCalled;
 
     // Test data
     const testBaseUrl = 'https://api.example.com';
@@ -54,7 +54,8 @@ void main() {
       mockLogoutUsecase = MockLogoutUsecase();
       mockListenLocalStorage = MockListenLocalStorage();
       mockGetUserUsecase = MockGetUserUsecase();
-      navigateToHomeCalled = false;
+      loginSuccessCalled = false;
+      logoutSuccessCalled = false;
 
       when(mockEnvironmentVariables.baseUrl).thenReturn(testBaseUrl);
     });
@@ -68,8 +69,11 @@ void main() {
         mockGetUserUsecase,
         mockListenLocalStorage,
       );
-      cubit.navigateToHome = () {
-        navigateToHomeCalled = true;
+      cubit.loginSuccess = () {
+        loginSuccessCalled = true;
+      };
+      cubit.logoutSuccess = () {
+        logoutSuccessCalled = true;
       };
       return cubit;
     }
@@ -127,6 +131,20 @@ void main() {
         await userController.close();
       });
 
+      test('should set isLoadingUser to false when error occurs', () async {
+        // Arrange
+        when(
+          mockListenLocalStorage.listenUser(),
+        ).thenAnswer((_) => Stream.error(Exception('Test error')));
+
+        final profileCubit = createUnitToTest();
+        await Future<void>.delayed(Duration.zero);
+
+        expect(profileCubit.state.isLoadingUser, isFalse);
+        verify(mockListenLocalStorage.listenUser()).called(1);
+        expect(profileCubit.state.user, isNull);
+      });
+
       test('should handle null user from stream', () async {
         // Arrange
         final userController = StreamController<UserModel?>();
@@ -167,7 +185,7 @@ void main() {
         // Assert
         expect(profileCubit.state.user, equals(testUserModel));
         expect(profileCubit.state.loadingLogin, isFalse);
-        expect(navigateToHomeCalled, isTrue);
+        expect(loginSuccessCalled, isTrue);
         verify(mockLoginUsecase.call(testOpenId)).called(1);
       });
 
@@ -188,7 +206,7 @@ void main() {
         // Assert
         expect(profileCubit.state.user, isNull);
         expect(profileCubit.state.loadingLogin, isFalse);
-        expect(navigateToHomeCalled, isFalse);
+        expect(loginSuccessCalled, isFalse);
         verify(mockLoginUsecase.call(testOpenId)).called(1);
       });
 
@@ -239,7 +257,7 @@ void main() {
         // Assert
         expect(profileCubit.state.user, isNull);
         expect(profileCubit.state.loadingLogout, isFalse);
-        expect(navigateToHomeCalled, isTrue);
+        expect(logoutSuccessCalled, isTrue);
         verify(mockLogoutUsecase.call()).called(1);
       });
 
@@ -263,7 +281,7 @@ void main() {
           equals(testUserModel),
         ); // Should remain unchanged
         expect(profileCubit.state.loadingLogout, isFalse);
-        expect(navigateToHomeCalled, isFalse);
+        expect(logoutSuccessCalled, isFalse);
         verify(mockLogoutUsecase.call()).called(1);
       });
 
@@ -293,15 +311,17 @@ void main() {
     });
 
     group('state management', () {
-      test('should have correct initial state', () {
+      test('should have correct initial state', () async {
         // Arrange & Act
         final profileCubit = createUnitToTest();
 
+        await Future<void>.delayed(Duration.zero);
+
         // Assert
-        expect(profileCubit.state, equals(const ProfileState()));
         expect(profileCubit.state.user, isNull);
         expect(profileCubit.state.loadingLogin, isFalse);
         expect(profileCubit.state.loadingLogout, isFalse);
+        expect(profileCubit.state.isLoadingUser, isTrue);
       });
     });
   });

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
+import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/place_buy_order_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/core/base/base_cubit.dart';
@@ -18,11 +19,15 @@ class PlaceBuyOrderCubit extends BaseCubit<PlaceBuyOrderState>
 
   final Logger _logger;
   final PlaceBuyOrderUsecase _placeBuyOrderUsecase;
+  final ListenLocalStorage _listenLocalStorage;
 
   String _price = '';
 
-  PlaceBuyOrderCubit(this._logger, this._placeBuyOrderUsecase)
-    : super(const PlaceBuyOrderState());
+  PlaceBuyOrderCubit(
+    this._logger,
+    this._placeBuyOrderUsecase,
+    this._listenLocalStorage,
+  ) : super(const PlaceBuyOrderState());
 
   @override
   Logger get logger => _logger;
@@ -34,7 +39,9 @@ class PlaceBuyOrderCubit extends BaseCubit<PlaceBuyOrderState>
   }
 
   @override
-  Future<void> init() async {}
+  Future<void> init() async {
+    _listenUserIfLoggedIn();
+  }
 
   Future<void> placeBuyOrder() async {
     final parsedPrice = double.tryParse(price) ?? 0;
@@ -67,5 +74,11 @@ class PlaceBuyOrderCubit extends BaseCubit<PlaceBuyOrderState>
       },
     );
     emit(state.copyWith(isPlaceBuyOrderLoading: false));
+  }
+
+  void _listenUserIfLoggedIn() {
+    _listenLocalStorage.listenUser().listen((user) {
+      emit(state.copyWith(isUserLoggedIn: user != null));
+    });
   }
 }

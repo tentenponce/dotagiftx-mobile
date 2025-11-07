@@ -9,5 +9,6 @@ abstract class ProfileState with _$ProfileState {
     @Default(false) bool loadingLogin,
     @Default(false) bool loadingLogout,
     @Default(null) UserModel? user,
+    @Default(false) bool isLoadingUser,
   }) = _ProfileState;
 }

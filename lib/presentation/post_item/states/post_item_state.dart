@@ -12,5 +12,6 @@ abstract class PostItemState with _$PostItemState {
     @Default(null) DotaItemModel? selectedItem,
     @Default(false) bool isItemErrorRequired,
     @Default(false) bool isPriceErrorRequired,
+    @Default(false) bool isUserLoggedIn,
   }) = _PostItemState;
 }

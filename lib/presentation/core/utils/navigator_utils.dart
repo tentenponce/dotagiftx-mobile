@@ -88,6 +88,7 @@ enum PageName {
   myListings('my-listings'),
   myOrders('my-orders'),
   roadmap('roadmap'),
+  profile('profile'),
 
   // bottom sheets
   contactBuyerProfile('contact-buyer-profile'),

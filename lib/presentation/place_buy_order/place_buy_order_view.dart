@@ -13,6 +13,7 @@ import 'package:dotagiftx_mobile/presentation/place_buy_order/subviews/place_buy
 import 'package:dotagiftx_mobile/presentation/place_buy_order/subviews/place_buy_order_note_field.dart';
 import 'package:dotagiftx_mobile/presentation/place_buy_order/subviews/place_buy_order_price_field.dart';
 import 'package:dotagiftx_mobile/presentation/place_buy_order/viewmodels/place_buy_order_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/profile/profile_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,8 +80,13 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
               const SizedBox(height: 16),
               const PlaceBuyOrderNoteField(),
               const SizedBox(height: 16),
+
+              _buildUserNotLoggedInMessage(context),
+
               // Place order button
               _buildPlaceOrderButton(context),
+
+              const SizedBox(height: 16),
 
               // Expiration date
               _buildExpirationDate(context),
@@ -136,28 +142,34 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
   }
 
   Widget _buildPlaceOrderButton(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 20, bottom: 10),
       child: BlocBuilder<PlaceBuyOrderCubit, PlaceBuyOrderState>(
         buildWhen:
             (previous, current) =>
                 previous.isPlaceBuyOrderLoading !=
-                current.isPlaceBuyOrderLoading,
+                    current.isPlaceBuyOrderLoading ||
+                previous.isUserLoggedIn != current.isUserLoggedIn,
         builder: (context, state) {
           return AppElevatedButton(
             isLoading: state.isPlaceBuyOrderLoading,
-            onPressed: () {
-              unawaited(
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                ),
-              );
-              FocusScope.of(context).unfocus();
-              unawaited(context.read<PlaceBuyOrderCubit>().placeBuyOrder());
-            },
+            isDisabled: !state.isUserLoggedIn,
+            onPressed:
+                state.isUserLoggedIn
+                    ? () {
+                      unawaited(
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        ),
+                      );
+                      FocusScope.of(context).unfocus();
+                      unawaited(
+                        context.read<PlaceBuyOrderCubit>().placeBuyOrder(),
+                      );
+                    }
+                    : null,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -176,6 +188,54 @@ class _PlaceBuyOrderViewState extends State<_PlaceBuyOrderView> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildUserNotLoggedInMessage(BuildContext context) {
+    return BlocBuilder<PlaceBuyOrderCubit, PlaceBuyOrderState>(
+      buildWhen:
+          (previous, current) =>
+              previous.isUserLoggedIn != current.isUserLoggedIn,
+      builder: (context, state) {
+        return state.isUserLoggedIn
+            ? const SizedBox.shrink()
+            : Container(
+              margin: const EdgeInsets.only(bottom: 4, top: 16),
+              alignment: Alignment.center,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  unawaited(
+                    NavigatorUtils.push(
+                      context,
+                      ProfileView(
+                        loginSuccess: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    children: [
+                      const Icon(Icons.warning_amber, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        I18n.of(
+                          context,
+                        ).placeBuyOrderViewUserNotLoggedInMessage,
+                        style: AppTextStyles.defaultTextStyle(
+                          context,
+                        ).copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+      },
     );
   }
 }

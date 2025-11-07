@@ -9,13 +9,12 @@ import 'package:dotagiftx_mobile/presentation/core/base/view_cubit_mixin.dart';
 import 'package:dotagiftx_mobile/presentation/core/resources/app_text_styles.dart';
 import 'package:dotagiftx_mobile/presentation/core/utils/navigator_utils.dart';
 import 'package:dotagiftx_mobile/presentation/core/widgets/dotagiftx_image_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/states/profile_state.dart';
+import 'package:dotagiftx_mobile/presentation/home/states/home_state.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/heroes_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/home_nav_view.dart';
-import 'package:dotagiftx_mobile/presentation/home/subviews/profile_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/subviews/treasures_nav_view.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
+import 'package:dotagiftx_mobile/presentation/profile/profile_view.dart';
 import 'package:dotagiftx_mobile/presentation/shared/localization/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,8 +64,7 @@ class _HomeViewState extends StateBase<_HomeView> {
               ),
             ],
           ),
-          child: BlocBuilder<ProfileCubit, ProfileState>(
-            bloc: context.read<HomeCubit>().profileCubit,
+          child: BlocBuilder<HomeCubit, HomeState>(
             buildWhen: (previous, current) => previous.user != current.user,
             builder: (context, state) {
               return BottomNavigationBar(
@@ -86,7 +84,7 @@ class _HomeViewState extends StateBase<_HomeView> {
                         screenName = 'nav-treasures';
                       case HeroesNavView():
                         screenName = 'nav-heroes';
-                      case ProfileNavView():
+                      case ProfileView():
                         screenName = 'nav-profile';
                     }
 
@@ -143,14 +141,18 @@ class _HomeViewState extends StateBase<_HomeView> {
       const HomeNavView(),
       TreasuresNavView(onTreasureTap: _navigateToHomeWithSearch),
       HeroesNavView(onHeroTap: _navigateToHomeWithSearch),
-      const ProfileNavView(),
+      ProfileView(
+        loginSuccess: _navigateToHome,
+        logoutSuccess: _navigateToHome,
+        showBackButton: false,
+      ),
     ];
+  }
 
-    context.read<HomeCubit>().profileCubit.navigateToHome = () {
-      setState(() {
-        _currentIndex = 0;
-      });
-    };
+  void _navigateToHome() {
+    setState(() {
+      _currentIndex = 0;
+    });
   }
 
   void _navigateToHomeWithSearch(String searchQuery) {

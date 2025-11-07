@@ -1,14 +1,15 @@
 import 'package:dotagiftx_mobile/core/logging/logger.dart';
 import 'package:dotagiftx_mobile/core/utils/debouncer_utils.dart';
+import 'package:dotagiftx_mobile/data/local/listen_local_storage.dart';
 import 'package:dotagiftx_mobile/data/platform/dotagiftx_remote_config.dart';
 import 'package:dotagiftx_mobile/domain/models/dota_item_model.dart';
+import 'package:dotagiftx_mobile/domain/models/user_model.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_new_buy_orders_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_new_sell_listings_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/get_trending_usecase.dart';
 import 'package:dotagiftx_mobile/domain/usecases/search_catalog_usecase.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/heroes_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/home_cubit.dart';
-import 'package:dotagiftx_mobile/presentation/home/viewmodels/profile_cubit.dart';
 import 'package:dotagiftx_mobile/presentation/home/viewmodels/treasures_cubit.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +21,6 @@ import 'home_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<TreasuresCubit>(),
   MockSpec<HeroesCubit>(),
-  MockSpec<ProfileCubit>(),
   MockSpec<Logger>(),
   MockSpec<GetTrendingUsecase>(),
   MockSpec<GetNewBuyOrdersUsecase>(),
@@ -28,12 +28,12 @@ import 'home_cubit_test.mocks.dart';
   MockSpec<SearchCatalogUsecase>(),
   MockSpec<DebouncerUtils>(),
   MockSpec<DotagiftxRemoteConfig>(),
+  MockSpec<ListenLocalStorage>(),
 ])
 void main() {
   group(HomeCubit, () {
     late MockTreasuresCubit mockTreasuresCubit;
     late MockHeroesCubit mockHeroesCubit;
-    late MockProfileCubit mockProfileCubit;
     late MockLogger mockLogger;
     late MockGetTrendingUsecase mockGetTrendingUsecase;
     late MockGetNewBuyOrdersUsecase mockGetNewBuyOrdersUsecase;
@@ -41,6 +41,7 @@ void main() {
     late MockSearchCatalogUsecase mockSearchCatalogUsecase;
     late MockDebouncerUtils mockDebouncerUtils;
     late MockDotagiftxRemoteConfig mockDotagiftxRemoteConfig;
+    late MockListenLocalStorage mockListenLocalStorage;
     // Test data
     const testDotaItem1 = DotaItemModel(
       id: '1',
@@ -69,10 +70,19 @@ void main() {
       lowestAsk: 15.75,
     );
 
+    const testUserModel = UserModel(
+      name: 'Test User',
+      url: 'https://steamcommunity.com/profiles/12345',
+      avatar: 'https://example.com/avatar.png',
+      createdAt: '2024-01-01T00:00:00Z',
+      marketStats: MarketStats(live: 5, reserved: 2, sold: 10, bidCompleted: 3),
+      subscription: 1,
+      subscribedAt: '2024-01-01T00:00:00Z',
+    );
+
     setUp(() {
       mockTreasuresCubit = MockTreasuresCubit();
       mockHeroesCubit = MockHeroesCubit();
-      mockProfileCubit = MockProfileCubit();
       mockLogger = MockLogger();
       mockGetTrendingUsecase = MockGetTrendingUsecase();
       mockGetNewBuyOrdersUsecase = MockGetNewBuyOrdersUsecase();
@@ -80,6 +90,7 @@ void main() {
       mockSearchCatalogUsecase = MockSearchCatalogUsecase();
       mockDebouncerUtils = MockDebouncerUtils();
       mockDotagiftxRemoteConfig = MockDotagiftxRemoteConfig();
+      mockListenLocalStorage = MockListenLocalStorage();
       when(mockDebouncerUtils.run(any)).thenAnswer((invocation) async {
         final callback =
             invocation.positionalArguments[0] as Future<void> Function();
@@ -91,7 +102,6 @@ void main() {
       return HomeCubit(
         mockTreasuresCubit,
         mockHeroesCubit,
-        mockProfileCubit,
         mockLogger,
         mockGetTrendingUsecase,
         mockGetNewBuyOrdersUsecase,
@@ -99,6 +109,7 @@ void main() {
         mockSearchCatalogUsecase,
         mockDebouncerUtils,
         mockDotagiftxRemoteConfig,
+        mockListenLocalStorage,
       );
     }
 
@@ -144,6 +155,18 @@ void main() {
           homeCubit.state.backgroundImageUrl,
           equals('test_background_image_url'),
         );
+      });
+
+      test('should listen user if logged in', () async {
+        when(
+          mockListenLocalStorage.listenUser(),
+        ).thenAnswer((_) => Stream.value(testUserModel));
+
+        final homeCubit = createUnitToTest();
+        await Future<void>.delayed(Duration.zero);
+
+        verify(mockListenLocalStorage.listenUser()).called(1);
+        expect(homeCubit.state.user, equals(testUserModel));
       });
     });
 

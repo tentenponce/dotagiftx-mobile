@@ -7,5 +7,6 @@ abstract class PlaceBuyOrderState with _$PlaceBuyOrderState {
   const factory PlaceBuyOrderState({
     @Default(false) bool isPlaceBuyOrderLoading,
     @Default(false) bool isPriceErrorRequired,
+    @Default(false) bool isUserLoggedIn,
   }) = _PlaceBuyOrderState;
 }
